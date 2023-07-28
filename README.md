@@ -1,6 +1,44 @@
 # Budget-Buddy
 A helpful buddy that will make user stay updated and focused on his finances!
 
+## Backend
+
+* go to backend folder 
+
+* create a virtual env
+```python
+python -m venv venv
+```
+
+* activate the virtual env
+```python
+.\venv\Scripts\activate
+```
+
+* install the project dependencies
+```python
+pip install -r requirements.txt
+```
+
+* go to src folder
+
+* run the flask app
+```python
+flask run
+```
+***Note: AttributeError: '_FakeStack' object has no attribute '__ident_func__'*** 
+```python
+python -m pip uninstall flask-sqlalchemy
+python -m pip install flask-sqlalchemy
+```
+
+* migrate the new database models
+```python
+flask db init
+flask db migrate
+flask db upgrade
+```
+
 ## Database Configuration
 
 1. In Windows Terminal, start the PostgreSQL server. First, find the PostgreSQL database directory path, e.g.: `C:\Program Files\PostgreSQL\15\data`. Then open the terminal and execute this command:
@@ -32,9 +70,14 @@ CREATE DATABASE <dbname>;
 ```powershell
  CREATE USER <username> WITH PASSWORD '<password>';
 ```
-Then grant privileges to it, e.g.: `GRANT ALL ON DATABASE budgetbuddy TO bbadmin;`
+Then grant privileges to it, e.g.: 
+- `GRANT ALL ON DATABASE budgetbuddy TO bbadmin;` 
+<!-- - `GRANT ALL ON SCHEMA public TO bbadmin;`  -->
+- `ALTER DATABASE budgetbuddy OWNER TO bbadmin;`
 ```powershell
 GRANT ALL ON DATABASE <dbname> TO <username>;
+# GRANT ALL ON SCHEMA public TO <username>;
+ALTER DATABASE <dbname> OWNER TO <username>;
 ```
 
 5. Exit the shell
