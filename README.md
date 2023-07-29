@@ -26,6 +26,10 @@ pip install -r requirements.txt
 ```python
 flask run
 ```
+run the flask app with dubug mode on
+```python
+flask run --debug
+```
 ***Note: AttributeError: '_FakeStack' object has no attribute '__ident_func__'*** 
 ```python
 python -m pip uninstall flask-sqlalchemy
@@ -100,3 +104,6 @@ psql -U <username> -h localhost -d <dbname>
 
 ## Acknowledgement
 - [How to build a CRUD API using Python Flask and SQLAlchemy ORM with PostgreSQL](https://medium.com/@yahiaqous/how-to-build-a-crud-api-using-python-flask-and-sqlalchemy-orm-with-postgresql-7869517f8930)
+
+- [Designing Well-Structured REST APIs with Flask-RestPlus: Part 1](https://p5v.medium.com/designing-well-structured-rest-apis-with-flask-restplus-part-1-7e96f2da8850)
+
