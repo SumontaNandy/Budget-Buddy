@@ -50,8 +50,6 @@ class SignUp(Resource):
         
         http_response = create_new_user_controller(data)
 
-        print(list_all_users_controller())
-
         return http_response
     
 
