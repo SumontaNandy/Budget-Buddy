@@ -112,7 +112,7 @@ def user_login_controller(data):
     user = User.query.filter_by(email=email).first()
 
     if (user is not None) and check_password_hash(user.password, password):
-        access_token = create_access_token(identity=user.id)
+        access_token = create_access_token(identity=user.id, fresh=True)
         refresh_token = create_refresh_token(identity=user.id)
 
         tokens = {

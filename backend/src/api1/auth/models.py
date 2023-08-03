@@ -51,6 +51,8 @@ class User(db.Model):
     dob         = db.Column(db.Date, default=None)
     img         = db.Column(db.String(100), default=None) # stores img path
 
+    account = db.relationship('Account', backref='user', lazy=True)
+
     def add(self):
         db.session.add(self)
         db.session.commit()
