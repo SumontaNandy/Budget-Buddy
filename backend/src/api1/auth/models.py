@@ -13,6 +13,7 @@ class User(db.Model):
 
     # Input by User Fields
     email                   = db.Column(db.String(100), nullable=False, unique=True)
+    password                = db.Column(db.Text(), nullable=False)
 
     user_first_name         = db.Column(db.String(100), default=None)
     user_middle_initial     = db.Column(db.String(100), default=None)
@@ -72,3 +73,8 @@ class User(db.Model):
     @classmethod
     def get_by_id(cls, id):
         return cls.query.get_or_404(id)
+    
+    # How to serialize SqlAlchemy PostgreSQL Query to JSON
+    def toDict(self):
+        info = { c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs }
+        return info

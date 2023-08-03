@@ -22,6 +22,7 @@ address_model = api.model('Address', {
 
 signup_model = api.model('SignUp', {
     'email': fields.String(required=True),
+    'password': fields.String(required=True),
     'user': fields.Nested(name_model),
     'spouse': fields.Nested(name_model),
     'father': fields.Nested(name_model),
@@ -47,11 +48,10 @@ class SignUp(Resource):
         """
         data = request.get_json()
         
-        new_user, http_response = create_new_user_controller(data)
+        http_response = create_new_user_controller(data)
 
-        print(f'from sign up {new_user}')
+        print(list_all_users_controller())
 
-        # return new_user, http_response
         return http_response
     
 

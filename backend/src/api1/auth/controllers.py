@@ -1,6 +1,7 @@
 from flask import request, jsonify
 from flask_restx import fields
 from werkzeug.exceptions import Conflict
+from werkzeug.security import generate_password_hash,check_password_hash
 from http import HTTPStatus
 import uuid
 
@@ -10,7 +11,8 @@ from .models import User
 def extract_user_data(data):
     dict = {}
 
-    dict['email'] = data.get('email')
+    dict['email']       = data.get('email')
+    dict['password']    = generate_password_hash(data.get('password'))
 
     if data.get('user') is not None:
         dict['user_first_name']     = data.get('user').get('first_name')
@@ -63,7 +65,8 @@ def create_new_user_controller(data):
         data = extract_user_data(data)
         new_user = User(
             id = id,
-            email = data.get('email'),
+            email       = data.get('email'),
+            password    = data.get('password'),
             user_first_name     = data.get('user_first_name'),
             user_middle_initial = data.get('user_middle_initial'),
             user_last_name      = data.get('user_last_name'),
@@ -96,7 +99,7 @@ def create_new_user_controller(data):
         )
         new_user.add()
 
-        return new_user, HTTPStatus.CREATED
+        return HTTPStatus.CREATED
     except Exception as e:
         raise Conflict(f"User with email {data.get('email')} exists")
     
