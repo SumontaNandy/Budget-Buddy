@@ -1,8 +1,9 @@
 from flask import request, jsonify
 from flask_restx import fields
-from werkzeug.exceptions import Conflict
-from werkzeug.security import generate_password_hash,check_password_hash
+from werkzeug.exceptions import Conflict, BadRequest
+from werkzeug.security import generate_password_hash, check_password_hash
 from http import HTTPStatus
+from flask_jwt_extended import create_access_token, create_refresh_token,jwt_required, get_jwt_identity
 import uuid
 
 from ... import db
@@ -104,62 +105,21 @@ def create_new_user_controller(data):
         raise Conflict(f"User with email {data.get('email')} exists")
     
 
-def list_all_users_controller():
-    users = User.query.all()
-    response = []
-    for user in users:
-        response.append(user.toDict())
+def user_login_controller(data):
+    email = data.get('email')
+    password = data.get('password')
 
-    return jsonify(response)
+    user = User.query.filter_by(email=email).first()
 
+    if (user is not None) and check_password_hash(user.password, password):
+        access_token = create_access_token(identity=user.id)
+        refresh_token = create_refresh_token(identity=user.id)
 
-def create_user_controller():
-    request_form = request.form.to_dict()
+        tokens = {
+            'access_token': access_token,
+            'refresh_token': refresh_token
+        }
 
-    id = str(uuid.uuid4())
-    new_user = User(
-        id = id,
-        email = request_form['email'],
-        username = request_form['username'],
-        dob = request_form['dob'],
-        country = request_form['country'],
-        phone_number = request_form['phone_number'],
-    )
-
-    db.session.add(new_user)
-    db.session.commit()
-
-    response = User.query.get(id).toDict()
+        return tokens, HTTPStatus.OK
     
-    return jsonify(response)
-
-
-def retrive_user_controller(user_id):
-    response = User.query.get(user_id).toDict()
-
-    return jsonify(response)
-
-
-def update_user_controller(user_id):
-    request_form = request.form.to_dict()
-    user = User.query.get(user_id)
-
-    user.email = request_form['email']
-    user.username = request_form['username']
-    user.dob = request_form['dob']
-    user.country = request_form['country']
-    user.phone_number = request_form['phone_number']
-    
-    db.session.commit()
-
-    response = User.query.get(user_id).toDict()
-    
-    return jsonify(response)
-
-
-def delete_user_controller(user_id):
-    User.query.filter_by(id=user_id).delete()
-
-    db.session.commit()
-
-    return f'User with ID {user_id} deleted successfully!'
+    raise BadRequest("Invalid Username or password")

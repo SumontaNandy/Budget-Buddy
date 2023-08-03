@@ -46,40 +46,25 @@ class SignUp(Resource):
         """
             create a new user
         """
-        data = request.get_json()
-        
+        data = request.get_json()        
         http_response = create_new_user_controller(data)
 
         return http_response
-    
+
+
+login_model = api.model('LogIn', {
+    'email': fields.String(required=True),
+    'password': fields.String(required=True)
+}) 
 
 @api.route('/login')
 class Login(Resource):
-    def get(self):
-        pass
+    @api.expect(login_model, validate=True)
+    def post(self):
+        """
+            handles user login, generates a JWT 
+        """
+        data = request.get_json()
+        tokens, http_response = user_login_controller(data)
 
-# @api.route('/', methods=['GET', 'POST'])
-# def list_create_users():
-#     if request.method == 'GET':
-#         return 'get list create users'
-#         # return list_all_users_controller()
-#     elif request.method == 'POST':
-#         return 'get list create users'
-#         # return create_user_controller()
-    
-#     return 'Method is not allowed'
-
-
-# @api.route('/<user_id>', methods=['GET', 'PUT', 'DELETE'])
-# def retrieve_update_destroy_users(user_id):
-#     if request.method == 'GET':
-#         # return retrive_user_controller(user_id)
-#         return 'get retrieve'
-#     elif request.method == 'PUT':
-#         # return update_user_controller(user_id)
-#         return 'put update'
-#     elif request.method == 'DELETE':
-#         # return delete_user_controller(user_id)
-#         return 'delete destroy'
-    
-#     return 'Method is not allowed'
+        return tokens, http_response
