@@ -68,3 +68,14 @@ class Login(Resource):
         tokens, http_response = user_login_controller(data)
 
         return tokens, http_response
+    
+
+@api.route('/refresh')
+class Refresh(Resource):
+    @jwt_required(refresh=True)
+    def post(self):
+        id = get_jwt_identity()
+
+        access_token = create_access_token(identity=id)
+
+        return {'access_token': access_token}, HTTPStatus.OK
