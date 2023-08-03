@@ -1,14 +1,25 @@
 from flask import Blueprint
 from flask_restx import Api
 
-from .user.urls import api as ns_user
+from .auth.urls import api as ns_auth
 from .account.urls import api as ns_account
 
 blueprint = Blueprint('api1', __name__, url_prefix='/api/1/user')
 
+authorizations = {
+    "Bearer Auth": {
+        'type': 'apiKey',
+        'in': 'header',
+        'name': 'Authorization',
+    }
+}
+
 api = Api(blueprint,
           version='1.0',
+          title='Budget Buddy API',
+          authorizations=authorizations,
+          security='Bearer Auth',
           doc='/docs')
 
-api.add_namespace(ns_user, path='/info')
+api.add_namespace(ns_auth, path='/auth')
 api.add_namespace(ns_account, path='/account')

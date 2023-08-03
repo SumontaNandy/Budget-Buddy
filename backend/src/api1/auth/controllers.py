@@ -1,0 +1,162 @@
+from flask import request, jsonify
+from flask_restx import fields
+from werkzeug.exceptions import Conflict
+from http import HTTPStatus
+import uuid
+
+from ... import db
+from .models import User
+
+def extract_user_data(data):
+    dict = {}
+
+    dict['email'] = data.get('email')
+
+    if data.get('user') is not None:
+        dict['user_first_name']     = data.get('user').get('first_name')
+        dict['user_middle_initial'] = data.get('user').get('middle_initial')
+        dict['user_last_name']      = data.get('user').get('last_name')
+
+    if data.get('spouse') is not None:
+        dict['spouse_first_name']       = data.get('spouse').get('first_name')
+        dict['spouse_middle_initial']   = data.get('spouse').get('middle_initial')
+        dict['spouse_last_name']        = data.get('spouse').get('last_name')
+
+    if data.get('father') is not None:
+        dict['father_first_name']       = data.get('father').get('first_name')
+        dict['father_middle_initial']   = data.get('father').get('middle_initial')
+        dict['father_last_name']        = data.get('father').get('last_name')
+
+    if data.get('mother') is not None:
+        dict['mother_first_name']       = data.get('mother').get('first_name')
+        dict['mother_middle_initial']   = data.get('mother').get('middle_initial')
+        dict['mother_last_name']        = data.get('mother').get('last_name')
+
+    if data.get('permanent_address') is not None:
+        dict['permanent_address_village_house']     = data.get('permanent_address').get('village_house')
+        dict['permanent_address_road_block_sector'] = data.get('permanent_address').get('road_block_sector')
+        dict['permanent_address_police_station']    = data.get('permanent_address').get('police_station')
+        dict['permanent_address_post_office']       = data.get('permanent_address').get('post_office')
+        dict['permanent_address_post_code']         = data.get('permanent_address').get('post_code')
+        dict['permanent_address_district']          = data.get('permanent_address').get('district')
+
+    if data.get('present_address') is not None:
+        dict['present_address_village_house']       = data.get('present_address').get('village_house')
+        dict['present_address_road_block_sector']   = data.get('present_address').get('road_block_sector')
+        dict['present_address_police_station']      = data.get('present_address').get('police_station')
+        dict['present_address_post_office']         = data.get('present_address').get('post_office')
+        dict['present_address_post_code']           = data.get('present_address').get('post_code')
+        dict['present_address_district']            = data.get('present_address').get('district')
+
+        dict['contact_no']  = data.get('contact_no')
+        dict['nid']         = data.get('nid')
+        dict['tin']         = data.get('tin')
+        dict['dob']         = data.get('dob')   
+        dict['img']         = data.get('img')
+
+    return dict
+
+
+def create_new_user_controller(data):
+    try:
+        id = str(uuid.uuid4())
+        data = extract_user_data(data)
+        new_user = User(
+            id = id,
+            email = data.get('email'),
+            user_first_name     = data.get('user_first_name'),
+            user_middle_initial = data.get('user_middle_initial'),
+            user_last_name      = data.get('user_last_name'),
+            spouse_first_name       = data.get('spouse_first_name'),
+            spouse_middle_initial   = data.get('spouse_middle_initial'),
+            spouse_last_name        = data.get('spouse_last_name'),
+            father_first_name       = data.get('father_first_name'),
+            father_middle_initial   = data.get('father_middle_initial'),
+            father_last_name        = data.get('father_last_name'),
+            mother_first_name       = data.get('mother_first_name'),
+            mother_middle_initial   = data.get('mother_middle_initial'),
+            mother_last_name        = data.get('mother_last_name'),
+            permanent_address_village_house     = data.get('permanent_address_village_house'),
+            permanent_address_road_block_sector = data.get('permanent_address_road_block_sector'),
+            permanent_address_police_station    = data.get('permanent_address_police_station'),
+            permanent_address_post_office       = data.get('permanent_address_post_office'),
+            permanent_address_post_code         = data.get('permanent_address_post_code'),
+            permanent_address_district          = data.get('permanent_address_district'),
+            present_address_village_house       = data.get('present_address_village_house'),
+            present_address_road_block_sector   = data.get('present_address_road_block_sector'),
+            present_address_police_station      = data.get('present_address_police_station'),
+            present_address_post_office         = data.get('present_address_post_office'),
+            present_address_post_code           = data.get('present_address_post_code'),
+            present_address_district            = data.get('present_address_district'),
+            contact_no  = data.get('contact_no'),
+            nid         = data.get('nid'),
+            tin         = data.get('tin'),
+            dob         = data.get('dob'),      
+            img         = data.get('img')
+        )
+        new_user.add()
+
+        return new_user, HTTPStatus.CREATED
+    except Exception as e:
+        raise Conflict(f"User with email {data.get('email')} exists")
+    
+
+def list_all_users_controller():
+    users = User.query.all()
+    response = []
+    for user in users:
+        response.append(user.toDict())
+
+    return jsonify(response)
+
+
+def create_user_controller():
+    request_form = request.form.to_dict()
+
+    id = str(uuid.uuid4())
+    new_user = User(
+        id = id,
+        email = request_form['email'],
+        username = request_form['username'],
+        dob = request_form['dob'],
+        country = request_form['country'],
+        phone_number = request_form['phone_number'],
+    )
+
+    db.session.add(new_user)
+    db.session.commit()
+
+    response = User.query.get(id).toDict()
+    
+    return jsonify(response)
+
+
+def retrive_user_controller(user_id):
+    response = User.query.get(user_id).toDict()
+
+    return jsonify(response)
+
+
+def update_user_controller(user_id):
+    request_form = request.form.to_dict()
+    user = User.query.get(user_id)
+
+    user.email = request_form['email']
+    user.username = request_form['username']
+    user.dob = request_form['dob']
+    user.country = request_form['country']
+    user.phone_number = request_form['phone_number']
+    
+    db.session.commit()
+
+    response = User.query.get(user_id).toDict()
+    
+    return jsonify(response)
+
+
+def delete_user_controller(user_id):
+    User.query.filter_by(id=user_id).delete()
+
+    db.session.commit()
+
+    return f'User with ID {user_id} deleted successfully!'
