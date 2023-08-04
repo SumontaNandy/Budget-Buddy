@@ -9,18 +9,14 @@ from .controllers import *
 api = Namespace('account', description="User's bank account related operations")
 
 
-def basic_authorization(account_no):
-    return True
-
-
 def authorize(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         if not getattr(func, 'authorized', True):
             return func(*args, **kwargs)
-
+        
         user_id = get_jwt_identity()
-        acct = account_authorization_controller(user_id, kwargs['account_no']) 
+        acct = account_authorization_controller(user_id, kwargs[next(iter(kwargs))]) 
 
         if acct:
             return func(*args, **kwargs)
@@ -63,13 +59,14 @@ class AccountCR(Resource):
 @api.route('/<string:account_no>')
 class iAccountRUD(Resource):
     @authorize
-    @jwt_required()
+    # @jwt_required()
     def get(self, account_no):
         """
             get an account's details with an account_no
         """
         pass
-    
+
+    @authorize
     @jwt_required()
     def put(self, account_no):
         """
