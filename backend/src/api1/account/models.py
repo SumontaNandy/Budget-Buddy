@@ -18,6 +18,7 @@ class AccountType(db.Model):
     def __repr__(self):
         return f'<AccountType {self.id} {self.name}>'
 
+
 class Account(db.Model):
     __table_args__ = (
         db.CheckConstraint('balance >= 0'),
