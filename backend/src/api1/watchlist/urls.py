@@ -8,23 +8,6 @@ from .controllers import *
 
 api = Namespace('watchlist', description="User's watchlist related operations")
 
-
-def authorize(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        if not getattr(func, 'authorized', True):
-            return func(*args, **kwargs)
-
-        user_id = get_jwt_identity()
-        acct = watchlist_authorization_controller(user_id, kwargs[next(iter(kwargs))]) 
-
-        if acct:
-            return func(*args, **kwargs)
-
-        abort(HTTPStatus.UNAUTHORIZED)
-    return wrapper
-
-
 @api.route('/')
 class WatchListCR(Resource):
     @jwt_required()
@@ -44,7 +27,6 @@ class WatchListCR(Resource):
 
 @api.route('/<string:watchlist_id>')
 class iWatchListRUD(Resource):
-    @authorize
     @jwt_required()
     def get(self, watchlist_id):
         """
@@ -52,7 +34,6 @@ class iWatchListRUD(Resource):
         """
         pass
     
-    @authorize
     @jwt_required()
     def put(self, watchlist_id):
         """
@@ -60,7 +41,6 @@ class iWatchListRUD(Resource):
         """
         pass
     
-    @authorize
     @jwt_required()
     def delete(self, watchlist_id):
         """

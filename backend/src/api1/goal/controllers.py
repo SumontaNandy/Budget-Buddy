@@ -7,6 +7,3 @@ from flask_jwt_extended import create_access_token, create_refresh_token,jwt_req
 
 from ... import db
 from .models import *
-
-def goal_authorization_controller(user_id, goal_id):
-    return True

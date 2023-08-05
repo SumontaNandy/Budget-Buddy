@@ -7,7 +7,7 @@ from ... import db
 
 class User(db.Model):
     # Auto Generated Fields:
-    id      = db.Column(db.String(50), primary_key=True, nullable=False, unique=True)
+    id      = db.Column(db.String(100), primary_key=True, nullable=False, unique=True)
     created = db.Column(db.DateTime(timezone=True), default=datetime.now)
     updated = db.Column(db.DateTime(timezone=True), default=datetime.now)
 
@@ -49,10 +49,8 @@ class User(db.Model):
     nid         = db.Column(db.String(20), default=None)
     tin         = db.Column(db.String(30), default=None)
     dob         = db.Column(db.Date, default=None)
-    img         = db.Column(db.String(100), default=None) # stores img path
-
-    account = db.relationship('Account', backref='user', lazy=True)
-
+    img         = db.Column(db.String(200), default=None) # stores img path
+        
     def add(self):
         db.session.add(self)
         db.session.commit()

@@ -8,23 +8,6 @@ from .controllers import *
 
 api = Namespace('goal', description="User's goal related operations")
 
-
-def authorize(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        if not getattr(func, 'authorized', True):
-            return func(*args, **kwargs)
-
-        user_id = get_jwt_identity()
-        acct = goal_authorization_controller(user_id, kwargs[next(iter(kwargs))]) 
-
-        if acct:
-            return func(*args, **kwargs)
-
-        abort(HTTPStatus.UNAUTHORIZED)
-    return wrapper
-
-
 @api.route('/')
 class GoalCR(Resource):
     @jwt_required()
@@ -44,7 +27,6 @@ class GoalCR(Resource):
 
 @api.route('/<string:goal_id>')
 class iGoalRUD(Resource):
-    @authorize
     @jwt_required()
     def get(self, goal_id):
         """
@@ -52,7 +34,6 @@ class iGoalRUD(Resource):
         """
         pass
     
-    @authorize
     @jwt_required()
     def put(self, goal_id):
         """
@@ -60,7 +41,6 @@ class iGoalRUD(Resource):
         """
         pass
     
-    @authorize
     @jwt_required()
     def delete(self, goal_id):
         """

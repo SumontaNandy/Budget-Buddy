@@ -7,6 +7,3 @@ from flask_jwt_extended import create_access_token, create_refresh_token,jwt_req
 
 from ... import db
 from .models import *
-
-def watchlist_authorization_controller(user_id, watch_list_id):
-    return True

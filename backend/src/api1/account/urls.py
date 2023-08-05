@@ -1,37 +1,20 @@
 from flask import request, abort
 from flask_restx import Namespace, Resource, fields
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from http import HTTPStatus
-from functools import wraps
+from ..utils.authorization import authorize
 
 from .controllers import *
 
 api = Namespace('account', description="User's bank account related operations")
 
-
-def authorize(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        if not getattr(func, 'authorized', True):
-            return func(*args, **kwargs)
-        
-        user_id = get_jwt_identity()
-        acct = account_authorization_controller(user_id, kwargs[next(iter(kwargs))]) 
-
-        if acct:
-            return func(*args, **kwargs)
-
-        abort(HTTPStatus.UNAUTHORIZED)
-    return wrapper
-
-
 account_model = api.model('Account', {
-    "account_no": fields.String(required=True),
-    "account_no": fields.String(required=True),
+    "account_no": fields.String,
+    "account_name": fields.String,
     "balance": fields.Float(required=True),
     "date": fields.DateTime(),
     "account_type": fields.String(required=True)
 })
+
 
 @api.route('/')
 class AccountCR(Resource):
@@ -56,27 +39,25 @@ class AccountCR(Resource):
         return http_response
     
 
-@api.route('/<string:account_no>')
+@api.route('/<string:account_id>')
 class iAccountRUD(Resource):
-    @authorize
-    # @jwt_required()
-    def get(self, account_no):
+    method_decorators = [authorize(Account), jwt_required()]
+
+    def get(self, account_id):
         """
-            get an account's details with an account_no
+            get an account's details with an account_id
         """
+        print(account_id)
         pass
 
-    @authorize
-    @jwt_required()
-    def put(self, account_no):
+    def put(self, account_id):
         """
-            updates an account's details with an account_no
+            updates an account's details with an account_id
         """
         pass
     
-    @jwt_required()
-    def delete(self, account_no):
+    def delete(self, account_id):
         """
-            deletes an account with an account_no
+            deletes an account with an account_id
         """
         pass
