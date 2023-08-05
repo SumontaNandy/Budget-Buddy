@@ -3,10 +3,9 @@ from flask_restx import fields
 from werkzeug.exceptions import Conflict, BadRequest
 from werkzeug.security import generate_password_hash, check_password_hash
 from http import HTTPStatus
-from flask_jwt_extended import create_access_token, create_refresh_token,jwt_required, get_jwt_identity
+from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity
 import uuid
 
-from ... import db
 from .models import User
 
 def extract_user_data(data):
@@ -63,7 +62,7 @@ def extract_user_data(data):
 def create_new_user_controller(data):
     try:
         id = str(uuid.uuid4())
-        data = extract_user_data(data)
+        data = extract_user_data(data)    
         new_user = User(
             id = id,
             email       = data.get('email'),
@@ -98,6 +97,7 @@ def create_new_user_controller(data):
             dob         = data.get('dob'),      
             img         = data.get('img')
         )
+
         new_user.add()
 
         return HTTPStatus.CREATED
@@ -122,4 +122,4 @@ def user_login_controller(data):
 
         return tokens, HTTPStatus.OK
     
-    raise BadRequest("Invalid Username or password")
+    raise BadRequest("Invalid Username or Password")

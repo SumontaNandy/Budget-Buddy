@@ -9,22 +9,6 @@ from .controllers import *
 api = Namespace('spending-plan', description="User's spending-plan related operations")
 
 
-def authorize(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        if not getattr(func, 'authorized', True):
-            return func(*args, **kwargs)
-
-        user_id = get_jwt_identity()
-        acct = spending_plan_authorization_controller(user_id, kwargs[next(iter(kwargs))]) 
-
-        if acct:
-            return func(*args, **kwargs)
-
-        abort(HTTPStatus.UNAUTHORIZED)
-    return wrapper
-
-
 @api.route('/')
 class SpendingPlanCR(Resource):
     @jwt_required()
@@ -44,7 +28,6 @@ class SpendingPlanCR(Resource):
 
 @api.route('/<string:spending_plan_id>')
 class iSpendingPlanRUD(Resource):
-    @authorize
     @jwt_required()
     def get(self, spending_plan_id):
         """
@@ -52,7 +35,6 @@ class iSpendingPlanRUD(Resource):
         """
         pass
     
-    @authorize
     @jwt_required()
     def put(self, spending_plan_id):
         """
@@ -60,7 +42,6 @@ class iSpendingPlanRUD(Resource):
         """
         pass
     
-    @authorize
     @jwt_required()
     def delete(self, spending_plan_id):
         """

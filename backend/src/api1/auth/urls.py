@@ -46,7 +46,7 @@ class SignUp(Resource):
         """
             create a new user
         """
-        data = request.get_json()        
+        data = request.get_json()     
         http_response = create_new_user_controller(data)
 
         return http_response
