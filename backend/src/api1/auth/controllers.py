@@ -63,42 +63,15 @@ def create_new_user_controller(data):
     try:
         id = str(uuid.uuid4())
         data = extract_user_data(data)    
-        new_user = User(
-            id = id,
-            email       = data.get('email'),
-            password    = data.get('password'),
-            user_first_name     = data.get('user_first_name'),
-            user_middle_initial = data.get('user_middle_initial'),
-            user_last_name      = data.get('user_last_name'),
-            spouse_first_name       = data.get('spouse_first_name'),
-            spouse_middle_initial   = data.get('spouse_middle_initial'),
-            spouse_last_name        = data.get('spouse_last_name'),
-            father_first_name       = data.get('father_first_name'),
-            father_middle_initial   = data.get('father_middle_initial'),
-            father_last_name        = data.get('father_last_name'),
-            mother_first_name       = data.get('mother_first_name'),
-            mother_middle_initial   = data.get('mother_middle_initial'),
-            mother_last_name        = data.get('mother_last_name'),
-            permanent_address_village_house     = data.get('permanent_address_village_house'),
-            permanent_address_road_block_sector = data.get('permanent_address_road_block_sector'),
-            permanent_address_police_station    = data.get('permanent_address_police_station'),
-            permanent_address_post_office       = data.get('permanent_address_post_office'),
-            permanent_address_post_code         = data.get('permanent_address_post_code'),
-            permanent_address_district          = data.get('permanent_address_district'),
-            present_address_village_house       = data.get('present_address_village_house'),
-            present_address_road_block_sector   = data.get('present_address_road_block_sector'),
-            present_address_police_station      = data.get('present_address_police_station'),
-            present_address_post_office         = data.get('present_address_post_office'),
-            present_address_post_code           = data.get('present_address_post_code'),
-            present_address_district            = data.get('present_address_district'),
-            contact_no  = data.get('contact_no'),
-            nid         = data.get('nid'),
-            tin         = data.get('tin'),
-            dob         = data.get('dob'),      
-            img         = data.get('img')
-        )
-
+        
+        new_user = User(id=id, email=data.get("email"), password=data.get("password"))
         new_user.add()
+
+        new_user = User.get_by_id(id)
+        for key in data.keys():
+            setattr(new_user, key, data[key])
+
+        new_user.save()
 
         return HTTPStatus.CREATED
     except Exception as e:
