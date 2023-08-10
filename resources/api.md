@@ -23,15 +23,15 @@ Fig.: 3-Tier Client Server Architecture -->
 
 | API Endpoint              | HTTP Method | Response Code |
 | ------------------------- | :---------: | :-----------: |
-| [budgetbuddy.com/login]() |   `POST`    |      200      |
+| [/api/1/user/auth/login]() |   `POST`    |      200      |
 |                           |             |               |
 
 ##### Request Body
 
 ```json
 {
-  "username": "user",
-  "password": "pass"
+  "email": "string",
+  "password": "string"
 }
 ```
 
@@ -39,7 +39,8 @@ Fig.: 3-Tier Client Server Architecture -->
 
 ```json
 {
-  "token": "string"
+    "access_token": "abc",
+    "refresh_token": "abc"
 }
 ```
 
@@ -61,6 +62,77 @@ Fig.: 3-Tier Client Server Architecture -->
 ```json
 
 ```
+## Account-Types
+
+### `GET` Get all Account-Types Available
+
+| API Endpoint             | HTTP Method | Response Code |
+| ------------------------ | :---------: | :-----------: |
+| [api/1/user/account-types]() |   `GET`    |      200      |
+|                          |             |               |
+
+##### Request Body
+
+```json
+```
+
+##### Response Body
+
+```json
+[
+  {
+    "id": "string",
+    "name": "string"
+  }
+]
+```
+
+### `GET` Get accounts of a type
+
+| API Endpoint             | HTTP Method | Response Code |
+| ------------------------ | :---------: | :-----------: |
+| [api/1/user/account-types/{account_type_id}]() |   `GET`    |      200      |
+|                          |             |               |
+
+##### Request Body
+
+```json
+```
+
+##### Response Body
+
+```json
+{
+  "parent": [
+    {
+      "id": "string",
+      "name": "string"
+    }
+  ],
+  "child": [
+    {
+      "id": "string",
+      "name": "string"
+    }
+  ],
+  "accounts": [
+    {
+      "account_id": "string",
+      "account_no": "string",
+      "account_name": "string",
+      "balance": 0,
+      "date": "2023-08-10T19:35:08.735Z",
+      "account_type_name": "string",
+      "segment_list": [
+        {
+          "segment_name": "string",
+          "amount": 0
+        }
+      ]
+    }
+  ]
+}
+```
 
 ## Accounts
 
@@ -68,18 +140,25 @@ Fig.: 3-Tier Client Server Architecture -->
 
 | API Endpoint             | HTTP Method | Response Code |
 | ------------------------ | :---------: | :-----------: |
-| [api/user/account/add]() |   `POST`    |      201      |
+| [api/user/account/]() |   `POST`    |      201      |
 |                          |             |               |
 
 ##### Request Body
 
 ```json
 {
-  "account_name": "cash",
-  "account_type": "other banking",
-  "bank_name": "",
-  "balance": 100,
-  "date": "15/10/2020"
+  "account_id": "string",
+  "account_no": "string",
+  "account_name": "string",
+  "balance": 0,
+  "date": "2023-08-10T19:05:09.249Z",
+  "account_type_name": "string",
+  "segment_list": [
+    {
+      "segment_name": "string",
+      "amount": 0
+    }
+  ]
 }
 ```
 
@@ -95,18 +174,25 @@ Fig.: 3-Tier Client Server Architecture -->
 
 | API Endpoint                               | HTTP Method | Response Code |
 | ------------------------------------------ | :---------: | :-----------: |
-| [api/user/account/update/{account_name}]() |    `PUT`    |      200      |
+| [api/user/account/{account_id}]() |    `PUT`    |      200      |
 |                                            |             |               |
 
 ##### Request Body
 
 ```json
 {
-  "account_name": "cash",
-  "account_type": "other banking",
-  "bank_name": "",
-  "balance": 100,
-  "date": "15/10/2020"
+  "account_id": "string",
+  "account_no": "string",
+  "account_name": "string",
+  "balance": 0,
+  "date": "2023-08-10T19:21:58.977Z",
+  "account_type_name": "string",
+  "segment_list": [
+    {
+      "segment_name": "string",
+      "amount": 0
+    }
+  ]
 }
 ```
 
@@ -122,15 +208,12 @@ Fig.: 3-Tier Client Server Architecture -->
 
 | API Endpoint                               | HTTP Method | Response Code |
 | ------------------------------------------ | :---------: | :-----------: |
-| [api/user/account/delete/{account_name}]() |  `DELETE`   |      200      |
+| [api/user/account/{account_id}]() |  `DELETE`   |      200      |
 |                                            |             |               |
 
 ##### Request Body
 
 ```json
-{
-  "account_name": "cash"
-}
 ```
 
 ##### Response Body
@@ -145,7 +228,7 @@ Fig.: 3-Tier Client Server Architecture -->
 
 | API Endpoint          | HTTP Method | Response Code |
 | --------------------- | :---------: | :-----------: |
-| [api/user/accounts]() |    `GET`    |      200      |
+| [api/user/account/{account_id}]() |    `GET`    |      200      |
 |                       |             |               |
 
 ##### Request Body
@@ -158,24 +241,16 @@ Fig.: 3-Tier Client Server Architecture -->
 
 ```json
 {
-  "account_categories": [
+  "account_id": "string",
+  "account_no": "string",
+  "account_name": "string",
+  "balance": 0,
+  "date": "2023-08-10T19:39:18.335Z",
+  "account_type_name": "string",
+  "segment_list": [
     {
-      "category_name": "cash-check",
-      "accounts": [
-        {
-          "acc_name": "ICCU checking",
-          "balance": [
-            {
-              "type": "saving goals",
-              "amount": 100
-            },
-            {
-              "type": "available",
-              "amount": 50
-            }
-          ]
-        }
-      ]
+      "segment_name": "string",
+      "amount": 0
     }
   ]
 }
