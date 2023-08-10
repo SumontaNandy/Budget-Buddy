@@ -30,7 +30,7 @@ class AccountTypeR(Resource):
     @jwt_required()
     def get(self):
         """
-            get all account-types available [level 1]
+            get all account-types available
         """
         filters = request.args
         data, http_response = get_account_types_controller(filters) 
