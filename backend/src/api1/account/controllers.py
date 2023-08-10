@@ -1,6 +1,6 @@
 from flask import request, jsonify, redirect
 from flask_restx import fields
-from werkzeug.exceptions import Conflict, BadRequest
+from werkzeug.exceptions import Conflict, NotFound
 from werkzeug.security import generate_password_hash, check_password_hash
 from http import HTTPStatus
 from flask_jwt_extended import create_access_token, create_refresh_token,jwt_required, get_jwt_identity
@@ -22,11 +22,11 @@ def create_balance_segment_object(name, amount, acc_id):
 
 
 def create_balance_segment_controller(account_id, curr_balance):
-        new_balance_segment = create_balance_segment_object('available_balance', curr_balance, account_id)
-        new_balance_segment.add()
+    new_balance_segment = create_balance_segment_object('available_balance', curr_balance, account_id)
+    new_balance_segment.add()
 
-        new_balance_segment = create_balance_segment_object('saving_goals', 0, account_id)
-        new_balance_segment.add()
+    new_balance_segment = create_balance_segment_object('saving_goals', 0, account_id)
+    new_balance_segment.add()
 
 
 def create_account_controller(user_id, data):
@@ -75,3 +75,18 @@ def update_account_controller(account_id, data):
     account.save()
 
     return get_account_controller(account_id)
+
+
+def delete_account_controller(account_id):
+    try:
+        account = Account.get_by_id(account_id)
+        segments = BalanceSegment.query.filter_by(account=account_id).all()
+
+        for segment in segments:
+            segment.delete()
+
+        account.delete()
+
+        return HTTPStatus.OK
+    except Exception as e:
+        raise NotFound("Cannot delete the account")

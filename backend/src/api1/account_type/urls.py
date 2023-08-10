@@ -32,7 +32,8 @@ class AccountTypeR(Resource):
         """
             get all account-types available [level 1]
         """
-        data, http_response = get_account_types_controller() 
+        filters = request.args
+        data, http_response = get_account_types_controller(filters) 
 
         return data, http_response
 

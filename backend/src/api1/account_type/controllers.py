@@ -12,15 +12,15 @@ from ..auth.models import User
 from ..account.models import Account, BalanceSegment
 
 
-def get_account_types_controller():
-    root = AccountType.query.filter_by(parent_id=None).first()
+def get_account_types_controller(filters):
+    root = AccountType.query.filter_by(parent_id=None).first().id
 
-    types1 = AccountType.query.filter_by(parent_id=root.id).all()
-    types1 = [x.toDict() for x in types1]
-    for i in range(len(types1)):
-        types1[i].pop('parent_id')
+    if filters.get('id') is not None:
+        root = filters.get('id')
 
-    return types1, HTTPStatus.OK
+    child = get_children_util(root)
+
+    return child, HTTPStatus.OK
 
 
 def get_ancestors_util(account_type_id):

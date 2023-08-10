@@ -75,4 +75,6 @@ class iAccountRUD(Resource):
         """
             deletes an account with an account_id
         """
-        pass
+        http_response = delete_account_controller(account_id)
+
+        return http_response
