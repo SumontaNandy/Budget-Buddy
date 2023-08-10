@@ -2,6 +2,7 @@ from flask import Blueprint
 from flask_restx import Api
 
 from .auth.urls import api as ns_auth
+from .account_type.urls import api as ns_account_type
 from .account.urls import api as ns_account
 from .transaction.urls import api as ns_transaction
 from .spending_plan.urls import api as ns_spending_plan
@@ -26,6 +27,7 @@ api = Api(blueprint,
           doc='/docs')
 
 api.add_namespace(ns_auth, path='/auth')
+api.add_namespace(ns_account_type, path='/account-types')
 api.add_namespace(ns_account, path='/account')
 api.add_namespace(ns_transaction, path='/transaction')
 api.add_namespace(ns_spending_plan, path='/spending-plan')
