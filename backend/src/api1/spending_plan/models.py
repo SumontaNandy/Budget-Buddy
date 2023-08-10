@@ -1,93 +1,132 @@
-# from sqlalchemy import inspect
-# from datetime import datetime
-# from flask_validator import ValidateNumeric
-# from sqlalchemy.orm import validates
+from sqlalchemy import inspect
+from datetime import datetime
+from flask_validator import ValidateNumeric
+from sqlalchemy.orm import validates
+import enum
 
-# from ... import db
-# from ..auth.models import User
+from ... import db
+from ..auth.models import User
 
-# class SpendingPlan(db.Model):
-#     __table_args__ = (
-#         db.CheckConstraint('amount >= 0'),
-#     )
-#     id = db.Column(db.String(100), primary_key=True, nullable=False, unique=True)
-#     name = db.Column(db.String(120))
-#     category = db.Column(db.String(120))
-#     amount = db.Column(db.Numeric(), nullable=False)
-#     creation_time = db.Column(db.DateTime(timezone=True), default=datetime.now)
+class SpendingPlan(db.Model):
+    __table_args__ = (
+        db.CheckConstraint('amount >= 0'),
+    )
+    id = db.Column(db.String(100), primary_key=True, nullable=False, unique=True)
+    name = db.Column(db.String(120))
+    category = db.Column(db.String(120))
+    amount = db.Column(db.Numeric(), nullable=False)
+    creation_time = db.Column(db.DateTime(timezone=True), default=datetime.now)
 
-#     user = db.Column(db.String, db.ForeignKey('user.id'), nullable=False)
+    user = db.Column(db.String, db.ForeignKey('user.id'), nullable=False)
 
-#     user_id = db.Relationship('User', foreign_keys=[user])
+    user_id = db.Relationship('User', foreign_keys=[user])
 
-#     def add(self):
-#         db.session.add(self)
-#         db.session.commit()
+    def add(self):
+        db.session.add(self)
+        db.session.commit()
 
-#     def save(self):
-#         db.session.commit()
+    def save(self):
+        db.session.commit()
 
-#     def delete(self):
-#         db.session.delete(self)
-#         db.session.commit()
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
 
-#     def __repr__(self):
-#         return f'<SpendingPlan {self.id} {self.account_name}>'
+    def __repr__(self):
+        return f'<SpendingPlan {self.id} {self.account_name}>'
     
-#     def toDict(self):
-#         data = { c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs }
-#         return data
+    def toDict(self):
+        data = { c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs }
+        return data
     
-#     # Validations
-#     @classmethod
-#     def __declare_last__(cls):
-#         ValidateNumeric(SpendingPlan.amount, False, True, "Amount is not valid")
+    # Validations
+    @classmethod
+    def __declare_last__(cls):
+        ValidateNumeric(SpendingPlan.amount, False, True, "Amount is not valid")
 
-#     @classmethod
-#     def get_by_id(cls, id):
-#         return cls.query.get_or_404(id)
+    @classmethod
+    def get_by_id(cls, id):
+        return cls.query.get_or_404(id)
     
-#     @classmethod
-#     def get_owner(cls, id):
-#         ob = cls.query.get_or_404(id)
-#         return ob.user
+    @classmethod
+    def get_owner(cls, id):
+        ob = cls.query.get_or_404(id)
+        return ob.user
 
 
-# class BalanceSegment(db.Model):
-#     __table_args__ = (
-#         db.CheckConstraint('amount >= 0'),
-#     )
-#     id = db.Column(db.String(100), primary_key=True, nullable=False, unique=True)
-#     segment_name = db.Column(db.String(100), nullable=False)
-#     amount = db.Column(db.Numeric(), nullable=False)
-#     last_edit_time = db.Column(db.DateTime(timezone=True), default=datetime.now)
+class RecurrentType(enum.Enum):
+    BILL = 'Bill'
+    SUBSCRIPTION = 'Subscription'
 
-#     account = db.Column(db.String, db.ForeignKey('account.id'), nullable=False)
-#     account_id = db.Relationship('Account', foreign_keys=[account])
 
-#     def add(self):
-#         db.session.add(self)
-#         db.session.commit()
+class RecurrentFreq(enum.Enum):
+    WEEKLY = 'Weekly'
+    BI_WEEKLY = 'Bi-Weekly'
+    TWICE_A_MONTH = 'Twice a Month'
+    MONTHLY = 'Monthly'
+    MONTHS2 = 'Every 2 Months'
+    QUARTERLY = "Quarterly"
+    MONTHS6 = 'Every 6 Months'
+    YEARLY = 'Yearly'   
 
-#     def save(self):
-#         db.session.commit()
 
-#     def delete(self):
-#         db.session.delete(self)
-#         db.session.commit()
+class RecurrentExpense(db.Model):
+    id = db.Column(db.String(100), db.ForeignKey('spending_plan.id'), primary_key=True, nullable=False, unique=True)
+    next_date = db.Column(db.DateTime(timezone=True), default=datetime.now)
+    end_date = db.Column(db.Date)
+    frequency = db.Column(db.Enum(RecurrentFreq), nullable=False)
+    type = db.Column(db.Enum(RecurrentType), nullable=False)
 
-#     def __repr__(self):
-#         return f"<BalanceSegment {self.id}>"
+    spending_plan_id = db.Relationship('SpendingPlan', foreign_keys=[id])
+
+    def add(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def save(self):
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+    def __repr__(self):
+        return f"<RecurrentExpense {self.id}>"
     
-#     @classmethod
-#     def get_by_id(cls, id):
-#         return cls.query.get_or_404(id)
+    @classmethod
+    def get_by_id(cls, id):
+        return cls.query.get_or_404(id)
     
-#     def toDict(self):
-#         info = { c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs}
+    def toDict(self):
+        data = { c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs}
 
-#         data = {}
-#         data['segment_name'] = info['segment_name']
-#         data['amount'] = info['amount']
+        return data
+    
 
-#         return data
+class OneTimeExpense(db.Model):
+    id = db.Column(db.String(100), db.ForeignKey('spending_plan.id'), primary_key=True, nullable=False, unique=True)
+
+    spending_plan_id = db.Relationship('SpendingPlan', foreign_keys=[id])
+
+    def add(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def save(self):
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+    def __repr__(self):
+        return f"<OneTimeExpense {self.id}>"
+    
+    @classmethod
+    def get_by_id(cls, id):
+        return cls.query.get_or_404(id)
+    
+    def toDict(self):
+        data = { c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs}
+
+        return data
