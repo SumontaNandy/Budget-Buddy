@@ -33,7 +33,7 @@ class SpendingPlan(db.Model):
         db.session.commit()
 
     def __repr__(self):
-        return f'<SpendingPlan {self.id} {self.account_name}>'
+        return f'<SpendingPlan {self.id} {self.name}>'
     
     def toDict(self):
         data = { c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs }

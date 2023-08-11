@@ -47,7 +47,7 @@ def create_account_controller(user_id, data):
 
         return HTTPStatus.CREATED
     except Exception as e:
-        raise Conflict(f"balance must be non-negative")
+        raise Conflict(f"Balance must be non-negative")
 
 
 def get_account_controller(account_id):
