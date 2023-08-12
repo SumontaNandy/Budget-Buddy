@@ -34,7 +34,7 @@ export const Login = () => {
     const handleLogin = async () => {
 
         try {
-            const res = await fetch("http://localhost:5000/api/1/user/auth/login", {
+            const res = await fetch("http://127.0.0.1:5000/api/1/user/auth/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -52,7 +52,8 @@ export const Login = () => {
                 Cookies.set('access_token', access_token);
                 Cookies.set('refresh_token', refresh_token);
 
-                history.push("/home");
+                setErrorMessage("Login Successful!");
+                //history.push("/home");
             }
             else {
                 setErrorMessage("Invalid Credentials!");
@@ -72,9 +73,9 @@ export const Login = () => {
         const access_token = Cookies.get('access_token');
         const refresh_token = Cookies.get('refresh_token');
 
-        if (access_token && refresh_token) {
-            history.push("/home");
-        }
+        // if (access_token && refresh_token) {
+        //     history.push("/home");
+        // }
     }
 
     const submit = (e) => {
@@ -112,7 +113,7 @@ export const Login = () => {
                                 <button type="submit" className="btn btn-outline-primary">Log In</button>
                             </form>
                         </div>
-                        <p className="my-3" style={{ color: 'red' }}>{errorMessage}</p>
+                        <p className="my-3" style={{ color: 'white' }}>{errorMessage}</p>
                     </div>
                 </div>
             </div>
