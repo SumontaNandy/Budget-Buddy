@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from "react-router-dom";
+//import { Link } from "react-router-dom";
 
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Typography from '@mui/material/Typography';
@@ -7,10 +7,12 @@ import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
-import Link as MuiLink from "@mui/material/Link";
+import Link from "@mui/material/Link";
+import Button from '@mui/material/Button';
 
 import BasicCard from "./Card";
 import Data from './Data';
+import AddAccount from './AddAccount';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -54,7 +56,7 @@ export default function AccountTypes() {
   breadcrumbs.push(<Typography key={parent[parent.length-1].id} color="text.primary">{parent[parent.length-1].name}</Typography>)
 
   return (
-    <div>
+    <div style={{margin:15}}>
       <Breadcrumbs m={1} separator="›" aria-label="breadcrumb">
         {breadcrumbs}
       </Breadcrumbs>
@@ -65,7 +67,7 @@ export default function AccountTypes() {
           { child.map(cell => {
             return (
               <Grid item xs={3}>
-                <Link to="/contact">
+                <Link href="/contact">
                   <Item>
                     {cell.name}
                   </Item>
@@ -92,6 +94,8 @@ export default function AccountTypes() {
           }) }
         </Grid>
       </Box>
+
+      <AddAccount />
     </div>
   );
 }
