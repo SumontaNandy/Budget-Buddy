@@ -26,7 +26,6 @@ const Item = styled(Paper)(({ theme }) => ({
 const { parent, child, accounts } = Data;
 
 function handleClick(event) {
-  event.preventDefault();
   console.info('You clicked a breadcrumb.');
 }
 
@@ -62,7 +61,7 @@ export default function AccountTypes() {
       </Breadcrumbs>
 
       <Box m={1.5} sx={{ flexGrow: 1 }}>
-        <h1> Child Account-Types </h1>
+        <h1> Child Account Types </h1>
         <Grid container spacing={2}>
           { child.map(cell => {
             return (
@@ -95,7 +94,7 @@ export default function AccountTypes() {
         </Grid>
       </Box>
 
-      <AddAccount />
+      {/* <AddAccount /> */}
     </div>
   );
 }

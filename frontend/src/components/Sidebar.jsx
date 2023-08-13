@@ -8,7 +8,7 @@ import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 
 function SidebarMenu() {
-  const { collapseSidebar } = useProSidebar();
+  //const { collapseSidebar } = useProSidebar();
 
   return (
     <div id="app" style={({ height: "100vh" }, { display: "flex" })}>
@@ -17,7 +17,7 @@ function SidebarMenu() {
           <MenuItem
             icon={<MenuOutlinedIcon />}
             onClick={() => {
-              collapseSidebar();
+              //collapseSidebar();
             }}
             style={{ textAlign: "center" }}
           >

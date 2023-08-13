@@ -11,7 +11,6 @@ import BasicCard from "./components/Card";
 import Home from "./components/Home";
 import AppRoutes from "./components/AppRoutes";
 import SidebarMenu from "./components/Sidebar";
-import ResponsiveAppBar from "./components/ResponsiveAppBar";
 
 function App() {
   return (      
