@@ -1,31 +1,20 @@
 import './App.css';
-import Header from './components/Header';
-import { Login } from './components/Login';
-import { Signup } from './components/Signup';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route
-} from "react-router-dom";
+
+import * as React from "react";
+import styled from "@mui/material/styles/styled";
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import Grid from "@mui/material/Grid";
+import { ProSidebarProvider } from "react-pro-sidebar";
+
+import BasicCard from "./components/Card";
+import Home from "./components/Home";
+import AppRoutes from "./components/AppRoutes";
+import SidebarMenu from "./components/Sidebar";
 
 function App() {
-  return (
-    <>
-      <Router>
-        <Switch>
-          <Route exact path="/" render={() => {
-            return (
-              <Login />
-            )
-          }} />
-          <Route exact path="/signup" render={() => {
-            return (
-              <Signup />
-            )
-          }} />
-        </Switch>
-      </Router>
-    </>
+  return (      
+    < AppRoutes />
   );
 }
 
