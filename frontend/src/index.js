@@ -10,14 +10,16 @@ import MiniDrawer from './components/NewBar';
 
 import { StyledEngineProvider } from '@mui/material/styles';
 import { ThemeProvider } from '@mui/material/styles';
+import AppRoutes from './components/AppRoutes';
+import { Login } from './components/Login';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <StyledEngineProvider injectFirst>
-
-    <MiniDrawer />
-
+    <div>
+        <Login />
+    </div>
     </StyledEngineProvider>
   </React.StrictMode>
 );
