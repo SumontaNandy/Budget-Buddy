@@ -6,20 +6,16 @@ import reportWebVitals from './reportWebVitals';
 
 //import { ProSidebarProvider } from 'react-pro-sidebar';
 //import SidebarMenu from './components/Sidebar';
-import MiniDrawer from './components/NewBar';
+import MiniDrawer from './components/SidebarMenu';
 
 import { StyledEngineProvider } from '@mui/material/styles';
-import { ThemeProvider } from '@mui/material/styles';
 import AppRoutes from './components/AppRoutes';
-import { Login } from './components/Login';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <StyledEngineProvider injectFirst>
-    <div>
-        <Login />
-    </div>
+        <AppRoutes />
     </StyledEngineProvider>
   </React.StrictMode>
 );

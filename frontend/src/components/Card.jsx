@@ -12,7 +12,10 @@ export default function BasicCard(props) {
           { props.name }
         </Typography>
         <Typography variant="h5" component="div">
-          Balance: { props.balance }
+           { props.balance }
+        </Typography>
+        <Typography variant="h5" component="div">
+           { props.spent }
         </Typography>
       </CardContent>
     </Card>

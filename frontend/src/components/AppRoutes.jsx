@@ -7,6 +7,7 @@ import Home from './Home';
 import Contact from './Contact';
 import { Login } from './Login';
 import { Signup } from './Signup';
+import SidebarMenu from './SidebarMenu';
 
 export default function AppRoutes()
 {
@@ -15,7 +16,7 @@ export default function AppRoutes()
             <Switch>
                 <Route path="/" exact component={Login} />
                 <Route path="/account-types" component={AccountTypes} />
-                <Route path="/home" component={Home} />
+                <Route path="/home" component={SidebarMenu} />
                 <Route path="/contact" component={Contact} />
                 <Route path="/signup" component={Signup} />
             </Switch>
