@@ -22,6 +22,8 @@ pip install -r requirements.txt
 
 * go to src folder
 
+* create a .env file [see .env_sample]
+
 * run the flask app
 ```python
 flask run
