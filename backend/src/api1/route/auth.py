@@ -1,16 +1,25 @@
-from flask import request
+from flask import request, jsonify
 from flask_restx import Namespace, Resource
-from flask_rest_serializer import serialize_with_schemas
 from ..schema.user import signup_serializer, login_serializer, UserSchema
+
+from ..utils.expect import expect
+from ..utils.serialize import serialize
+from ..utils.authorize import authorize
+
+from ..service.auth import *
 
 api = Namespace('auth', description='user authentication Related operations')
 
+
 @api.route('/signup')
 class SignUp(Resource):
-    @serialize_with_schemas(request_schema=signup_serializer)
+    @expect(signup_serializer)
     def post(self):
-        print(api.payload)
-        return {
-            "email": "hi",
-            "password": "123"
-        }
+        """
+            create a new user
+        """
+        data = api.payload
+
+        http_response = create_new_user_controller(data=data)
+
+        return http_response

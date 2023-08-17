@@ -15,7 +15,8 @@ class AddressSchema(Schema):
     district = fields.Str()
 
 class UserSchema(Schema):
-    email = fields.String(required=True)
+    id = fields.Str(dump_only=True)
+    email = fields.Str(required=True)
     password = fields.Str(required=True)
     user = fields.Nested(NameSchema)
     spouse = fields.Nested(NameSchema)
@@ -31,4 +32,5 @@ class UserSchema(Schema):
 
 
 signup_serializer = UserSchema(only=("email", "password"))
-login_serializer = UserSchema(only=("email", "password"))
+# login_serializer = UserSchema(only=("email", "password"))
+login_serializer = UserSchema(only=("email",))

@@ -1,5 +1,5 @@
 from flask import Blueprint
-from flask_restx import Api
+from flask_restx import Api, Namespace
 
 from .route.auth import api as ns_auth
 
