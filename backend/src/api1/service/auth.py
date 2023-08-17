@@ -33,11 +33,7 @@ def user_login_controller(data):
     email = data.get('email')
     password = data.get('password')
 
-    print(data)
-
     user = User.query.filter_by(email=email).first()
-
-    print(user.id)
 
     if (user is not None) and check_password_hash(user.password, password):
         

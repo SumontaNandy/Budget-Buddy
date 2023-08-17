@@ -3,10 +3,11 @@ import os
 from flask_script import Manager
 from flask_migrate import MigrateCommand
 
-from __init__ import create_app
+from __init__ import create_app, db
 from api1 import blueprint as bp
 
 app = create_app(os.getenv("CONFIG_MODE"))
+app.app_context().push()
 
 app.register_blueprint(bp)
 
