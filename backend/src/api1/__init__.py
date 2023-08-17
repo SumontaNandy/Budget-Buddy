@@ -1,6 +1,8 @@
 from flask import Blueprint
 from flask_restx import Api
 
+from .route.auth import api as ns_auth
+
 blueprint = Blueprint('api1', __name__, url_prefix='/api/1/user')
 
 authorizations = {
@@ -17,3 +19,6 @@ api = Api(blueprint,
           authorizations=authorizations,
           security='Bearer Auth',
           doc='/docs')
+
+
+api.add_namespace(ns_auth, path='/auth')

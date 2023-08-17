@@ -26,12 +26,9 @@ pip install -r requirements.txt
 
 * run the flask app
 ```python
-flask run
+python manage.py runserver
 ```
-run the flask app with dubug mode on
-```python
-flask run --debug
-```
+
 ***Note: AttributeError: '_FakeStack' object has no attribute '__ident_func__'*** 
 ```python
 python -m pip uninstall flask-sqlalchemy
@@ -40,9 +37,12 @@ python -m pip install flask-sqlalchemy
 
 * migrate the new database models
 ```python
-flask db init
-flask db migrate
-flask db upgrade
+# flask db init
+# flask db migrate
+# flask db upgrade
+python manage.py db init
+python manage.py db migrate
+python manage.py db upgrade
 ```
 
 ## Database Configuration
