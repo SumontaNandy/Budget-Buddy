@@ -32,5 +32,4 @@ class UserSchema(Schema):
 
 
 signup_serializer = UserSchema(only=("email", "password"))
-# login_serializer = UserSchema(only=("email", "password"))
-login_serializer = UserSchema(only=("email",))
+login_serializer = UserSchema(only=("email", "password"))
