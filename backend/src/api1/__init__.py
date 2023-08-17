@@ -1,8 +1,9 @@
 from flask import Blueprint
-from flask_restx import Api, Namespace
+from flask_restx import Api
 
 from .route.auth import api as ns_auth
 from .route.account_type import api as ns_account_type
+from .route.account import api as ns_account
 
 blueprint = Blueprint('api1', __name__, url_prefix='/api/1/user')
 
@@ -24,3 +25,4 @@ api = Api(blueprint,
 
 api.add_namespace(ns_auth, path='/auth')
 api.add_namespace(ns_account_type, path='/account-types')
+api.add_namespace(ns_account, path='/account')
