@@ -35,6 +35,15 @@ python -m pip uninstall flask-sqlalchemy
 python -m pip install flask-sqlalchemy
 ```
 
+* create database models, e.g.:
+```python
+python
+from manage import db
+from api1.model.account import Account # import all models
+db.create_all()
+exit()
+```
+
 * migrate the new database models
 ```python
 # flask db init
