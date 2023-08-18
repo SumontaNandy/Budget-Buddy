@@ -36,7 +36,6 @@ class iAccountRUD(Resource):
         """
             get an account's details with an account_id
         """
-        # data, http_response = get_account_controller(account_id)
         data, http_response = AccountUtil().get_account(account_id)
 
         return account_op_serializer.dump(data), http_response

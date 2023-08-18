@@ -62,17 +62,19 @@ class AccountUtil:
 
 
         if data.get("balance") is not None:
+            seg = BalanceSegmentUtil().get_balance_segment(acc_id)
             if data.get('action') == 'add':
                 BalanceSegmentUtil().add_balance(acc_id, {"available_balance": data.get('balance')})
             else:
-                seg = BalanceSegmentUtil().get_balance_segment(acc_id)
                 if float(seg.get('saving_goals')) > float(data.get('balance')):
                     raise BadRequest(f"balance must be greater than total savings amount")
                 else:
                     amount = float(data.get('balance')) - float(seg.get('saving_goals'))
                     BalanceSegmentUtil().update_balance(acc_id, {'available_balance': amount})
 
-                account.balance = data.get('balance')
-                account.save()
+            seg = BalanceSegmentUtil().get_balance_segment(acc_id)
+            amount = seg['available_balance'] + seg['saving_goals']
+            account.balance = amount
+            account.save()
 
         return self.get_account(acc_id)
