@@ -34,7 +34,7 @@ class BalanceSegment(db.Model):
         return cls.query.get_or_404(id)
     
     def toDict(self):
-        info = { c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs}
+        info = { c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs }
 
         data = {}
         data['segment_name'] = info['segment_name']

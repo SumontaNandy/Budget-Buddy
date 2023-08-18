@@ -21,8 +21,8 @@ class AccountTypeR(Resource):
             get all account-types available
         """
         filters = request.args
-        data, http_response = get_account_types_controller(filters) 
-
+        data, http_response = AccountTypeUtil().get_account_types(filters=filters)
+        
         return account_type_serializer.dump(data), http_response
     
 
@@ -34,6 +34,6 @@ class iAccountTypeR(Resource):
             get accounts of a type
         """
         user_id = get_jwt_identity()
-        data, http_response = get_accounts_of_a_type_controller(user_id, account_type_id)
-        
+        data, http_response = AccountTypeUtil(account_type_id).get_accounts_tree(user_id=user_id)
+       
         return account_type_tree_serializer.dump(data), http_response

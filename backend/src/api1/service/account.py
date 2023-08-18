@@ -1,4 +1,4 @@
-from werkzeug.exceptions import Conflict, NotFound
+from werkzeug.exceptions import BadRequest, NotFound
 from http import HTTPStatus
 import uuid
 from datetime import datetime
@@ -8,84 +8,71 @@ from ..model.account_type import AccountType
 from ..model.balance_segment import BalanceSegment
 from ..model.user import User
 
-def create_balance_segment_object(name, amount, acc_id):
-    return BalanceSegment(
-         id = str(uuid.uuid4()),
-         segment_name = name,
-         amount = amount,
-         last_edit_time = datetime.now(),
-         account_id = Account.get_by_id(acc_id)
-    )
+from ..service.balance_segment import BalanceSegmentUtil
 
 
-def create_balance_segment_controller(account_id, curr_balance):
-    new_balance_segment = create_balance_segment_object('available_balance', curr_balance, account_id)
-    new_balance_segment.add()
+class AccountUtil:
+    """
+        Handles account related operations
+    """
+    def create_account(self, user_id, data):
+        try:
+            id = str(uuid.uuid4())
+            new_account = Account(
+                id = id,
+                balance = data.get('balance'),
+                user_id = User.get_by_id(user_id),
+                account_type_id = AccountType.get_by_id(data.get('account_type_id'))
+            )
+            new_account.add()
 
-    new_balance_segment = create_balance_segment_object('saving_goals', 0, account_id)
-    new_balance_segment.add()
+            new_account = Account.get_by_id(id)
+            for attr in new_account.toDict().keys():
+                if attr in data:
+                    setattr(new_account, attr, data[attr])
+            new_account.save()
 
+            BalanceSegmentUtil().create_balance_segment(id, data.get('balance'))
 
-def create_account_controller(user_id, data):
-    try:
-        id = str(uuid.uuid4())
-        new_account = Account(
-            id = id,
-            account_no = data.get('account_no'),
-            account_name = data.get('account_name'),
-            balance = data.get('balance'),
-            date = data.get('date'),
-            user_id = User.get_by_id(user_id),
-            account_type_id = AccountType.get_by_id(data.get('account_type_id'))
-        )
-        new_account.add()
+            return HTTPStatus.CREATED
+        except Exception as e:
+            raise BadRequest(str(e))
+        
+    def get_account(self, acc_id):
+        acc = Account.get_by_id(acc_id).toDict()
+        segment = BalanceSegment.query.filter_by(account=acc_id).all()
 
-        create_balance_segment_controller(id, data.get('balance'))
+        segment = [ob.toDict() for ob in segment]
 
-        return HTTPStatus.CREATED
-    except Exception as e:
-        raise Conflict(f"Balance must be non-negative")
+        acc['segment_list'] = segment
+        acc['account_type_name'] = AccountType.get_name_by_id(acc['account_type'])
 
+        return acc, HTTPStatus.OK
 
-def get_account_controller(account_id):
-    accout_details = Account.get_by_id(account_id).toDict()
-    segment_details = BalanceSegment.query.filter_by(account=account_id).all()
+    def update_account(self, acc_id, data):
+        account = Account.get_by_id(acc_id)
 
-    segment_details = [ob.toDict() for ob in segment_details]
-    accout_details['segment_list'] = segment_details
-    accout_details['account_type_name'] = AccountType.get_name_by_id(accout_details['account_type'])
-    
-    return accout_details, HTTPStatus.OK
-
-
-def update_account_controller(account_id, data):
-    account = Account.get_by_id(account_id)
-
-    if data['account_type_id'] is not None:
-        data['account_type_id'] = AccountType.get_by_id(data.get('account_type_id'))
+        if data['account_type_id'] is not None:
+            data['account_type_id'] = AccountType.get_by_id(data.get('account_type_id'))
          
-    for key in data.keys():
-        setattr(account, key, data[key])
-
-    account.save()
-
-    '''
-        need to update segments also
-    '''
-
-    return get_account_controller(account_id)
+        for attr in account.toDict().keys():
+            if attr in data:
+                setattr(account, attr, data[attr])
+            account.save()
 
 
-def delete_account_controller(account_id):
-    try:
-        account = Account.get_by_id(account_id)
-        segments = BalanceSegment.query.filter_by(account=account_id).all()
+        if data.get("balance") is not None:
+            if data.get('action') == 'add':
+                BalanceSegmentUtil().add_balance(acc_id, {"available_balance": data.get('balance')})
+            else:
+                seg = BalanceSegmentUtil().get_balance_segment(acc_id)
+                if float(seg.get('saving_goals')) > float(data.get('balance')):
+                    raise BadRequest(f"balance must be greater than total savings amount")
+                else:
+                    amount = float(data.get('balance')) - float(seg.get('saving_goals'))
+                    BalanceSegmentUtil().update_balance(acc_id, {'available_balance': amount})
 
-        for segment in segments:
-            segment.delete()
+                account.balance = data.get('balance')
+                account.save()
 
-        account.delete()
-
-        return HTTPStatus.OK
-    except Exception as e:
-        raise NotFound("Cannot delete the account")
+        return self.get_account(acc_id)

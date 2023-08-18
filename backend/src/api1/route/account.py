@@ -23,12 +23,12 @@ class AccountCR(Resource):
         user_id = get_jwt_identity()
         data = api.payload
 
-        http_response = create_account_controller(user_id, data)
+        http_response = AccountUtil().create_account(user_id, data)
 
         return http_response
     
 
-@api.route('/<string:account_id>')
+@api.route('/<account_id>')
 class iAccountRUD(Resource):
     method_decorators = [authorize(Account), jwt_required()]
 
@@ -36,7 +36,8 @@ class iAccountRUD(Resource):
         """
             get an account's details with an account_id
         """
-        data, http_response = get_account_controller(account_id)
+        # data, http_response = get_account_controller(account_id)
+        data, http_response = AccountUtil().get_account(account_id)
 
         return account_op_serializer.dump(data), http_response
 
@@ -46,7 +47,7 @@ class iAccountRUD(Resource):
             updates an account's details with an account_id
         """
         data = api.payload
-        data, http_response = update_account_controller(account_id, data)
+        data, http_response = AccountUtil().update_account(account_id, data)
 
         return account_op_serializer.dump(data), http_response
     

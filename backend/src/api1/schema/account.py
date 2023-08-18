@@ -7,6 +7,7 @@ class AccountSchema(Schema):
     account_id = fields.String(attribute='id', dump_only=True)
     account_no = fields.String()
     account_name = fields.String()
+    action = fields.String(load_only=True)
     balance = fields.Float(required=True)
     date = fields.DateTime()
     account_type_id = fields.String(required=True)

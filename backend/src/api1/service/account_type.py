@@ -1,53 +1,69 @@
+from werkzeug.exceptions import NotFound
 from http import HTTPStatus
 
 from ..model.account_type import AccountType
 from ..model.account import Account
 
 
-def get_account_types_controller(filters):
-    root = AccountType.query.filter_by(parent_id=None).first().id
+class AccountTypeUtil:
+    """
+        Handles Account Type related operations
+    """
+    def __init__(self, node=None):
+        if node is None:
+            query = AccountType.query.filter_by(parent_id=None)
+            self.node = query.first().id
+        else:
+            self.node = node
 
-    if filters.get('id') is not None:
-        root = filters.get('id')
+    def get_account_types(self, filters=None):
+        if filters.get('id') is not None:
+            self.node = filters.get('id')
 
-    child = get_children_util(root)
+        account_types =  self.get_children_account_types()
 
-    return child, HTTPStatus.OK
-
-
-def get_ancestors_util(account_type_id):
-    ob = AccountType.get_by_id(account_type_id)
-
-    if ob.get_parent_id() is None:
-        return [ob.toDict()]
+        return account_types, HTTPStatus.OK
     
-    parent = get_ancestors_util(ob.get_parent_id())
-    parent.append(ob.toDict())
+    def get_children_account_types(self):
+        try:
+            query = AccountType.query.filter_by(parent_id=self.node)
 
-    return parent
+            children = query.all()
+            children = [child.toDict() for child in children]
 
+            return children
+        except Exception as e:
+            raise NotFound(str(e))
+    
+    def get_ancestor_account_types_util(self, id):
+        ob = AccountType.get_by_id(id)
 
-def get_children_util(account_type_id):
-    child = AccountType.query.filter_by(parent_id=account_type_id).all()
+        if ob.get_parent_id() is None:
+            return [ob.toDict()]
+        
+        parent = self.get_ancestor_account_types_util(ob.get_parent_id())
+        parent.append(ob.toDict())
 
-    child = [x.toDict() for x in child]
+        return parent
 
-    return child
+    def get_ancestor_account_types(self):
+        ancestors = self.get_ancestor_account_types_util(self.node)
 
+        return ancestors
+    
+    def get_accounts_of_a_type(self, user_id):
+        query = Account.query.filter_by(account_type=self.node).filter_by(user=user_id)
 
-def get_account_of_a_user_by_type_util(user_id, account_type_id):
-    accounts = Account.query.filter_by(user=user_id, account_type=account_type_id).all()
+        accounts = query.all()
+        accounts = [x.toDict() for x in accounts]
 
-    accounts = [x.toDict() for x in accounts]
+        return accounts
+    
+    def get_accounts_tree(self, user_id):
+        dict = {
+            'parent': self.get_ancestor_account_types(),
+            'child': self.get_children_account_types(),
+            'accounts': self.get_accounts_of_a_type(user_id)
+        }
 
-    return accounts
-
-
-def get_accounts_of_a_type_controller(user_id, account_type_id):
-    dict = {
-        'parent': get_ancestors_util(account_type_id),
-        'child': get_children_util(account_type_id),
-        'accounts': get_account_of_a_user_by_type_util(user_id, account_type_id)
-    }
-
-    return dict, HTTPStatus.OK
+        return dict, HTTPStatus.OK
