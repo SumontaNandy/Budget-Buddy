@@ -1,18 +1,15 @@
 from sqlalchemy import inspect
 from datetime import datetime
-import enum
+from sqlalchemy.dialects.postgresql import ENUM
 
 from __init__ import db
 
-class PaidStatus(enum.Enum):
-    PENDING = 'Pending'
-    PAID = 'Paid'
-
+from .enums import PaidStatus 
 
 class Transaction(db.Model):
     id = db.Column(db.String(100), primary_key=True, nullable=False, unique=True)
     date = db.Column(db.DateTime(timezone=True), default=datetime.now)
-    status = db.Column(db.Enum(PaidStatus))
+    status = db.Column(ENUM(*PaidStatus, create_type=False, name="paid_status"), server_default="PENDING")
     payee = db.Column(db.String(100))
     description = db.Column(db.Text())
     attachment = db.Column(db.Text()) # stores the attachment url

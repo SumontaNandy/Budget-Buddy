@@ -6,6 +6,7 @@ from .route.account_type import api as ns_account_type
 from .route.account import api as ns_account
 from .route.onetime_expense import api as ns_onetime_expense
 from .route.recurrent_expense import api as ns_recurrent_expense
+from .route.transaction import api as ns_transaction
 from .route.watchlist import api as ns_watchlist
 from .route.goal import api as ns_goal
 
@@ -32,5 +33,6 @@ api.add_namespace(ns_account_type, path='/account-types')
 api.add_namespace(ns_account, path='/account')
 api.add_namespace(ns_onetime_expense, path='/spending-plan/one')
 api.add_namespace(ns_recurrent_expense, path='/spending-plan/recur')
+api.add_namespace(ns_transaction, path='/transaction')
 api.add_namespace(ns_watchlist, path='/watchlist')
 api.add_namespace(ns_goal, path='/goal')
