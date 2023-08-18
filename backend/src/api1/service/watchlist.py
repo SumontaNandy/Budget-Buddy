@@ -38,6 +38,7 @@ def create_watchlist_controller(user_id, data):
 
         update_watchlist_controller(id, data)
 
+        return HTTPStatus.CREATED
     except Exception as e:
         raise InternalServerError(str(e))
     
