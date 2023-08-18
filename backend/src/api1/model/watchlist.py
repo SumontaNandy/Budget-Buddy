@@ -1,13 +1,10 @@
 from sqlalchemy import inspect
 from datetime import datetime
-import enum
+from sqlalchemy.dialects.postgresql import ENUM
 
 from __init__ import db
 
-class Type(enum.Enum):
-    TAG = 'Tag'
-    PAYEE = 'Payee'
-    CATEGORY = 'Category'
+from .enums import WatchlistType as WT
 
 
 class Watchlist(db.Model):
@@ -16,7 +13,7 @@ class Watchlist(db.Model):
     )
     id = db.Column(db.String(100), primary_key=True, nullable=False, unique=True)
     name = db.Column(db.String(120))
-    type = db.Column(db.Enum(Type))
+    type = db.Column(ENUM(*WT, create_type=False, name='watchlist_type'), nullable=False)
     target = db.Column(db.Numeric(), default=0)
     creation_date = db.Column(db.DateTime(timezone=True), default=datetime.now)
 

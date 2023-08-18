@@ -6,6 +6,7 @@ from .route.account_type import api as ns_account_type
 from .route.account import api as ns_account
 from .route.onetime_expense import api as ns_onetime_expense
 from .route.recurrent_expense import api as ns_recurrent_expense
+from .route.watchlist import api as ns_watchlist
 
 blueprint = Blueprint('api1', __name__, url_prefix='/api/1/user')
 
@@ -30,3 +31,4 @@ api.add_namespace(ns_account_type, path='/account-types')
 api.add_namespace(ns_account, path='/account')
 api.add_namespace(ns_onetime_expense, path='/spending-plan/one')
 api.add_namespace(ns_recurrent_expense, path='/spending-plan/recur')
+api.add_namespace(ns_watchlist, path='/watchlist')

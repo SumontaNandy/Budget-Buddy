@@ -54,6 +54,14 @@ python manage.py db migrate
 python manage.py db upgrade
 ```
 
+> **__PROBLEMS__**:
+- database migration problem
+```python
+python manage.py db stamp head
+python manage.py db migrate
+python manage.py db upgrade
+```
+
 ## Database Configuration
 
 1. In Windows Terminal, start the PostgreSQL server. First, find the PostgreSQL database directory path, e.g.: `C:\Program Files\PostgreSQL\15\data`. Then open the terminal and execute this command:
