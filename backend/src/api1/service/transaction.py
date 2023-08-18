@@ -8,6 +8,25 @@ from ..model.account import Account
 from ..model.sp_transaction import SpTransaction
 from ..model.spending_plan import SpendingPlan
 
+from ..service.transaction_tag import TransactionTagUtil
+from ..service.goal_transaction import GoalTransactionUtil
+
+class Transaction:
+    def create_transaction(self, user_id, data):
+        try:
+            id = str(uuid.uuid4())
+            transaction = Transaction(
+                id = id,
+                type = data.get('type'),
+                user_id = User.get_by_id(user_id),
+                account_id = Account.get_by_id(data.get('account_id'))
+            )
+            transaction.add() 
+
+
+        except Exception as e:
+            raise InternalServerError(str(e))
+
 def create_a_transaction_tag_util(transaction_id, data):
     _tag = TransactionTag(
         id = str(uuid.uuid4()),
@@ -57,6 +76,9 @@ def create_transaction_controller(user_id, data):
 
         if data.get('tp') is not None:
             create_sp_transaction_list_util(id, data.get('tp'))
+
+        if data.get('gp') is not None:
+            GoalTransactionUtil().create_goal_transaction(id, data.get('gp'))
 
         update_transaction_controller(id, data)
 

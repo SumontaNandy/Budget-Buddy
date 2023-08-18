@@ -31,6 +31,7 @@ class BalanceSegmentUtil:
             if segment.segment_name in data.keys():
                 amount = float(segment.amount) + float(data[segment.segment_name])
                 segment.amount = amount
+                segment.last_edit_time = datetime.now()
                 segment.save()
 
     def withdraw_balance(self, account_id, data):
@@ -40,6 +41,7 @@ class BalanceSegmentUtil:
             if segment.segment_name in data.keys():
                 amount = float(segment.amount) - float(data[segment.segment_name])
                 segment.amount = amount
+                segment.last_edit_time = datetime.now()
                 segment.save()
 
     def update_balance(self, account_id, data):
@@ -48,6 +50,7 @@ class BalanceSegmentUtil:
         for segment in segments:
             if segment.segment_name in data.keys():
                 segment.amount = data[segment.segment_name]
+                segment.last_edit_time = datetime.now()
                 segment.save()
     
     def delete_balance_segment(self, account_id):

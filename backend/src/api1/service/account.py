@@ -39,6 +39,7 @@ class AccountUtil:
             raise BadRequest(str(e))
         
     def get_account(self, acc_id):
+        self.update_total_balance(acc_id)
         acc = Account.get_by_id(acc_id).toDict()
         segment = BalanceSegment.query.filter_by(account=acc_id).all()
 
@@ -85,3 +86,8 @@ class AccountUtil:
         amount = seg['available_balance'] + seg['saving_goals']
         account.balance = amount
         account.save()
+
+    def get_available_balance(self, acc_id):
+        seg = BalanceSegmentUtil().get_balance_segment(acc_id)
+
+        return seg['available_balance']

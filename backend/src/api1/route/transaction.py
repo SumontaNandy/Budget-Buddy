@@ -1,5 +1,6 @@
 from flask_restx import Namespace, Resource
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask import request
 
 from ..utils.authorize import authorize
 from ..utils.expect import expect
@@ -28,6 +29,7 @@ class TransactionCR(Resource):
         """
             adds a new transaction to the user
         """
+        filters = request.args
         user_id = get_jwt_identity()
         data = api.payload
 
