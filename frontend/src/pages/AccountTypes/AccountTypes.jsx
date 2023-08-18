@@ -10,9 +10,10 @@ import Grid from "@mui/material/Grid";
 import Link from "@mui/material/Link";
 import Button from '@mui/material/Button';
 
-import BasicCard from "./Card";
-import Data from './Data';
+import AccountCard from "./AccountCard";
+import AccountData from '../../data/AccountData';
 import AddAccount from './AddAccount';
+import SidebarMenu from '../../components/SidebarMenu';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -22,30 +23,13 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary
 }));
 
-
-const { parent, child, accounts } = Data;
-
-function handleClick(event) {
-  console.info('You clicked a breadcrumb.');
-}
+const { parent, child, accounts } = AccountData;
 
 export default function AccountTypes() {
-  // const breadcrumbs = [
-  //   <Link underline="hover" key="1" color="inherit" href="/" onClick={handleClick}>
-  //     MUI
-  //   </Link>,
-  //   <Link underline="hover" key="2" color="inherit" href="/" onClick={handleClick}>
-  //     Core
-  //   </Link>,
-  //   <Typography key="3" color="text.primary">
-  //     Breadcrumb
-  //   </Typography>,
-  // ];
-
   const breadcrumbs = parent.map((cell, index) => {
     if(index !== parent.length - 1) {
       return (
-        <Link underline="hover" key={cell.id} color="inherit" href="/contact" onClick={handleClick}>
+        <Link underline="hover" key={cell.id} color="inherit" href="/contact">
           {cell.name}
         </Link>
       )
@@ -56,6 +40,8 @@ export default function AccountTypes() {
 
   return (
     <div style={{margin:15}}>
+      {/* <SidebarMenu /> */}
+      
       <Breadcrumbs m={1} separator="›" aria-label="breadcrumb">
         {breadcrumbs}
       </Breadcrumbs>
@@ -84,7 +70,7 @@ export default function AccountTypes() {
           { accounts.map(cell => {
             return (
               <Grid item xs={3}>
-                <BasicCard 
+                <AccountCard 
                 name={cell.account_name}
                 balance={cell.balance}
                 />
@@ -94,7 +80,7 @@ export default function AccountTypes() {
         </Grid>
       </Box>
 
-      {/* <AddAccount /> */}
+      <AddAccount />
     </div>
   );
 }

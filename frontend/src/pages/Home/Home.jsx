@@ -5,8 +5,8 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 
 
-import BasicCard from "./Card";
-import PlanData from "./PlanData";
+import PlanCard from "./PlanCard";
+import PlanData from "../../data/PlanData";
 const list = PlanData;
 
 export default function Home()
@@ -18,7 +18,7 @@ export default function Home()
           { list.map(cell => {
             return (
               <Grid item xs={3}>
-                <BasicCard 
+                <PlanCard 
                 name={cell.name}
                 spent={cell.spent}
                 />

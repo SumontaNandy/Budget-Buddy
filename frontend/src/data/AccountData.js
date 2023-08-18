@@ -1,4 +1,4 @@
-const Data = {
+const AccountData = {
     parent: [
         {
             id: "1",
@@ -37,4 +37,4 @@ const Data = {
     ]
   }
 
-  export default Data;
+  export default AccountData;

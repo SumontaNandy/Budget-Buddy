@@ -9,7 +9,7 @@ import reportWebVitals from './reportWebVitals';
 import MiniDrawer from './components/SidebarMenu';
 
 import { StyledEngineProvider } from '@mui/material/styles';
-import AppRoutes from './components/AppRoutes';
+import AppRoutes from './AppRoutes';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
