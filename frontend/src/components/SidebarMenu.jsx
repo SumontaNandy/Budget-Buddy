@@ -90,7 +90,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   }),
 );
 
-export default function SidebarMenu(props) {
+function SidebarMenu(props) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
@@ -109,7 +109,7 @@ export default function SidebarMenu(props) {
     content = <AccountTypes />;
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <>
       <CssBaseline />
       <AppBar position="fixed" open={open}>
         <Toolbar>
@@ -170,6 +170,9 @@ export default function SidebarMenu(props) {
       </Drawer>
       
       { content }
-    </Box>
+    </>
   );
 }
+
+export default SidebarMenu;
+export { DrawerHeader };
