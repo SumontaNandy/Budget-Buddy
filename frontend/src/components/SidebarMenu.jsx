@@ -20,6 +20,8 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 
 import Home from '../pages/Home/Home';
+import AccountTypes from '../pages/AccountTypes/AccountTypes';
+import MenuData from './MenuData';
 
 const drawerWidth = 240;
 
@@ -88,7 +90,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   }),
 );
 
-export default function SidebarMenu() {
+export default function SidebarMenu(props) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
@@ -99,6 +101,12 @@ export default function SidebarMenu() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+  let content = "";
+  if(props.page === "home")
+    content = <Home />;
+  else if(props.page === "account-types")
+    content = <AccountTypes />;
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -129,17 +137,19 @@ export default function SidebarMenu() {
           </IconButton>
         </DrawerHeader>
         <Divider />
+
+        
         <List>
 
-          {['Accounts', 'Starred'].map((text, index) => (
-            <ListItem key={text} disablePadding sx={{ display: 'block' }}>
+          {MenuData.map((cell, index) => (
+            <ListItem key={cell.name} disablePadding sx={{ display: 'block' }}>
               <ListItemButton
                 sx={{
                   minHeight: 48,
                   justifyContent: open ? 'initial' : 'center',
                   px: 2.5,
                 }}
-                to="/account-types"
+                to={cell.link}
               >
                 <ListItemIcon
                   sx={{
@@ -150,7 +160,7 @@ export default function SidebarMenu() {
                 >
                   {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
                 </ListItemIcon>
-                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                <ListItemText primary={cell.name} sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
             </ListItem>
           ))}
@@ -158,7 +168,8 @@ export default function SidebarMenu() {
         </List>
         
       </Drawer>
-      <Home />
+      
+      { content }
     </Box>
   );
 }

@@ -7,15 +7,17 @@ import Grid from "@mui/material/Grid";
 
 import PlanCard from "./PlanCard";
 import PlanData from "../../data/PlanData";
-const list = PlanData;
+import SidebarMenu from "../../components/SidebarMenu";
+const PlanList = PlanData;
 
 export default function Home()
 {
     return (
-        <Box m={1.5} sx={{ flexGrow: 1 }}>
+      <Box m={1.5} sx={{ flexGrow: 1 }}>
+        <SidebarMenu />
         <h1> Accounts </h1>
         <Grid container spacing={2}>
-          { list.map(cell => {
+          { PlanList.map(cell => {
             return (
               <Grid item xs={3}>
                 <PlanCard 

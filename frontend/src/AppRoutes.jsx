@@ -6,6 +6,8 @@ import AccountTypes from './pages/AccountTypes/AccountTypes';
 import Contact from './pages/Contact/Contact';
 import { Login } from './pages/Login/Login';
 import { Signup } from './pages/Signup/Signup';
+import Home from './pages/Home/Home';
+import Transaction from './pages/Transaction/Transaction';
 import SidebarMenu from './components/SidebarMenu';
 
 export default function AppRoutes()
@@ -14,8 +16,9 @@ export default function AppRoutes()
         <Router>
             <Switch>
                 <Route path="/" exact component={Login} />
-                <Route path="/account-types" component={AccountTypes} />
-                <Route path="/home" component={SidebarMenu} />
+                <Route path="/account-types" render={(props) => <AccountTypes />} />
+                <Route path="/home" render={(props) => <Home />} />
+                <Route path="/transactions" component={Transaction} />
                 <Route path="/contact" component={Contact} />
                 <Route path="/signup" component={Signup} />
             </Switch>
