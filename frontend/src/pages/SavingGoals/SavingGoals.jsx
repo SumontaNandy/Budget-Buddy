@@ -9,21 +9,32 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import TextField from '@mui/material/TextField';
 import { useHistory } from 'react-router-dom';
-
+import dayjs from 'dayjs';
+import { InputLabel, MenuItem, Select } from '@mui/material';
+import { FormControlLabel, Radio, RadioGroup } from '@mui/material';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import SavingCard from "./SavingCard";
 import SavingGoalsData from "../../data/SavingGoalsData";
 
 
 export const SavingGoals = () => {
     const [goals, setGoals] = useState([])
-    const [openCreate, setOpenCreate] = useState(false);
     const [name, setName] = useState('');
     const [goalAmount, setGoalAmount] = useState('');
-    const [targetDate, setTargetDate] = useState('');
     const [savedSoFar, setSavedSoFar] = useState('');
     const [account, setAccount] = useState('');
     const [monthlyContribution, setMonthlyContribution] = useState('');
     const history = useHistory();
+
+    const [openCreateFirst, setOpenCreateFirst] = useState(false);
+    const [openCreateSecond, setOpenCreateSecond] = useState(false);
+    const [openCreateThird, setOpenCreateThird] = useState(false);
+
+    const [selectedSet, setSelectedSet] = useState('set')
+    const [targetDate, setTargetDate] = useState(dayjs('2023-08-20'));
 
     useEffect(() => {
         const cookies = document.cookie;
@@ -39,15 +50,34 @@ export const SavingGoals = () => {
     }, []);
 
 
-    const handleCreateOpen = () => {
-        setOpenCreate(true);
+    const onCreateFirst = () => {
+        setOpenCreateFirst(true);
     }
 
-    const handleClose = () => {
-        setOpenCreate(false);
+    const handleCloseFirst = () => {
+        setOpenCreateFirst(false);
     }
 
-    const handleCreate = async () => {
+    const handleCloseSecond = () => {
+        setOpenCreateSecond(false);
+    }
+
+    const handleCloseThird = () => {
+        setOpenCreateThird(false);
+    }
+
+    const handleCreateFirst = () => {
+        setOpenCreateFirst(false);
+        setOpenCreateSecond(true);
+    }
+
+    const handleCreateSecond = () => {
+        setOpenCreateSecond(false);
+        setOpenCreateThird(true);
+    }
+
+
+    const handleCreateThird = async () => {
         try {
             let link = "http://127.0.0.1:5000/api/user/goal/create"
             const cookies = document.cookie;
@@ -77,7 +107,7 @@ export const SavingGoals = () => {
             }
             else {
                 alert("Goal Creation Not Successful");
-                handleClose();
+                handleCloseThird();
             }
         } catch (error) {
             console.log(error);
@@ -102,11 +132,11 @@ export const SavingGoals = () => {
                     })}
                 </Grid>
             </Box>
-            <Button variant="contained" onClick={handleCreateOpen}>
-                Add Account
+            <Button variant="contained" onClick={onCreateFirst}>
+                Add A Saving Goal
             </Button>
-            <Dialog open={openCreate} onClose={handleClose}>
-                <DialogTitle>Create Goal</DialogTitle>
+            <Dialog open={openCreateFirst} onClose={handleCloseFirst}>
+                <DialogTitle>Edit Goal</DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus
@@ -133,17 +163,6 @@ export const SavingGoals = () => {
                     <TextField
                         autoFocus
                         margin="dense"
-                        id="targetDate"
-                        label="Target Date"
-                        type="text"
-                        fullWidth
-                        variant="standard"
-                        value={targetDate}
-                        onChange={(e) => setTargetDate(e.target.value)}
-                    />
-                    <TextField
-                        autoFocus
-                        margin="dense"
                         id="savedSoFar"
                         label="Saved So Far"
                         type="text"
@@ -152,17 +171,60 @@ export const SavingGoals = () => {
                         value={savedSoFar}
                         onChange={(e) => setSavedSoFar(e.target.value)}
                     />
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="account"
-                        label="Account"
-                        type="text"
-                        fullWidth
-                        variant="standard"
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCreateFirst}>Next</Button>
+                    <Button onClick={handleCloseFirst}>Cancel</Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog open={openCreateSecond} onClose={handleCloseSecond}>
+                <DialogTitle>Edit Goal</DialogTitle>
+                <DialogContent>
+                    <InputLabel>Select an Account</InputLabel>
+                    <Select
                         value={account}
                         onChange={(e) => setAccount(e.target.value)}
-                    />
+                        label="Select an Account"
+                    >
+                        <MenuItem value="ICCU-Checking">ICCU-Checking</MenuItem>
+                        <MenuItem value="Cash">Cash</MenuItem>
+                        <MenuItem value="Sonali-Bank">Sonali Bank</MenuItem>
+                    </Select>
+                    <RadioGroup
+                        value={selectedSet}
+                        onChange={(e) => setSelectedSet(e.target.value)}
+                    >
+                        <FormControlLabel
+                            value="set"
+                            control={<Radio />}
+                            label="Set a Target Date"
+                        />
+                        <FormControlLabel
+                            value="noSet"
+                            control={<Radio />}
+                            label="No Target Date"
+                        />
+                    </RadioGroup>
+
+                    {selectedSet === "set" ? (
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DemoContainer components={['DatePicker', 'DatePicker']}>
+                                <DatePicker
+                                    label="Target Date"
+                                    value={targetDate}
+                                    onChange={(e) => { setTargetDate(e) }}
+                                />
+                            </DemoContainer>
+                        </LocalizationProvider>) : (<div></div>)}
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCreateSecond}>Next</Button>
+                    <Button onClick={handleCloseSecond}>Cancel</Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog open={openCreateThird} onClose={handleCloseThird}>
+                <DialogTitle>Edit Goal</DialogTitle>
+                <DialogContent>
                     <TextField
                         autoFocus
                         margin="dense"
@@ -176,8 +238,8 @@ export const SavingGoals = () => {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleCreate}>Create</Button>
-                    <Button onClick={handleClose}>Cancel</Button>
+                    <Button onClick={handleCreateThird}>Save</Button>
+                    <Button onClick={handleCloseThird}>Cancel</Button>
                 </DialogActions>
             </Dialog>
         </div>

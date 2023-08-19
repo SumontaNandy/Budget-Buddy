@@ -14,29 +14,61 @@ import DialogActions from '@mui/material/DialogActions';
 import TextField from '@mui/material/TextField';
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import dayjs from 'dayjs';
+import { InputLabel, MenuItem, Select } from '@mui/material';
+import { FormControlLabel, Radio, RadioGroup } from '@mui/material';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+
+
 //import { CardActions } from '@mui/material';
 
 //import ProgressBar from './ProgressBar';
 
 export default function SavingCard(props) {
-    const [openEdit, setOpenEdit] = useState(false);
+    const [openEditFirst, setOpenEditFirst] = useState(false);
+    const [openEditSecond, setOpenEditSecond] = useState(false);
+    const [openEditThird, setOpenEditThird] = useState(false);
+
+    const [selectedSet, setSelectedSet] = useState('set')
     const [name, setName] = useState(props.goal.name);
     const [goalAmount, setGoalAmount] = useState(props.goal.goal_amount);
-    const [targetDate, setTargetDate] = useState(props.goal.target_date);
+    //const [targetDate, setTargetDate] = useState(props.goal.target_date);
+    const [targetDate, setTargetDate] = useState(dayjs('2023-08-20'));
     const [savedSoFar, setSavedSoFar] = useState(props.goal.saved_so_far);
     const [account, setAccount] = useState(props.goal.account);
     const [monthlyContribution, setMonthlyContribution] = useState(props.goal.monthly_contribution);
     const history = useHistory();
 
-    const onEdit = () => {
-        setOpenEdit(true);
+    const onEditFirst = () => {
+        setOpenEditFirst(true);
     }
 
-    const handleClose = () => {
-        setOpenEdit(false);
+    const handleCloseFirst = () => {
+        setOpenEditFirst(false);
     }
 
-    const handleEdit = async () => {
+    const handleCloseSecond = () => {
+        setOpenEditSecond(false);
+    }
+
+    const handleCloseThird = () => {
+        setOpenEditThird(false);
+    }
+
+    const handleEditFirst = () => {
+        setOpenEditFirst(false);
+        setOpenEditSecond(true);
+    }
+
+    const handleEditSecond = () => {
+        setOpenEditSecond(false);
+        setOpenEditThird(true);
+    }
+
+    const handleEditThird = async () => {
         try {
             let link = "http://127.0.0.1:5000/api/user/goal/edit/" + name
             const cookies = document.cookie;
@@ -66,7 +98,7 @@ export default function SavingCard(props) {
             }
             else {
                 alert("Edit Not Successful");
-                handleClose();
+                handleCloseThird();
             }
         } catch (error) {
             console.log(error);
@@ -74,7 +106,7 @@ export default function SavingCard(props) {
     }
 
 
-    const onDelete = async(nAme) => {
+    const onDelete = async (nAme) => {
         try {
             let link = "http://127.0.0.1:5000/api/user/goal/delete/" + nAme
             const cookies = document.cookie;
@@ -99,7 +131,7 @@ export default function SavingCard(props) {
             }
             else {
                 alert("Delete Not Successful");
-                handleClose();
+                //handleClose();
             }
         } catch (error) {
             console.log(error);
@@ -124,12 +156,12 @@ export default function SavingCard(props) {
                         </Typography>
                     </CardContent>
                     <CardActions>
-                        <Button variant="outlined" onClick={() => { onEdit() }} startIcon={<EditIcon />}></Button>
+                        <Button variant="outlined" onClick={() => { onEditFirst() }} startIcon={<EditIcon />}></Button>
                         <Button variant="outlined" onClick={() => { onDelete(props.goal.name) }} startIcon={<DeleteIcon />}></Button>
                     </CardActions>
                 </Card>
             </Box>
-            <Dialog open={openEdit} onClose={handleClose}>
+            <Dialog open={openEditFirst} onClose={handleCloseFirst}>
                 <DialogTitle>Edit Goal</DialogTitle>
                 <DialogContent>
                     <TextField
@@ -157,17 +189,6 @@ export default function SavingCard(props) {
                     <TextField
                         autoFocus
                         margin="dense"
-                        id="targetDate"
-                        label="Target Date"
-                        type="text"
-                        fullWidth
-                        variant="standard"
-                        value={targetDate}
-                        onChange={(e) => setTargetDate(e.target.value)}
-                    />
-                    <TextField
-                        autoFocus
-                        margin="dense"
                         id="savedSoFar"
                         label="Saved So Far"
                         type="text"
@@ -176,17 +197,60 @@ export default function SavingCard(props) {
                         value={savedSoFar}
                         onChange={(e) => setSavedSoFar(e.target.value)}
                     />
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="account"
-                        label="Account"
-                        type="text"
-                        fullWidth
-                        variant="standard"
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleEditFirst}>Next</Button>
+                    <Button onClick={handleCloseFirst}>Cancel</Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog open={openEditSecond} onClose={handleCloseSecond}>
+                <DialogTitle>Edit Goal</DialogTitle>
+                <DialogContent>
+                    <InputLabel>Select an Account</InputLabel>
+                    <Select
                         value={account}
                         onChange={(e) => setAccount(e.target.value)}
-                    />
+                        label="Select an Account"
+                    >
+                        <MenuItem value="ICCU-Checking">ICCU-Checking</MenuItem>
+                        <MenuItem value="Cash">Cash</MenuItem>
+                        <MenuItem value="Sonali-Bank">Sonali Bank</MenuItem>
+                    </Select>
+                    <RadioGroup
+                        value={selectedSet}
+                        onChange={(e) => setSelectedSet(e.target.value)}
+                    >
+                        <FormControlLabel
+                            value="set"
+                            control={<Radio />}
+                            label="Set a Target Date"
+                        />
+                        <FormControlLabel
+                            value="noSet"
+                            control={<Radio />}
+                            label="No Target Date"
+                        />
+                    </RadioGroup>
+
+                    {selectedSet === "set" ? (
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DemoContainer components={['DatePicker', 'DatePicker']}>
+                                <DatePicker
+                                    label="Target Date"
+                                    value={targetDate}
+                                    onChange={(e) => { setTargetDate(e) }}
+                                />
+                            </DemoContainer>
+                        </LocalizationProvider>) : (<div></div>)}
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleEditSecond}>Next</Button>
+                    <Button onClick={handleCloseSecond}>Cancel</Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog open={openEditThird} onClose={handleCloseThird}>
+                <DialogTitle>Edit Goal</DialogTitle>
+                <DialogContent>
                     <TextField
                         autoFocus
                         margin="dense"
@@ -200,10 +264,15 @@ export default function SavingCard(props) {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleEdit}>Save</Button>
-                    <Button onClick={handleClose}>Cancel</Button>
+                    <Button onClick={handleEditThird}>Save</Button>
+                    <Button onClick={handleCloseThird}>Cancel</Button>
                 </DialogActions>
             </Dialog>
         </div>
     );
 }
+
+
+
+
+//<DatePicker label="Uncontrolled picker" defaultValue={dayjs('2023-08-20')} />
