@@ -39,10 +39,12 @@ export default function SavingCard(props) {
     const handleEdit = async () => {
         try {
             let link = "http://127.0.0.1:5000/api/user/goal/edit/" + name
+            const cookies = document.cookie;
             const res = await fetch(link, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "Cookie": cookies
                 },
                 body: JSON.stringify({
                     name: name,
@@ -75,10 +77,12 @@ export default function SavingCard(props) {
     const onDelete = async(nAme) => {
         try {
             let link = "http://127.0.0.1:5000/api/user/goal/delete/" + nAme
+            const cookies = document.cookie;
             const res = await fetch(link, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "Cookie": cookies
                 },
                 body: JSON.stringify({
                     name: nAme,

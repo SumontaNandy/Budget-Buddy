@@ -26,8 +26,13 @@ export const SavingGoals = () => {
     const history = useHistory();
 
     useEffect(() => {
+        const cookies = document.cookie;
+        const headers = new Headers({
+            'Content-Type': 'application/json',
+            'Cookie': cookies
+        });
         // Fetch saving goals data from the Flask backend API
-        fetch('http://127.0.0.1:5000/api/user/goal')
+        fetch('http://127.0.0.1:5000/api/user/goal', { headers })
             .then(response => response.json())
             .then(data => setGoals(data))
             .catch(error => console.error('Error fetching data:', error));
@@ -45,10 +50,12 @@ export const SavingGoals = () => {
     const handleCreate = async () => {
         try {
             let link = "http://127.0.0.1:5000/api/user/goal/create"
+            const cookies = document.cookie;
             const res = await fetch(link, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    'Cookie': cookies
                 },
                 body: JSON.stringify({
                     name: name,
