@@ -16,25 +16,23 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import SavingCard from "./SavingCard";
-import SavingGoalsData from "../../data/SavingGoalsData";
+import SpecialExpensesCard from "./SpecialExpensesCard";
+//import SavingGoalsData from "../../data/SavingGoalsData";
 
 
-export const SavingGoals = () => {
-    const [goals, setGoals] = useState([])
+export const SpecialExpenses = () => {
+    const [expenses, setExpenses] = useState([])
+
     const [name, setName] = useState('');
-    const [goalAmount, setGoalAmount] = useState('');
-    const [savedSoFar, setSavedSoFar] = useState('');
-    const [account, setAccount] = useState('');
-    const [monthlyContribution, setMonthlyContribution] = useState('');
+    const [type, setType] = useState('');
+    const [category, setCategory] = useState('');
+    const [setTarget, setSetTarget] = useState(true);
+    const [amount, setAmount] = useState('');
     const history = useHistory();
 
     const [openCreateFirst, setOpenCreateFirst] = useState(false);
     const [openCreateSecond, setOpenCreateSecond] = useState(false);
     const [openCreateThird, setOpenCreateThird] = useState(false);
-
-    const [selectedSet, setSelectedSet] = useState('set')
-    const [targetDate, setTargetDate] = useState(dayjs('2023-08-20'));
 
     useEffect(() => {
         const cookies = document.cookie;
@@ -43,9 +41,9 @@ export const SavingGoals = () => {
             'Cookie': cookies
         });
         // Fetch saving goals data from the Flask backend API
-        fetch('http://127.0.0.1:5000/api/user/goal', { headers })
+        fetch('http://127.0.0.1:5000/api/user/special-expenses', { headers })
             .then(response => response.json())
-            .then(data => setGoals(data))
+            .then(data => setExpenses(data))
             .catch(error => console.error('Error fetching data:', error));
     }, []);
 
@@ -79,7 +77,7 @@ export const SavingGoals = () => {
 
     const handleCreateThird = async () => {
         try {
-            let link = "http://127.0.0.1:5000/api/user/goal/create"
+            let link = "http://127.0.0.1:5000/api/user/watchlist/create"
             const cookies = document.cookie;
             const res = await fetch(link, {
                 method: "POST",
@@ -88,12 +86,11 @@ export const SavingGoals = () => {
                     'Cookie': cookies
                 },
                 body: JSON.stringify({
+                    type: type,
                     name: name,
-                    goal_amount: goalAmount,
-                    saved_so_far: savedSoFar,
-                    target_date: targetDate,
-                    account: account,
-                    monthly_contribution: monthlyContribution
+                    categories: category,
+                    setTarget: setTarget,
+                    amount: amount
                 })
             });
 
@@ -102,11 +99,11 @@ export const SavingGoals = () => {
                 const { status } = data;
 
                 if (status === "success") {
-                    history.push("/saving-goals");
+                    history.push("/special-expenses");
                 }
             }
             else {
-                alert("Goal Creation Not Successful");
+                alert("Special Expense Creation Not Successful");
                 handleCloseThird();
             }
         } catch (error) {
@@ -117,15 +114,15 @@ export const SavingGoals = () => {
     return (
         <div>
             <Box m={1.5} sx={{ flexGrow: 1 }}>
-                <h1> Saving Goals </h1>
-                <h1> Saving Goals </h1>
+                <h1> Special Expenses </h1>
+                <h1> Special Expenses </h1>
 
                 <Grid container spacing={2}>
-                    {goals.map(goal => {
+                    {expenses.map(expense => {
                         return (
                             <Grid item xs={3}>
-                                <SavingCard
-                                    goal={goal}
+                                <SpecialExpensesCard
+                                    expense={expense}
                                 />
                             </Grid>
                         )
@@ -133,44 +130,33 @@ export const SavingGoals = () => {
                 </Grid>
             </Box>
             <Button variant="contained" onClick={onCreateFirst}>
-                Add A Saving Goal
+                Add A Special Expense
             </Button>
             <Dialog open={openCreateFirst} onClose={handleCloseFirst}>
-                <DialogTitle>Add Goal</DialogTitle>
+                <DialogTitle>Add Special Expense</DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus
                         margin="dense"
                         id="name"
-                        label="Goal Name"
+                        label="Expense Name"
                         type="text"
                         fullWidth
                         variant="standard"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                     />
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="goalAmount"
-                        label="Goal Amount"
-                        type="text"
-                        fullWidth
-                        variant="standard"
-                        value={goalAmount}
-                        onChange={(e) => setGoalAmount(e.target.value)}
-                    />
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="savedSoFar"
-                        label="Saved So Far"
-                        type="text"
-                        fullWidth
-                        variant="standard"
-                        value={savedSoFar}
-                        onChange={(e) => setSavedSoFar(e.target.value)}
-                    />
+                    <InputLabel>Select A Type</InputLabel>
+                    <Select
+                        value={type}
+                        onChange={(e) => setType(e.target.value)}
+                        label="Select A Type"
+                    >
+                        <MenuItem value={type}>{type}</MenuItem>
+                        <MenuItem value="Extra">Extra</MenuItem>
+                        <MenuItem value="Eating">Eating</MenuItem>
+                        <MenuItem value="Recreation">Recreation</MenuItem>
+                    </Select>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleCreateFirst}>Next</Button>
@@ -178,45 +164,19 @@ export const SavingGoals = () => {
                 </DialogActions>
             </Dialog>
             <Dialog open={openCreateSecond} onClose={handleCloseSecond}>
-                <DialogTitle>Add Goal</DialogTitle>
+                <DialogTitle>Add Special Expense</DialogTitle>
                 <DialogContent>
-                    <InputLabel>Select an Account</InputLabel>
+                    <InputLabel>Select A Category</InputLabel>
                     <Select
-                        value={account}
-                        onChange={(e) => setAccount(e.target.value)}
-                        label="Select an Account"
+                        value={category}
+                        onChange={(e) => setCategory(e.target.value)}
+                        label="Select A Category"
                     >
-                        <MenuItem value={account}>{account}</MenuItem>
-                        <MenuItem value="ICCU-Checking">ICCU-Checking</MenuItem>
-                        <MenuItem value="Cash">Cash</MenuItem>
-                        <MenuItem value="Sonali-Bank">Sonali Bank</MenuItem>
+                        <MenuItem value={category}>{category}</MenuItem>
+                        <MenuItem value="Restaurant">Restaurant</MenuItem>
+                        <MenuItem value="MI-28-Attack-Helicopter">MI-28-Attack-Helicopter</MenuItem>
+                        <MenuItem value="Otomat-MKII-Missile">Otomat-MKII-Missile</MenuItem>
                     </Select>
-                    <RadioGroup
-                        value={selectedSet}
-                        onChange={(e) => setSelectedSet(e.target.value)}
-                    >
-                        <FormControlLabel
-                            value="set"
-                            control={<Radio />}
-                            label="Set a Target Date"
-                        />
-                        <FormControlLabel
-                            value="noSet"
-                            control={<Radio />}
-                            label="No Target Date"
-                        />
-                    </RadioGroup>
-
-                    {selectedSet === "set" ? (
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DemoContainer components={['DatePicker', 'DatePicker']}>
-                                <DatePicker
-                                    label="Target Date"
-                                    value={targetDate}
-                                    onChange={(e) => { setTargetDate(e) }}
-                                />
-                            </DemoContainer>
-                        </LocalizationProvider>) : (<div></div>)}
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleCreateSecond}>Next</Button>
@@ -224,19 +184,35 @@ export const SavingGoals = () => {
                 </DialogActions>
             </Dialog>
             <Dialog open={openCreateThird} onClose={handleCloseThird}>
-                <DialogTitle>Add Goal</DialogTitle>
+                <DialogTitle>Add Special Expense</DialogTitle>
                 <DialogContent>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="monthlyContribution"
-                        label="Monthly Contribution"
-                        type="text"
-                        fullWidth
-                        variant="standard"
-                        value={monthlyContribution}
-                        onChange={(e) => setMonthlyContribution(e.target.value)}
-                    />
+                    <RadioGroup
+                        value={setTarget ? "set" : "noSet"}
+                        onChange={(e) => setSetTarget(e.target.value === "set" ? true : false)}
+                    >
+                        <FormControlLabel
+                            value="set"
+                            control={<Radio />}
+                            label="Set a Target Amount"
+                        />
+                        <FormControlLabel
+                            value="noSet"
+                            control={<Radio />}
+                            label="No Target Amount"
+                        />
+                    </RadioGroup>
+
+                    {setTarget ? (
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            id="amount"
+                            label="Target Amount"
+                            type="text"
+                            fullWidth
+                            variant="standard"
+                            value={amount}
+                            onChange={(e) => setAmount(e.target.value)} />) : (<div></div>)}
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleCreateThird}>Save</Button>

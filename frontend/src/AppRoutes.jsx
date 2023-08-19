@@ -8,8 +8,8 @@ import { Login } from './pages/Login/Login';
 import { Signup } from './pages/Signup/Signup';
 import SidebarMenu from './components/SidebarMenu';
 import SavingGoalsSidebarMenu from './components/SavingGoalsSidebarMenu';
-//import SpecialExpensesSidebarMenu from './components/SpecialExpensesSidebarMenu';
-//<Route path="/special-expenses" component={SpecialExpensesSidebarMenu} />
+import SpecialExpensesSidebarMenu from './components/SpecialExpensesSidebarMenu';
+//
 import {SavingGoals} from './pages/SavingGoals/SavingGoals';
 
 export default function AppRoutes()
@@ -23,6 +23,7 @@ export default function AppRoutes()
                 <Route path="/contact" component={Contact} />
                 <Route path="/signup" component={Signup} />
                 <Route path="/saving-goals" component={SavingGoalsSidebarMenu} />
+                <Route path="/special-expenses" component={SpecialExpensesSidebarMenu} />
             </Switch>
         </Router>
     );
