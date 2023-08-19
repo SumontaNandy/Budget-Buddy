@@ -12,7 +12,7 @@ import Link from "@mui/material/Link";
 import AccountCard from "./AccountCard";
 import AccountData from '../../data/AccountData';
 import AddAccount from './AddAccount';
-import SidebarMenu, { DrawerHeader } from '../../components/SidebarMenu';
+import SidebarMenu, { DrawerHeader } from '../../components/Menu/SidebarMenu';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",

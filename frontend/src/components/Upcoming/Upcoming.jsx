@@ -4,7 +4,7 @@ import React from 'react';
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 
-import TransactionData from '../data/TransactionData';
+import TransactionData from '../../data/TransactionData';
 import UpcomingCard from './UpcomingCard';
 
 const TransactionList = TransactionData;

@@ -5,7 +5,7 @@ import Grid from '@mui/material/Grid';
 
 import PlanCard from "./PlanCard";
 import PlanData from "../../data/PlanData";
-import SidebarMenu, { DrawerHeader } from "../../components/SidebarMenu";
+import SidebarMenu, { DrawerHeader } from "../../components/Menu/SidebarMenu";
 const PlanList = PlanData;
 
 const drawerWidth = 240;
