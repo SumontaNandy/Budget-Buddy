@@ -1,7 +1,5 @@
 # Frontend
 frontend/node_modules
-frontend/package-lock.json
-frontend/package.json
 
 ## Core latex/pdflatex auxiliary files:
 *.aux

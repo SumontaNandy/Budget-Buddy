@@ -6,12 +6,10 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 
-export default function FormDialog() {
-  console.log("Not Ok")
+export default function AddAccount() {
   const [open, setOpen] = React.useState(false);
   const [email, setEmail] = React.useState(''); // State to hold email
   const [name, setName] = React.useState('');   // State to hold name
-  console.log("Ok")
 
   const handleClickOpen = () => {
     setOpen(true);

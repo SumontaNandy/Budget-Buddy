@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { styled, useTheme } from '@mui/material/styles';
-import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -19,8 +18,6 @@ import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 
-import Home from '../pages/Home/Home';
-import AccountTypes from '../pages/AccountTypes/AccountTypes';
 import MenuData from './MenuData';
 
 const drawerWidth = 240;
@@ -102,12 +99,6 @@ function SidebarMenu(props) {
     setOpen(false);
   };
 
-  let content = "";
-  if(props.page === "home")
-    content = <Home />;
-  else if(props.page === "account-types")
-    content = <AccountTypes />;
-
   return (
     <>
       <CssBaseline />
@@ -141,7 +132,7 @@ function SidebarMenu(props) {
         
         <List>
 
-          {MenuData.map((cell, index) => (
+          { MenuData.map((cell, index) => (
             <ListItem key={cell.name} disablePadding sx={{ display: 'block' }}>
               <ListItemButton
                 sx={{
@@ -163,13 +154,11 @@ function SidebarMenu(props) {
                 <ListItemText primary={cell.name} sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
             </ListItem>
-          ))}
+          )) }
           
         </List>
         
       </Drawer>
-      
-      { content }
     </>
   );
 }
