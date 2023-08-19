@@ -7,6 +7,8 @@ import Contact from './pages/Contact/Contact';
 import { Login } from './pages/Login/Login';
 import { Signup } from './pages/Signup/Signup';
 import SidebarMenu from './components/SidebarMenu';
+import SavingGoalsSidebarMenu from './components/SavingGoalsSidebarMenu';
+import {SavingGoals} from './pages/SavingGoals/SavingGoals';
 
 export default function AppRoutes()
 {
@@ -18,6 +20,7 @@ export default function AppRoutes()
                 <Route path="/home" component={SidebarMenu} />
                 <Route path="/contact" component={Contact} />
                 <Route path="/signup" component={Signup} />
+                <Route path="/saving-goals" component={SavingGoalsSidebarMenu} />
             </Switch>
         </Router>
     );
