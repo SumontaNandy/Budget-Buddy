@@ -1,4 +1,4 @@
-from werkzeug.exceptions import Conflict, NotFound
+from werkzeug.exceptions import BadRequest, InternalServerError
 from http import HTTPStatus
 from datetime import datetime
 import uuid
@@ -11,56 +11,103 @@ class BalanceSegmentUtil:
     """
         handles balance segment related operations
     """
-    def create_a_balance_segment(self, name, amount, acc_id):
-        ob = BalanceSegment(
-            id = str(uuid.uuid4()),
-            segment_name = name,
-            amount = amount,
-            account_id = Account.get_by_id(acc_id)
-        )
-        ob.add()
+    def __init__(self, account_id=None):
+        self.account_id = account_id
 
-    def create_balance_segment(self, account_id, balance):
-        self.create_a_balance_segment('available_balance', balance, account_id)
-        self.create_a_balance_segment('saving_goals', 0, account_id)
+    def validate_amount(self, amount):
+        if amount < 0:
+            raise BadRequest("Amount should be greater than zero")
+        
+    def update_validation(self, amount):
+        ob = BalanceSegment.query.filter_by(account=self.account_id, segment_name='saving_goals').first()
+        if amount < ob.amount:
+            raise BadRequest("Amount should be greater than saving goals")
 
-    def add_balance(self, account_id, data):
-        segments = BalanceSegment.query.filter_by(account=account_id).all()
+    def create_a_balance_segment(self, name, amount):
+        self.validate_amount(amount)
+        try:
+            ob = BalanceSegment(
+                id = str(uuid.uuid4()),
+                segment_name = name,
+                amount = amount,
+                last_edit_time = datetime.now(),
+                account_id = Account.get_by_id(self.account_id)
+            )
+            ob.add()
+        except Exception as e:
+            raise InternalServerError(str(e))
 
-        for segment in segments:
-            if segment.segment_name in data.keys():
-                amount = float(segment.amount) + float(data[segment.segment_name])
-                segment.amount = amount
-                segment.last_edit_time = datetime.now()
-                segment.save()
-
-    def withdraw_balance(self, account_id, data):
-        segments = BalanceSegment.query.filter_by(account=account_id).all()
-
-        for segment in segments:
-            if segment.segment_name in data.keys():
-                amount = float(segment.amount) - float(data[segment.segment_name])
-                segment.amount = amount
-                segment.last_edit_time = datetime.now()
-                segment.save()
-
-    def update_balance(self, account_id, data):
-        segments = BalanceSegment.query.filter_by(account=account_id).all()
-
-        for segment in segments:
-            if segment.segment_name in data.keys():
-                segment.amount = data[segment.segment_name]
-                segment.last_edit_time = datetime.now()
-                segment.save()
+    def get_avialable_balance(self):
+        ob = BalanceSegment.query.filter_by(account=self.account_id, segment_name='available_balance').first()
+        return ob.amount
     
-    def delete_balance_segment(self, account_id):
-        segments = BalanceSegment.query.filter_by(account=account_id).all()
+    def get_saving_goals(self):
+        ob = BalanceSegment.query.filter_by(account=self.account_id, segment_name='saving_goals').first()
+        return ob.amount
+        
+    def create_balance_segments(self, balance):
+        self.create_a_balance_segment('available_balance', balance, self.account_id)
+        self.create_a_balance_segment('saving_goals', 0, self.account_id)
 
+    def add_available_balance(self, amount):
+        self.validate_amount(amount)
+        ob = BalanceSegment.query.filter_by(account=self.account_id, segment_name='available_balance').first()
+        ob.amount = ob.amount + amount
+        ob.last_edit_time = datetime.now()
+        ob.save()
+
+    def withdraw_available_balance(self, amount):
+        self.validate_amount(amount)
+        ob = BalanceSegment.query.filter_by(account=self.account_id, segment_name='available_balance').first()
+        if ob.amount < amount:
+            raise BadRequest("Insufficient Balance")
+        ob.amount = ob.amount - amount
+        ob.last_edit_time = datetime.now()
+        ob.save()
+
+    def update_available_balance(self, amount):
+        self.validate_amount(amount)
+        ob = BalanceSegment.query.filter_by(account=self.account_id, segment_name='available_balance').first()
+        ob.amount = amount
+        ob.last_edit_time = datetime.now()
+        ob.save()
+
+    def add_saving_goals(self, amount):
+        self.validate_amount(amount)
+        ob = BalanceSegment.query.filter_by(account=self.account_id, segment_name='saving_goals').first()
+        ob.amount = ob.amount + amount
+        ob.last_edit_time = datetime.now()
+        ob.save()
+
+    def withdraw_saving_goals(self, amount):
+        self.validate_amount(amount)
+        ob = BalanceSegment.query.filter_by(account=self.account_id, segment_name='saving_goals').first()
+        if ob.amount < amount:
+            raise BadRequest("Insufficient Balance")
+        ob.amount = ob.amount - amount
+        ob.last_edit_time = datetime.now()
+        ob.save()
+
+    def update_saving_goals(self, amount):
+        self.validate_amount(amount)
+        ob = BalanceSegment.query.filter_by(account=self.account_id, segment_name='saving_goals').first()
+        ob.amount = amount
+        ob.last_edit_time = datetime.now()
+        ob.save()
+
+    def update_balance_segments(self, balance):
+        self.update_validation(balance)
+        ob = BalanceSegment.query.filter_by(account=self.account_id, segment_name='saving_goals').first()
+        balance = balance - ob.amount
+        self.update_available_balance(balance)
+    
+    def delete_balance_segment(self):
+        segments = BalanceSegment.query.filter_by(account=self.account_id).all()
         for segment in segments:
             segment.delete()
 
-    def get_balance_segment(self, account_id):
-        segments = BalanceSegment.query.filter_by(account=account_id).all()
+    def get_balance_segment(self):
+        segments = BalanceSegment.query.filter_by(account=self.account_id).all()
         segments = [ob.toDict() for ob in segments]
 
         data = {}

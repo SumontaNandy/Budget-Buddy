@@ -62,6 +62,17 @@ python manage.py db migrate
 python manage.py db upgrade
 ```
 
+- Flask-Script: from flask._compat import text_type ModuleNotFoundError: No module named 'flask._compat'
+* change in file where this error occured, \
+from 
+```python
+from flask._compat import text_type
+```
+to
+```python
+from flask_script._compat import text_type
+```
+
 ## Database Configuration
 
 1. In Windows Terminal, start the PostgreSQL server. First, find the PostgreSQL database directory path, e.g.: `C:\Program Files\PostgreSQL\15\data`. Then open the terminal and execute this command:

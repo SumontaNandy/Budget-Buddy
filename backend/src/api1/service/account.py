@@ -9,14 +9,23 @@ from ..model.balance_segment import BalanceSegment
 from ..model.user import User
 
 from ..service.balance_segment import BalanceSegmentUtil
+from ..service.deposite import DepositeUtil
 
 
 class AccountUtil:
     """
         Handles account related operations
     """
+    def __init__(self, id=None):
+        self.id = id
+
+    def validate_amount(self, amount):
+        if amount < 0:
+            raise BadRequest("Amount should be greater than zero")
+
     def create_account(self, user_id, data):
         try:
+            self.validate_amount(data.get('balance'))
             id = str(uuid.uuid4())
             new_account = Account(
                 id = id,
@@ -38,10 +47,10 @@ class AccountUtil:
         except Exception as e:
             raise BadRequest(str(e))
         
-    def get_account(self, acc_id):
-        self.update_total_balance(acc_id)
-        acc = Account.get_by_id(acc_id).toDict()
-        segment = BalanceSegment.query.filter_by(account=acc_id).all()
+    def get_account(self):
+        self.update_total_balance()
+        acc = Account.get_by_id(self.id).toDict()
+        segment = BalanceSegment.query.filter_by(account=self.id).all()
 
         segment = [ob.toDict() for ob in segment]
 
@@ -50,8 +59,8 @@ class AccountUtil:
 
         return acc, HTTPStatus.OK
 
-    def update_account(self, acc_id, data):
-        account = Account.get_by_id(acc_id)
+    def update_account(self, data):
+        account = Account.get_by_id(self.id)
 
         if data['account_type_id'] is not None:
             data['account_type_id'] = AccountType.get_by_id(data.get('account_type_id'))
@@ -61,33 +70,31 @@ class AccountUtil:
                 setattr(account, attr, data[attr])
             account.save()
 
-
         if data.get("balance") is not None:
-            self.update_balance_segment(acc_id, data)
+            self.update_balance_segment(self.id, data)
 
-        return self.get_account(acc_id)
+        return self.get_account(self.id)
     
-    def update_balance_segment(self, acc_id, data):
-        seg = BalanceSegmentUtil().get_balance_segment(acc_id)
-        if data.get('action') == 'add':
-            BalanceSegmentUtil().add_balance(acc_id, {"available_balance": data.get('balance')})
-        else:
-            if float(seg.get('saving_goals')) > float(data.get('balance')):
-                raise BadRequest(f"balance must be greater than total savings amount")
-            else:
-                amount = float(data.get('balance')) - float(seg.get('saving_goals'))
-                BalanceSegmentUtil().update_balance(acc_id, {'available_balance': amount})
-        self.update_total_balance(acc_id)
+    def update_balance_segment(self, data):
+        BalanceSegmentUtil(self.id).update_balance_segment(data)
+        self.update_total_balance(self.id)
     
-    def update_total_balance(self, acc_id):
-        account = Account.get_by_id(acc_id)
+    def update_total_balance(self):
+        account = Account.get_by_id(self.id)
 
-        seg = BalanceSegmentUtil().get_balance_segment(acc_id)
+        seg = BalanceSegmentUtil(self.id).get_balance_segment()
         amount = seg['available_balance'] + seg['saving_goals']
         account.balance = amount
         account.save()
 
-    def get_available_balance(self, acc_id):
-        seg = BalanceSegmentUtil().get_balance_segment(acc_id)
+    def get_available_balance(self):
+        seg = BalanceSegmentUtil().get_balance_segment(self.id)
 
         return seg['available_balance']
+    
+    def deposite(self, data):
+        DepositeUtil(self.id).add_deposite(data)
+        return HTTPStatus.OK
+
+    def get_deposite_history(self, filters=None):
+        return DepositeUtil(self.id).get_deposite_history(filters), HTTPStatus.OK

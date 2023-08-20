@@ -12,6 +12,10 @@ from ..service.transaction_tag import TransactionTagUtil
 from ..service.goal_transaction import GoalTransactionUtil
 
 class Transaction:
+    def update_transaction_tags(self, transaction_id, tags):
+        TransactionTagUtil().delete_tags(transaction_id)
+        TransactionTagUtil().create_tags(transaction_id, tags)
+
     def create_transaction(self, user_id, data):
         try:
             id = str(uuid.uuid4())
@@ -23,9 +27,29 @@ class Transaction:
             )
             transaction.add() 
 
+            if data.get('tags') is not None:
+                self.update_transaction_tags()
+                data.pop('tags')
 
+            if data.get('tp') is not None:
+                create_sp_transaction_list_util(id, data.get('tp'))
+                data.pop('tp')
+
+            if data.get('gp') is not None:
+                GoalTransactionUtil().create_goal_transaction(id, data.get('gp'))
+                data.pop('gp')
+
+            ob = Transaction.get_by_id(id)
+            for attr in ob.toDict().keys():
+                if attr in data:
+                    setattr(ob, attr, data[attr])
+            ob.save()
+            
         except Exception as e:
             raise InternalServerError(str(e))
+        
+
+        
 
 def create_a_transaction_tag_util(transaction_id, data):
     _tag = TransactionTag(

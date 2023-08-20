@@ -1,10 +1,12 @@
 from flask_restx import Namespace, Resource
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask import request
 
 from ..utils.authorize import authorize
 from ..utils.expect import expect
 
 from ..schema.account import account_ip_serializer, account_op_serializer
+from ..schema.deposite import deposite_serializer, deposite_list_serializer
 
 from ..service.account import *
 
@@ -36,7 +38,7 @@ class iAccountRUD(Resource):
         """
             get an account's details with an account_id
         """
-        data, http_response = AccountUtil().get_account(account_id)
+        data, http_response = AccountUtil(account_id).get_account()
 
         return account_op_serializer.dump(data), http_response
 
@@ -46,7 +48,7 @@ class iAccountRUD(Resource):
             updates an account's details with an account_id
         """
         data = api.payload
-        data, http_response = AccountUtil().update_account(account_id, data)
+        data, http_response = AccountUtil(account_id).update_account(data)
 
         return account_op_serializer.dump(data), http_response
     
@@ -55,3 +57,27 @@ class iAccountRUD(Resource):
             deletes an account with an account_id
         """
         pass
+
+
+@api.route('/<account_id>/deposite')
+class Deposite(Resource):
+    method_decorators = [authorize(Account), jwt_required()]
+
+    def get(self, account_id):
+        """
+            get deposite history of an account with an account_id
+        """
+        filters = request.args
+        data, http_response = AccountUtil(account_id).get_deposite_history(filters)
+
+        return deposite_list_serializer.dump(data), http_response
+
+    @expect(deposite_serializer)
+    def post(self, account_id):
+        """
+            deposite money to an account with an account_id
+        """
+        data = api.payload
+        http_response = AccountUtil(account_id).deposite(data)
+
+        return http_response
