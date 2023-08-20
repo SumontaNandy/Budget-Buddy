@@ -2,6 +2,7 @@ import React from 'react'
 import { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import Cookies from 'js-cookie';
+import axios from 'axios';
 
 export const Login = () => {
 
@@ -39,21 +40,19 @@ export const Login = () => {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({
-                    email: email,
-                    password: password
-                })
+                body: JSON.stringify({email, password})
             });
 
             if (res.ok) {
                 const data = await res.json();
+				console.log(data);
                 const { access_token, refresh_token } = data;
 
                 Cookies.set('access_token', access_token);
                 Cookies.set('refresh_token', refresh_token);
 
                 setErrorMessage("Login Successful!");
-                //history.push("/home");
+                history.push("/home");
             }
             else {
                 setErrorMessage("Invalid Credentials!");
@@ -61,6 +60,7 @@ export const Login = () => {
         } catch (error) {
             console.log(error);
         }
+    
     }
 
     // const handleLogout = () => {
@@ -110,7 +110,7 @@ export const Login = () => {
                                     <label htmlFor="password" className="form-label">Enter The Password</label>
                                     <input type="password" value={password} onChange={(e) => { setPassword(e.target.value) }} className="form-control" id="password" aria-describedby="emailHelp" />
                                 </div>
-                                <button type="submit" className="btn btn-outline-primary">Log In</button>
+                                <button onClick={handleLogin} type="submit" className="btn btn-outline-primary">Log In</button>
                             </form>
                             <div class="d-flex justify-content-center links">
                                 Don't have an account?<a href="/signup">Sign Up</a>

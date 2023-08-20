@@ -9,8 +9,8 @@ import DialogTitle from '@mui/material/DialogTitle';
 export default function EditRow(props) {
   console.log("props edit: ", props);
   const [open, setOpen] = React.useState(true);
-  const [email, setEmail] = React.useState(props.name); // State to hold email
-  const [name, setName] = React.useState(props.fat);   // State to hold name
+  const [email, setEmail] = React.useState(props.account); // State to hold email
+  const [name, setName] = React.useState(props.category);   // State to hold name
 
   const handleClose = () => {
     setOpen(false);
@@ -38,7 +38,7 @@ export default function EditRow(props) {
             autoFocus
             margin="dense"
             id="email"
-            label="Email Address"
+            label="Account"
             type="email"
             fullWidth
             variant="standard"
@@ -49,7 +49,7 @@ export default function EditRow(props) {
             autoFocus
             margin="dense"
             id="name"
-            label="Name"
+            label="Category"
             type="text"
             fullWidth
             variant="standard"

@@ -73,7 +73,7 @@ export default function Settings(props) {
         )) }
       </Menu>
 
-      { Dialog && <EditRow name={props.name} fat={props.fat} handleDialog={handleDialog} /> }
+      { Dialog && <EditRow account={props.account} category={props.category} handleDialog={handleDialog} /> }
     </div>
   );
 }
