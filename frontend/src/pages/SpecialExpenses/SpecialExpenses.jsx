@@ -1,3 +1,6 @@
+//146 number line e expenses.map hobe instead of result.map when we will get data from backend
+
+
 import React, { useState, useEffect } from 'react'
 
 import Box from "@mui/material/Box";
@@ -21,6 +24,31 @@ import SpecialExpensesCard from "./SpecialExpensesCard";
 
 
 export const SpecialExpenses = () => {
+
+    let result = [
+        {
+            "type": "by category",
+            "name": "Dinning Out",
+            "categories": "resturant",
+            "setTarget": "true",
+            "amount": 100
+        },
+        {
+            "type": "by category",
+            "name": "Dinning Out",
+            "categories": "resturant",
+            "setTarget": "true",
+            "amount": 100
+        },
+        {
+            "type": "by category",
+            "name": "Dinning Out",
+            "categories": "resturant",
+            "setTarget": "true",
+            "amount": 100
+        }
+    ]
+
     const [expenses, setExpenses] = useState([])
 
     const [name, setName] = useState('');
@@ -76,6 +104,7 @@ export const SpecialExpenses = () => {
 
 
     const handleCreateThird = async () => {
+        handleCloseThird();
         try {
             let link = "http://127.0.0.1:5000/api/user/watchlist/create"
             const cookies = document.cookie;
@@ -104,7 +133,6 @@ export const SpecialExpenses = () => {
             }
             else {
                 alert("Special Expense Creation Not Successful");
-                handleCloseThird();
             }
         } catch (error) {
             console.log(error);
@@ -118,7 +146,7 @@ export const SpecialExpenses = () => {
                 <h1> Special Expenses </h1>
 
                 <Grid container spacing={2}>
-                    {expenses.map(expense => {
+                    {result.map(expense => {
                         return (
                             <Grid item xs={3}>
                                 <SpecialExpensesCard
@@ -222,3 +250,6 @@ export const SpecialExpenses = () => {
         </div>
     )
 }
+
+
+

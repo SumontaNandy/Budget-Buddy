@@ -69,6 +69,7 @@ export default function SavingCard(props) {
     }
 
     const handleEditThird = async () => {
+        handleCloseThird();
         try {
             let link = "http://127.0.0.1:5000/api/user/goal/edit/" + name
             const cookies = document.cookie;
@@ -98,7 +99,6 @@ export default function SavingCard(props) {
             }
             else {
                 alert("Edit Not Successful");
-                handleCloseThird();
             }
         } catch (error) {
             console.log(error);

@@ -1,3 +1,6 @@
+//152 number line e goals.map hobe instead of result.map when we will get data from backend
+
+
 import React, { useState, useEffect } from 'react'
 
 import Box from "@mui/material/Box";
@@ -21,6 +24,34 @@ import SavingGoalsData from "../../data/SavingGoalsData";
 
 
 export const SavingGoals = () => {
+
+    let result = [
+        {
+            "name": "Cox's Bazar Vacation",
+            "goal_amount": 100000,
+            "saved_so_far": 5000,
+            "account": "ICCU Savings",
+            "target_date": "10/10/2029",
+            "monthly_contribution": 2500
+        },
+        {
+            "name": "Eid Shopping",
+            "goal_amount": 10000,
+            "saved_so_far": 2000,
+            "account": "ICCU Savings",
+            "target_date": "10/10/2024",
+            "monthly_contribution": 1000
+        },
+        {
+            "name": "Grad Night",
+            "goal_amount": 1000,
+            "saved_so_far": 200,
+            "account": "ICCU Savings",
+            "target_date": "10/10/2024",
+            "monthly_contribution": 100
+        }
+    ]
+
     const [goals, setGoals] = useState([])
     const [name, setName] = useState('');
     const [goalAmount, setGoalAmount] = useState('');
@@ -78,6 +109,7 @@ export const SavingGoals = () => {
 
 
     const handleCreateThird = async () => {
+        handleCloseThird();
         try {
             let link = "http://127.0.0.1:5000/api/user/goal/create"
             const cookies = document.cookie;
@@ -107,7 +139,6 @@ export const SavingGoals = () => {
             }
             else {
                 alert("Goal Creation Not Successful");
-                handleCloseThird();
             }
         } catch (error) {
             console.log(error);
@@ -121,7 +152,7 @@ export const SavingGoals = () => {
                 <h1> Saving Goals </h1>
 
                 <Grid container spacing={2}>
-                    {goals.map(goal => {
+                    {result.map(goal => {
                         return (
                             <Grid item xs={3}>
                                 <SavingCard

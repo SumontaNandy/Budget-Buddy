@@ -83,6 +83,7 @@ export const TaxInfo = (props) => {
 
 
     const handleCreateThird = async () => {
+        handleCloseThird();
         try {
             let link = "http://127.0.0.1:5000/api/user/tax/update"
             const cookies = document.cookie;
@@ -128,7 +129,6 @@ export const TaxInfo = (props) => {
             }
             else {
                 alert("Special Expense Creation Not Successful");
-                handleCloseThird();
             }
         } catch (error) {
             console.log(error);
@@ -289,6 +289,8 @@ export const TaxInfo = (props) => {
                     Update Tax Information
                 </Button>
             </div>
+
+
             <Dialog open={openCreateFirst} onClose={handleCloseFirst}>
                 <DialogTitle>Add Special Expense</DialogTitle>
                 <DialogContent>
@@ -325,11 +327,32 @@ export const TaxInfo = (props) => {
                         value={motherName}
                         onChange={(e) => setMotherName(e.target.value)}
                     />
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="mobile"
+                        label="Mobile Number"
+                        type="text"
+                        fullWidth
+                        variant="standard"
+                        value={mobile}
+                        onChange={(e) => setMobile(e.target.value)}
+                    />
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="address"
+                        label="Address"
+                        type="text"
+                        fullWidth
+                        variant="standard"
+                        value={address}
+                        onChange={(e) => setAddress(e.target.value)}
+                    />
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DemoContainer components={['DatePicker', 'DatePicker']}>
+                        <DemoContainer components={['DatePicker']}>
                             <DatePicker
                                 label="Date of Birth"
-                                value={dob}
                                 onChange={(e) => { setDob(e) }}
                             />
                         </DemoContainer>
@@ -340,6 +363,8 @@ export const TaxInfo = (props) => {
                     <Button onClick={handleCloseFirst}>Cancel</Button>
                 </DialogActions>
             </Dialog>
+
+
             <Dialog open={openCreateSecond} onClose={handleCloseSecond}>
                 <DialogTitle>Add Special Expense</DialogTitle>
                 <DialogContent>

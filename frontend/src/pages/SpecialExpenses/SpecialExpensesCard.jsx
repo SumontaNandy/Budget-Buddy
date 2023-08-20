@@ -63,6 +63,7 @@ export default function SpecialExpensesCard(props) {
     }
 
     const handleEditThird = async () => {
+        handleCloseThird();
         try {
             let link = "http://127.0.0.1:5000/api/user/watchlist/update/" + name
             const cookies = document.cookie;
@@ -91,7 +92,6 @@ export default function SpecialExpensesCard(props) {
             }
             else {
                 alert("Edit Not Successful");
-                handleCloseThird();
             }
         } catch (error) {
             console.log(error);
