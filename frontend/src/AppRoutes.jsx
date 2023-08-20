@@ -9,6 +9,9 @@ import { Signup } from './pages/Signup/Signup';
 import Home from './pages/Home/Home';
 import Transaction from './pages/Transaction/Transaction';
 import Recurring from './pages/Recurring/Recurring';
+import SavingGoalsSidebarMenu from './components/SavingGoalsSidebarMenu';
+import SpecialExpensesSidebarMenu from './components/SpecialExpensesSidebarMenu';
+import TaxSidebarMenu from './components/TaxSidebarMenu';
 
 export default function AppRoutes()
 {
