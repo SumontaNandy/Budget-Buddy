@@ -9,6 +9,7 @@ import { Signup } from './pages/Signup/Signup';
 import SidebarMenu from './components/SidebarMenu';
 import SavingGoalsSidebarMenu from './components/SavingGoalsSidebarMenu';
 import SpecialExpensesSidebarMenu from './components/SpecialExpensesSidebarMenu';
+import TaxSidebarMenu from './components/TaxSidebarMenu';
 //
 import {SavingGoals} from './pages/SavingGoals/SavingGoals';
 
@@ -24,6 +25,7 @@ export default function AppRoutes()
                 <Route path="/signup" component={Signup} />
                 <Route path="/saving-goals" component={SavingGoalsSidebarMenu} />
                 <Route path="/special-expenses" component={SpecialExpensesSidebarMenu} />
+                <Route path="/tax" component={TaxSidebarMenu} />
             </Switch>
         </Router>
     );
