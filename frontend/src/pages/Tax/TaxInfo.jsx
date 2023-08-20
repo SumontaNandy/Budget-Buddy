@@ -22,6 +22,13 @@ import { Container, Paper, Typography } from '@mui/material';
 
 
 export const TaxInfo = (props) => {
+
+    const centerContainerStyle = {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+    };
+
     const [name, setName] = useState(props.info.personal.name);
     const [fatherName, setFatherName] = useState(props.info.personal.father_name);
     const [motherName, setMotherName] = useState(props.info.personal.mother_name);
@@ -130,50 +137,158 @@ export const TaxInfo = (props) => {
 
     return (
         <div>
-            <Container maxWidth="sm">
-                <Paper elevation={3} style={{ padding: '20px' }}>
-                    <Typography variant="h5" align="center" gutterBottom>
-                        Name: {name}
-                    </Typography>
-                    <Grid container spacing={2}>
-                        <Grid item xs={6}>
-                            <Typography variant="body1">
-                                Father's Name: {fatherName} <br />
-                                Mother's Name: {motherName} <br />
-                                Date of Birth: {dob} <br />
-                            </Typography>
-                            <Typography variant="body2">
-                                Mobile Number: {mobile} <br />
-                                Address: {address} <br />
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <Typography variant="body1">
-                                NID: {nid} <br />
-                                TIIN: {tiin} <br />
-                                UTIN: {utin} <br />
-                                VAT Registration Number: {vatRegNo} <br />
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <Typography variant="body1">
-                                Profession: {profession} <br />
-                                Organisation: {organisation} <br />
-                                Designation: {designation} <br />
-                            </Typography>
-                            <Typography variant="body2">
-                                Salary: {salary} <br />
-                                Allowance: {allowance} <br />
-                                Bonus: {bonus} <br />
-                            </Typography>
-                        </Grid>
-                    </Grid>
-                </Paper>
-            </Container>
+            <Box m={1.5} sx={{ flexGrow: 1, width: "1200px" }}>
+                <Typography variant="h6" component="div">
+                    <div className="shadow-lg p-3 mb-2 bg-white rounded text-center"><b>Personal Information</b></div>
+                </Typography>
 
-            <Button variant="contained" onClick={onCreateFirst}>
-                Update Tax Information
-            </Button>
+
+                <div className='row text-center'>
+                    <div className='col'>
+                        <Typography variant="body1" component="div">
+                            <b><small><u>Name</u></small></b><br />
+                            {name}
+                        </Typography>
+                    </div>
+                    <div className='col'>
+                        <Typography variant="body1" component="div">
+                            <b><small><u>Father's Name</u></small></b><br />
+                            {fatherName}
+                        </Typography>
+                    </div>
+                    <div className='col'>
+                        <Typography variant="body1" component="div">
+                            <b><small><u>Mother's Name</u></small></b><br />
+                            {motherName}
+                        </Typography>
+                    </div>
+                </div>
+
+                <br />
+
+                <div className='row text-center'>
+                    <div className='col'>
+                        <Typography variant="body1" component="div">
+                            <b><small><u>Date of Birth</u></small></b><br />
+                            {dob}
+                        </Typography>
+                    </div>
+                    <div className='col'>
+                        <Typography variant="body1" component="div">
+                            <b><small><u>Mobile Number</u></small></b><br />
+                            {mobile}
+                        </Typography>
+                    </div>
+                    <div className='col'>
+                        <Typography variant="body1" component="div">
+                            <b><small><u>Address</u></small></b><br />
+                            {address}
+                        </Typography>
+                    </div>
+                </div>
+            </Box>
+
+
+
+
+            <Box m={1.5} sx={{ flexGrow: 1, width: "1200px" }}>
+                <Typography variant="h6" component="div">
+                    <div className="shadow-lg p-3 mb-2 bg-white rounded text-center"><b>Identification Numbers</b></div>
+                </Typography>
+
+
+                <div className='row text-center'>
+                    <div className='col'>
+                        <Typography variant="body1" component="div">
+                            <b><small><u>NID No</u></small></b><br />
+                            {nid}
+                        </Typography>
+                    </div>
+                    <div className='col'>
+                        <Typography variant="body1" component="div">
+                            <b><small><u>TIIN No</u></small></b><br />
+                            {tiin}
+                        </Typography>
+                    </div>
+                </div>
+
+                <br />
+
+                <div className='row text-center'>
+                    <div className='col'>
+                        <Typography variant="body1" component="div">
+                            <b><small><u>UTIN No</u></small></b><br />
+                            {utin}
+                        </Typography>
+                    </div>
+                    <div className='col'>
+                        <Typography variant="body1" component="div">
+                            <b><small><u>VAT Registration No</u></small></b><br />
+                            {vatRegNo}
+                        </Typography>
+                    </div>
+                </div>
+            </Box>
+
+
+
+            <Box m={1.5} sx={{ flexGrow: 1, width: "1200px" }}>
+                <Typography variant="h6" component="div">
+                    <div className="shadow-lg p-3 mb-2 bg-white rounded text-center"><b>Income Information</b></div>
+                </Typography>
+
+
+                <div className='row text-center'>
+                    <div className='col'>
+                        <Typography variant="body1" component="div">
+                            <b><small><u>Profession</u></small></b><br />
+                            {profession}
+                        </Typography>
+                    </div>
+                    <div className='col'>
+                        <Typography variant="body1" component="div">
+                            <b><small><u>Organisation</u></small></b><br />
+                            {organisation}
+                        </Typography>
+                    </div>
+                    <div className='col'>
+                        <Typography variant="body1" component="div">
+                            <b><small><u>Designation</u></small></b><br />
+                            {designation}
+                        </Typography>
+                    </div>
+                </div>
+
+                <br />
+
+                <div className='row text-center'>
+                    <div className='col'>
+                        <Typography variant="body1" component="div">
+                            <b><small><u>Basic Salary</u></small></b><br />
+                            {salary}
+                        </Typography>
+                    </div>
+                    <div className='col'>
+                        <Typography variant="body1" component="div">
+                            <b><small><u>Special Allowance</u></small></b><br />
+                            {allowance}
+                        </Typography>
+                    </div>
+                    <div className='col'>
+                        <Typography variant="body1" component="div">
+                            <b><small><u>Bonus Allowance</u></small></b><br />
+                            {bonus}
+                        </Typography>
+                    </div>
+                </div>
+            </Box>
+
+
+            <div style={centerContainerStyle}>
+                <Button variant="contained" onClick={onCreateFirst}>
+                    Update Tax Information
+                </Button>
+            </div>
             <Dialog open={openCreateFirst} onClose={handleCloseFirst}>
                 <DialogTitle>Add Special Expense</DialogTitle>
                 <DialogContent>
