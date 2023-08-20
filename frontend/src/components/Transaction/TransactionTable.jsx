@@ -13,6 +13,9 @@ import Collapse from "@mui/material/Collapse";
 import IconButton from "@mui/material/IconButton";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
+import TransactionData from '../../data/TransactionData';
+const TransactionList = TransactionData;
+
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
   return <IconButton {...other} />;
@@ -25,29 +28,22 @@ const ExpandMore = styled((props) => {
 }));
 
 const columns = [
-  { id: 'name', label: 'Name', minWidth: 120 },
-  { id: 'code', label: 'ISO\u00a0Code', minWidth: 100 },
+  { id: 'name', label: 'Date', minWidth: 120 },
+  { id: 'code', label: 'Category', minWidth: 100 },
   {
     id: 'population',
-    label: 'Population',
+    label: 'Amount',
     minWidth: 170,
     align: 'right',
     format: (value) => value.toLocaleString('en-US'),
   },
   {
     id: 'size',
-    label: 'Size\u00a0(km\u00b2)',
+    label: 'Account',
     minWidth: 170,
     align: 'right',
     format: (value) => value.toLocaleString('en-US'),
-  },
-  {
-    id: 'density',
-    label: 'Density',
-    minWidth: 170,
-    align: 'right',
-    format: (value) => value.toFixed(2),
-  },
+  }
 ];
 
 function createData(name, code, population, size) {

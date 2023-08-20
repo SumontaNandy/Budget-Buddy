@@ -10,14 +10,14 @@ export default function PlanCard(props) {
     <Card sx={{ minWidth: 275 }}>
       <CardContent>
         <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-          { props.name }
-        </Typography>
-        
-        <Typography variant="h5" component="div">
-           Spent: { props.spent }
+          {props.name}
         </Typography>
 
-        
+        <Typography variant="h5" component="div">
+          Spent: {props.spent}
+        </Typography>
+
+
       </CardContent>
     </Card>
   );

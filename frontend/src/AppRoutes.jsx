@@ -22,6 +22,9 @@ export default function AppRoutes()
                 <Route path="/recurring" component={Recurring} />
                 <Route path="/contact" component={Contact} />
                 <Route path="/signup" component={Signup} />
+                <Route path="/saving-goals" component={SavingGoalsSidebarMenu} />
+                <Route path="/special-expenses" component={SpecialExpensesSidebarMenu} />
+                <Route path="/tax" component={TaxSidebarMenu} />
             </Switch>
         </Router>
     );
