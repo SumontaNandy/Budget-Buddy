@@ -1,5 +1,9 @@
 const MenuData = [
   {
+    name: "Home",
+    link: "/home"
+  },
+  {
     name: "Accounts",
     link: "/account-types"
   },

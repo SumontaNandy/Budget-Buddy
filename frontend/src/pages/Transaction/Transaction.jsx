@@ -1,17 +1,10 @@
 import * as React from 'react';
-import Box from "@mui/material/Box";
 
-import SidebarMenu, { DrawerHeader } from '../../components/Menu/SidebarMenu';
 import TransactionContent from './TransactionContent';
+import UseSideBar from "../../components/Menu/UseSideBar";
 
 export default function Transaction() {
   return (
-    <Box sx={{ display: 'flex' }}>
-      <SidebarMenu />
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        <DrawerHeader />
-        <TransactionContent />
-      </Box>
-    </Box>
+    <UseSideBar content={<TransactionContent />} />
   )
 }
