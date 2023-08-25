@@ -19,15 +19,19 @@ export default function AppRoutes()
         <Router>
             <Switch>
                 <Route path="/" exact component={Login} />
-                <Route path="/account-types" component={AccountTypes} />
+                <Route path="/signup" component={Signup} />
+
                 <Route path="/home" component={Home} />
+
+                <Route path="/account-types" component={AccountTypes} />
                 <Route path="/transactions" component={Transaction} />
                 <Route path="/recurring" component={Recurring} />
-                <Route path="/contact" component={Contact} />
-                <Route path="/signup" component={Signup} />
+         
                 <Route path="/saving-goals" component={SavingGoals} />
                 <Route path="/special-expenses" component={SpecialExpenses} />
                 <Route path="/tax" component={Tax} />
+
+                <Route path="/contact" component={Contact} />
             </Switch>
         </Router>
     );
