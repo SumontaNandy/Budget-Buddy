@@ -6,22 +6,18 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 
-export default function FormDialog() {
-  console.log("Not Ok")
-  const [open, setOpen] = React.useState(false);
-  const [email, setEmail] = React.useState(''); // State to hold email
-  const [name, setName] = React.useState('');   // State to hold name
-  console.log("Ok")
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+export default function EditRow(props) {
+  console.log("props edit: ", props);
+  const [open, setOpen] = React.useState(true);
+  const [email, setEmail] = React.useState(props.account); // State to hold email
+  const [name, setName] = React.useState(props.category);   // State to hold name
 
   const handleClose = () => {
     setOpen(false);
+    props.handleDialog();
   };
 
-  const handleAdd = () => {
+  const handleSave = () => {
     // Here you can access the email and name values
     console.log('Email: ', email);
     console.log('Name: ', name);
@@ -30,13 +26,11 @@ export default function FormDialog() {
     // For example, sending the data to a server, updating state, etc.
     
     setOpen(false); // Close the dialog
+    props.handleDialog();
   };
 
   return (
     <div>
-      <Button variant="contained" onClick={handleClickOpen}>
-        Add Account
-      </Button>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Add Account</DialogTitle>
         <DialogContent>
@@ -44,7 +38,7 @@ export default function FormDialog() {
             autoFocus
             margin="dense"
             id="email"
-            label="Email Address"
+            label="Account"
             type="email"
             fullWidth
             variant="standard"
@@ -55,7 +49,7 @@ export default function FormDialog() {
             autoFocus
             margin="dense"
             id="name"
-            label="Name"
+            label="Category"
             type="text"
             fullWidth
             variant="standard"
@@ -64,7 +58,7 @@ export default function FormDialog() {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleAdd}>Add</Button>
+          <Button onClick={handleSave}>Save</Button>
           <Button onClick={handleClose}>Cancel</Button>
         </DialogActions>
       </Dialog>

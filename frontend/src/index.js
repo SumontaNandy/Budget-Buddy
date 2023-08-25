@@ -3,23 +3,15 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 //import App from './App';
 import reportWebVitals from './reportWebVitals';
-
-//import { ProSidebarProvider } from 'react-pro-sidebar';
-//import SidebarMenu from './components/Sidebar';
-import MiniDrawer from './components/NewBar';
-
 import { StyledEngineProvider } from '@mui/material/styles';
-import { ThemeProvider } from '@mui/material/styles';
-import AppRoutes from './components/AppRoutes';
+
+import AppRoutes from './AppRoutes';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <StyledEngineProvider injectFirst>
-    <div>
-        <MiniDrawer />
         <AppRoutes />
-    </div>
     </StyledEngineProvider>
   </React.StrictMode>
 );
