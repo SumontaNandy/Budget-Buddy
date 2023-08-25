@@ -9,9 +9,9 @@ import { Signup } from './pages/Signup/Signup';
 import Home from './pages/Home/Home';
 import Transaction from './pages/Transaction/Transaction';
 import Recurring from './pages/Recurring/Recurring';
-import SavingGoalsSidebarMenu from './components/SavingGoalsSidebarMenu';
+import SavingGoals from './pages/SavingGoals/SavingGoals';
 import SpecialExpenses from './pages/SpecialExpenses/SpecialExpenses';
-import TaxSidebarMenu from './components/TaxSidebarMenu';
+import Tax from './pages/Tax/Tax';
 
 export default function AppRoutes()
 {
@@ -25,9 +25,9 @@ export default function AppRoutes()
                 <Route path="/recurring" component={Recurring} />
                 <Route path="/contact" component={Contact} />
                 <Route path="/signup" component={Signup} />
-                <Route path="/saving-goals" component={SavingGoalsSidebarMenu} />
+                <Route path="/saving-goals" component={SavingGoals} />
                 <Route path="/special-expenses" component={SpecialExpenses} />
-                <Route path="/tax" component={TaxSidebarMenu} />
+                <Route path="/tax" component={Tax} />
             </Switch>
         </Router>
     );
