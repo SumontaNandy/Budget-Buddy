@@ -2,8 +2,7 @@ import * as React from 'react';
 import Box from "@mui/material/Box";
 
 import SidebarMenu, { DrawerHeader } from '../../components/Menu/SidebarMenu';
-import Upcoming from "../../components/Upcoming/Upcoming";
-import TransactionTable from "../../components/Transaction/TransactionTable";
+import TransactionContent from './TransactionContent';
 
 export default function Transaction() {
   return (
@@ -11,8 +10,7 @@ export default function Transaction() {
       <SidebarMenu />
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
-        <Upcoming />
-        <TransactionTable />
+        <TransactionContent />
       </Box>
     </Box>
   )

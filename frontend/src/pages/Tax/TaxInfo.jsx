@@ -353,7 +353,7 @@ export const TaxInfo = (props) => {
                         <DemoContainer components={['DatePicker']}>
                             <DatePicker
                                 label="Date of Birth"
-                                onChange={(e) => { setDob(e) }}
+                                onChange={(e) => { setDob(e.d) }}
                             />
                         </DemoContainer>
                     </LocalizationProvider>

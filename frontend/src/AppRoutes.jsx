@@ -10,7 +10,7 @@ import Home from './pages/Home/Home';
 import Transaction from './pages/Transaction/Transaction';
 import Recurring from './pages/Recurring/Recurring';
 import SavingGoalsSidebarMenu from './components/SavingGoalsSidebarMenu';
-import SpecialExpensesSidebarMenu from './components/SpecialExpensesSidebarMenu';
+import SpecialExpenses from './pages/SpecialExpenses/SpecialExpenses';
 import TaxSidebarMenu from './components/TaxSidebarMenu';
 
 export default function AppRoutes()
@@ -26,7 +26,7 @@ export default function AppRoutes()
                 <Route path="/contact" component={Contact} />
                 <Route path="/signup" component={Signup} />
                 <Route path="/saving-goals" component={SavingGoalsSidebarMenu} />
-                <Route path="/special-expenses" component={SpecialExpensesSidebarMenu} />
+                <Route path="/special-expenses" component={SpecialExpenses} />
                 <Route path="/tax" component={TaxSidebarMenu} />
             </Switch>
         </Router>
