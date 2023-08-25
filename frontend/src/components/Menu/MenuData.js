@@ -10,6 +10,18 @@ const MenuData = [
   {
     name: "Recurring",
     link: "/recurring"
+  },
+  {
+    name: "Saving Goals",
+    link: "/saving-goals"
+  },
+  {
+    name: "Special Expenses",
+    link: "/special-expenses"
+  },
+  {
+    name: "Tax",
+    link: "/tax"
   }
 ]
 
