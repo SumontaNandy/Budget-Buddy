@@ -24,8 +24,7 @@ export const Signup = () => {
         backgroundColor: "red"
     }
 
-    //const history = useHistory();
-    const [name, setName] = useState("")
+    const history = useHistory();
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
@@ -50,7 +49,7 @@ export const Signup = () => {
                 // Cookies.set('refresh_token', refresh_token);
 
                 setErrorMessage("Signup Successful!");
-                //history.push("/home");
+                history.push("/");
             }
             else {
                 setErrorMessage("Credentials Already Exist!");
@@ -77,7 +76,7 @@ export const Signup = () => {
 
     const submit = (e) => {
         e.preventDefault();
-        if (!email || !password || !name) {
+        if (!email || !password) {
             alert("Credentials cannot be blank!");
         }
         else if (password !== confirmPassword) {
@@ -103,10 +102,6 @@ export const Signup = () => {
                         </div>
                         <div className='card-body'>
                             <form className='form-inline' onSubmit={submit}>
-                                <div className="form-group mb-3">
-                                    <label htmlFor="name" className="form-label">Enter Your Name</label>
-                                    <input type="text" value={name} onChange={(e) => { setName(e.target.value) }} className="form-control" id="name" aria-describedby="emailHelp" />
-                                </div>
                                 <div className="form-group mb-3">
                                     <label htmlFor="email" className="form-label">Enter Your Email</label>
                                     <input type="email" value={email} onChange={(e) => { setEmail(e.target.value) }} className="form-control" id="email" aria-describedby="emailHelp" />

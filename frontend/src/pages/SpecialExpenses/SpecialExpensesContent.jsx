@@ -141,7 +141,7 @@ export default function SpecialExpensesContent() {
 
     return (
         <>
-            <Box m={1.5} sx={{ flexGrow: 1 }}>
+            <Box sx={{ flexGrow: 1 }}>
                 <h1> Special Expenses </h1>
 
                 <Grid container spacing={2}>
