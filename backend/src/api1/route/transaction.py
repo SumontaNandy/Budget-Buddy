@@ -21,7 +21,12 @@ class TransactionCR(Resource):
         """
             get all transactons' list
         """
-        pass
+        user_id = get_jwt_identity()
+        filters = request.args
+
+        data, http_response = TransactionUtil().get_transaction_list(user_id, filters)
+
+        return transaction_list_serializer.dump(data), http_response
     
     @expect(transaction_serializer)
     @jwt_required()
@@ -29,11 +34,10 @@ class TransactionCR(Resource):
         """
             adds a new transaction to the user
         """
-        filters = request.args
         user_id = get_jwt_identity()
         data = api.payload
 
-        http_response = create_transaction_controller(user_id, data)
+        http_response = TransactionUtil().create_transaction(user_id, data);
 
         return http_response
     
@@ -46,7 +50,7 @@ class iTransactionRUD(Resource):
         """
             get a transaction's details with an transaction_id
         """
-        data, http_response = get_transaction_controller(transaction_id)
+        data, http_response = TransactionUtil(transaction_id).get_transaction()
 
         return transaction_serializer.dump(data), http_response
     
@@ -57,7 +61,7 @@ class iTransactionRUD(Resource):
         """
         data = api.payload
 
-        http_response = update_transaction_controller(transaction_id, data)
+        http_response = TransactionUtil(transaction_id).update_transaction(data)
         
         return http_response
     

@@ -13,6 +13,7 @@ class GoalTransactionSchema(Schema):
     id = fields.String(dump_only=True)
     amount = fields.Float()
     goal_id = fields.String()
+    withdraw_for = fields.String()
     transaction_id = fields.String(dump_only=True)   
 
 
@@ -28,6 +29,10 @@ class TransactionSchema(Schema):
     tp = fields.List(fields.Nested(SpTransactionSchema()))
     gp = fields.List(fields.Nested(GoalTransactionSchema()))
 
+class TransactionListSchema(Schema):
+    transactions = fields.List(fields.Nested(TransactionSchema()))
+    page_info = fields.Dict()
+
 
 transaction_serializer = TransactionSchema()
-transaction_list_serializer = TransactionSchema(many=True)
+transaction_list_serializer = TransactionListSchema()

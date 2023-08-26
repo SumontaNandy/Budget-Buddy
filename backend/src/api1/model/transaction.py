@@ -32,7 +32,7 @@ class Transaction(db.Model):
         db.session.commit()
 
     def __repr__(self):
-        return f'<Transaction {self.id} {self.account_name}>'
+        return f'<Transaction {self.id}>'
     
     def toDict(self):
         data = { c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs }

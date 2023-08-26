@@ -5,7 +5,7 @@ from ..schema.paginate import PaginateSchema
 
 class GoalSchema(Schema):
     id = fields.String(dump_only=True)
-    account_id = fields.String()
+    account_id = fields.String(attribute='account')
     category = fields.String()
     name = fields.String()
     goal_amount = fields.Float()
