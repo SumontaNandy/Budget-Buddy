@@ -1,10 +1,11 @@
 from flask_restx import Namespace, Resource
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask import request
 
 from ..utils.authorize import authorize
 from ..utils.expect import expect
 
-from ..schema.recurrent_expense import recurrent_expense_serializer
+from ..schema.recurrent_expense import recurrent_expense_serializer, recurrent_expense_list_serializer
 
 from ..service.recurrent_expense import *
 
@@ -20,7 +21,12 @@ class RecurrentExpenseCR(Resource):
         """
             get all recurrent spending_plans' list
         """
-        pass
+        user_id = get_jwt_identity()
+        filters = request.args
+
+        data, http_response = RecurrentExpenseUtil().get_recurrent_expense_list(user_id, filters)
+
+        return recurrent_expense_list_serializer.dump(data), http_response
     
     @expect(recurrent_expense_serializer)
     @jwt_required()
@@ -31,8 +37,7 @@ class RecurrentExpenseCR(Resource):
         user_id = get_jwt_identity()
         data = api.payload
 
-        http_response = create_recurrent_expense_controller(user_id, data)
-
+        http_response = RecurrentExpenseUtil().create_recurrent_expense(user_id, data)
         return http_response
     
 
@@ -44,7 +49,7 @@ class iRecurrentExpenseRUD(Resource):
         """
             get a recurrent spending_plan's details with an spending_plan_id
         """
-        data, http_response = get_recurrent_expense_controller(spending_plan_id)
+        data, http_response = RecurrentExpenseUtil(spending_plan_id).get_recurrent_expense()
         # pass
         return recurrent_expense_serializer.dump(data), http_response
     
@@ -55,7 +60,7 @@ class iRecurrentExpenseRUD(Resource):
         """
         data = api.payload
 
-        http_response = update_recurrent_expense_controller(spending_plan_id, data)
+        http_response = RecurrentExpenseUtil(spending_plan_id).update_recurrent_expense(data)
         
         return http_response
     
