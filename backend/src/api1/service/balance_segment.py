@@ -20,7 +20,7 @@ class BalanceSegmentUtil:
         
     def update_validation(self, amount):
         ob = BalanceSegment.query.filter_by(account=self.account_id, segment_name='saving_goals').first()
-        if amount < ob.amount:
+        if float(amount) < float(ob.amount):
             raise BadRequest("Amount should be greater than saving goals")
 
     def create_a_balance_segment(self, name, amount):
@@ -98,7 +98,7 @@ class BalanceSegmentUtil:
     def update_balance_segments(self, balance):
         self.update_validation(balance)
         ob = BalanceSegment.query.filter_by(account=self.account_id, segment_name='saving_goals').first()
-        balance = balance - ob.amount
+        balance = float(balance) - float(ob.amount)
         self.update_available_balance(balance)
     
     def delete_balance_segment(self):

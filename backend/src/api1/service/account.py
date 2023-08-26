@@ -71,13 +71,13 @@ class AccountUtil:
             account.save()
 
         if data.get("balance") is not None:
-            self.update_balance_segment(self.id, data)
+            self.update_balance_segment(data.get('balance'))
 
-        return self.get_account(self.id)
+        return self.get_account()
     
     def update_balance_segment(self, data):
-        BalanceSegmentUtil(self.id).update_balance_segment(data)
-        self.update_total_balance(self.id)
+        BalanceSegmentUtil(self.id).update_balance_segments(data)
+        self.update_total_balance()
     
     def update_total_balance(self):
         account = Account.get_by_id(self.id)
