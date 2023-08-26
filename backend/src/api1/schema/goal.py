@@ -1,6 +1,8 @@
 from marshmallow import fields
 from marshmallow.schema import Schema
 
+from ..schema.paginate import PaginateSchema
+
 class GoalSchema(Schema):
     id = fields.String(dump_only=True)
     account_id = fields.String()
@@ -11,7 +13,12 @@ class GoalSchema(Schema):
     spent_so_far = fields.Float()
     target_date = fields.DateTime()
     monthly_contribution = fields.Float()
+    withdraw_type = fields.String()
 
+
+class GoalListSchema(Schema):
+    goal_list = fields.List(fields.Nested(GoalSchema()))
+    page_info = fields.Nested(PaginateSchema())
 
 goal_serializer = GoalSchema()
-goal_list_serializer = GoalSchema(many=True)
+goal_list_serializer = GoalListSchema()

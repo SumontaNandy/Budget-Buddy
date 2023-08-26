@@ -1,5 +1,6 @@
 from flask_restx import Namespace, Resource
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask import request
 
 from ..utils.authorize import authorize
 from ..utils.expect import expect
@@ -20,7 +21,12 @@ class GoalCR(Resource):
         """
             get all goals' list
         """
-        pass
+        user_id = get_jwt_identity()
+        filters = request.args
+
+        data, http_response = GoalUtil().get_goal_list(user_id, filters)
+
+        return goal_list_serializer.dump(data), http_response
     
     @expect(goal_serializer)
     @jwt_required()
@@ -31,7 +37,9 @@ class GoalCR(Resource):
         user_id = get_jwt_identity()
         data = api.payload
 
-        http_response = create_goal_controller(user_id, data)
+        print(data)
+
+        http_response = GoalUtil().create_goal(user_id, data)
 
         return http_response
     
@@ -44,7 +52,7 @@ class iWatchlistRUD(Resource):
         """
             get a goal's details with an goal_id
         """
-        data, http_response = get_goal_controller(goal_id)
+        data, http_response = GoalUtil(goal_id).get_goal()
 
         return goal_serializer.dump(data), http_response
     
@@ -55,7 +63,7 @@ class iWatchlistRUD(Resource):
         """
         data = api.payload
 
-        http_response = update_goal_controller(goal_id, data)
+        http_response = GoalUtil(goal_id).update_goal(data)
         
         return http_response
     

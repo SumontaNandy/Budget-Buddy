@@ -15,7 +15,7 @@ class BalanceSegmentUtil:
         self.account_id = account_id
 
     def validate_amount(self, amount):
-        if amount < 0:
+        if float(amount) < 0:
             raise BadRequest("Amount should be greater than zero")
         
     def update_validation(self, amount):

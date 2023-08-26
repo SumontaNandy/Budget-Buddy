@@ -88,7 +88,7 @@ class AccountUtil:
         account.save()
 
     def get_available_balance(self):
-        seg = BalanceSegmentUtil().get_balance_segment(self.id)
+        seg = BalanceSegmentUtil(self.id).get_balance_segment()
 
         return seg['available_balance']
     
