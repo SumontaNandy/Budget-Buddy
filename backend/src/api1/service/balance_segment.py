@@ -46,8 +46,8 @@ class BalanceSegmentUtil:
         return ob.amount
         
     def create_balance_segments(self, balance):
-        self.create_a_balance_segment('available_balance', balance, self.account_id)
-        self.create_a_balance_segment('saving_goals', 0, self.account_id)
+        self.create_a_balance_segment('available_balance', balance)
+        self.create_a_balance_segment('saving_goals', 0)
 
     def add_available_balance(self, amount):
         self.validate_amount(amount)

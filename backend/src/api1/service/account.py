@@ -41,7 +41,7 @@ class AccountUtil:
                     setattr(new_account, attr, data[attr])
             new_account.save()
 
-            BalanceSegmentUtil().create_balance_segment(id, data.get('balance'))
+            BalanceSegmentUtil(id).create_balance_segments(data.get('balance'))
 
             return HTTPStatus.CREATED
         except Exception as e:
