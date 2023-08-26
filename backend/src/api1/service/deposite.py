@@ -2,6 +2,7 @@ from werkzeug.exceptions import BadRequest
 from datetime import datetime
 from sqlalchemy import desc
 import uuid
+from http import HTTPStatus
 
 from ..model.account import Account
 from ..model.deposite_history import DepositeHistory as Deposite
@@ -27,6 +28,8 @@ class DepositeUtil:
             account_id = Account.get_by_id(self.account_id)
         )
         ob.add()
+
+        return HTTPStatus.CREATED
 
     def get_deposite_history(self, filter=None):
         query = Deposite.query.filter_by(account=self.account_id)
@@ -60,6 +63,6 @@ class DepositeUtil:
             }
         }   
 
-        return data
+        return data, HTTPStatus.OK
         
         

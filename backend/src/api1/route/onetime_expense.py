@@ -1,10 +1,11 @@
 from flask_restx import Namespace, Resource
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask import request
 
 from ..utils.authorize import authorize
 from ..utils.expect import expect
 
-from ..schema.onetime_expense import onetime_expense_serializer
+from ..schema.onetime_expense import onetime_expense_serializer, onetime_expense_list_serializer
 
 from ..service.onetime_expense import *
 
@@ -20,7 +21,12 @@ class OneTimeExpenseCR(Resource):
         """
             get all one-time spending_plans' list
         """
-        pass
+        user_id = get_jwt_identity()
+        filters = request.args
+
+        data, http_response = OneTimeExpenseUtil().get_one_time_expense_list(user_id, filters)
+
+        return onetime_expense_list_serializer.dump(data), http_response
     
     @expect(onetime_expense_serializer)
     @jwt_required()
@@ -31,7 +37,7 @@ class OneTimeExpenseCR(Resource):
         user_id = get_jwt_identity()
         data = api.payload
 
-        http_response = create_one_time_expense_controller(user_id, data)
+        http_response = OneTimeExpenseUtil().create_one_time_expense(user_id, data)
 
         return http_response
     
@@ -44,7 +50,7 @@ class iOneTimeExpenseRUD(Resource):
         """
             get a one-time spending_plan's details with an spending_plan_id
         """
-        data, http_response = get_one_time_expense_controller(spending_plan_id)
+        data, http_response = OneTimeExpenseUtil(spending_plan_id).get_one_time_expense()
 
         return onetime_expense_serializer.dump(data), http_response
     
@@ -55,7 +61,7 @@ class iOneTimeExpenseRUD(Resource):
         """
         data = api.payload
 
-        http_response = update_one_time_expense_controller(spending_plan_id, data)
+        http_response = OneTimeExpenseUtil(spending_plan_id).update_one_time_expense(data)
 
         return http_response
     
