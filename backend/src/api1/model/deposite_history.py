@@ -26,7 +26,7 @@ class DepositeHistory(db.Model):
         db.session.commit()
 
     def __repr__(self):
-        return f'<GoalTransaction {self.id}>'
+        return f'<DepositeHistory {self.id}>'
     
     def toDict(self):
         data = { c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs }

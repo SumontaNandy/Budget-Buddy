@@ -97,4 +97,5 @@ class AccountUtil:
         return HTTPStatus.OK
 
     def get_deposite_history(self, filters=None):
-        return DepositeUtil(self.id).get_deposite_history(filters), HTTPStatus.OK
+        data = DepositeUtil(self.id).get_deposite_history(filters)  
+        return data, HTTPStatus.OK

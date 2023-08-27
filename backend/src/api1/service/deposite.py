@@ -5,7 +5,7 @@ import uuid
 from http import HTTPStatus
 
 from ..model.account import Account
-from ..model.deposite_history import DepositeHistory as Deposite
+from ..model.deposite_history import DepositeHistory
 
 from .balance_segment import BalanceSegmentUtil
 
@@ -21,7 +21,7 @@ class DepositeUtil:
         amount = data.get('amount')
         self.validate_amount(amount)
         BalanceSegmentUtil(self.account_id).add_available_balance(amount)
-        ob = Deposite(
+        ob = DepositeHistory(
             id = str(uuid.uuid4()),
             amount = amount,
             date = data.get('date'),
@@ -32,7 +32,8 @@ class DepositeUtil:
         return HTTPStatus.CREATED
 
     def get_deposite_history(self, filter=None):
-        query = Deposite.query.filter_by(account=self.account_id)
+        query = DepositeHistory.query.filter_by(account=self.account_id)
+        page, per_page = 1, 2
 
         if filter:
             if 'page' in filter:
@@ -40,19 +41,21 @@ class DepositeUtil:
             if 'per_page' in filter:
                 per_page = int(filter['per_page'])
             if 'start_date' in filter:
-                print(filter['start_date'])
-                query = query.filter(Deposite.date >= filter['start_date'])
+                query = query.filter(DepositeHistory.date >= filter['start_date'])
             if 'end_date' in filter:
-                query = query.filter(Deposite.date <= filter['end_date'])
+                query = query.filter(DepositeHistory.date <= filter['end_date'])
 
-        query = query.order_by(desc(Deposite.date))
+        query = query.order_by(desc(DepositeHistory.date))
 
         total = query.count()
-        page, per_page = 1, 2
+        if filter.get('page'):
+            page = int(filter['page'])
+        if filter.get('per_page'):
+            per_page = int(filter['per_page'])
         deposite = query.paginate(page=page, per_page=per_page)
 
         data = {
-            "deposites": deposite.items,
+            "deposites": [x.toDict() for x in deposite.items],
             "page_info": {
                 "page": page,
                 "per_page": per_page,
@@ -63,6 +66,6 @@ class DepositeUtil:
             }
         }   
 
-        return data, HTTPStatus.OK
+        return data
         
         

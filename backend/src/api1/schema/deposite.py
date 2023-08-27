@@ -10,7 +10,7 @@ class DepositeSchema(Schema):
 
 class DepositeHistorySchema(Schema):
     deposites = fields.List(fields.Nested(DepositeSchema()))
-    page_info = fields.Nested(PaginateSchema())
+    page_info = fields.Dict()
 
 deposite_serializer = DepositeSchema()
 deposite_list_serializer = DepositeHistorySchema()
