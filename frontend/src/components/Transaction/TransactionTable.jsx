@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -13,184 +13,210 @@ import Collapse from "@mui/material/Collapse";
 import IconButton from "@mui/material/IconButton";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-import TransactionData from '../../data/TransactionData';
-const TransactionList = TransactionData;
+import { getIncomes } from '../../api/Transaction';
+import Accounts from '../../api/Accounts';
+
 
 const ExpandMore = styled((props) => {
-  const { expand, ...other } = props;
-  return <IconButton {...other} />;
+	const { expand, ...other } = props;
+	return <IconButton {...other} />;
 })(({ theme, expand }) => ({
-  transform: !expand ? "rotate(0deg)" : "rotate(180deg)",
-  marginLeft: "auto",
-  transition: theme.transitions.create("transform", {
-    duration: theme.transitions.duration.shortest
-  })
+	transform: !expand ? "rotate(0deg)" : "rotate(180deg)",
+	marginLeft: "auto",
+	transition: theme.transitions.create("transform", {
+		duration: theme.transitions.duration.shortest
+	})
 }));
 
 const columns = [
-  { id: 'name', label: 'Date', minWidth: 120 },
-  { id: 'code', label: 'Category', minWidth: 100 },
-  {
-    id: 'population',
-    label: 'Amount',
-    minWidth: 170,
-    align: 'right',
-    format: (value) => value.toLocaleString('en-US'),
-  },
-  {
-    id: 'size',
-    label: 'Account',
-    minWidth: 170,
-    align: 'right',
-    format: (value) => value.toLocaleString('en-US'),
-  }
+	{ id: 'name', label: 'Date', minWidth: 120 },
+	{ id: 'code', label: 'Category', minWidth: 100 },
+	{
+		id: 'population',
+		label: 'Amount',
+		minWidth: 170,
+		align: 'right',
+		format: (value) => value.toLocaleString('en-US'),
+	},
+	{
+		id: 'size',
+		label: 'Account',
+		minWidth: 170,
+		align: 'right',
+		format: (value) => value.toLocaleString('en-US'),
+	}
 ];
 
-function createData(name, code, population, size) {
-  const density = population / size;
-  return { name, code, population, size, density };
-}
+// function createData(name, code, population, size) {
+//   const density = population / size;
+//   return { name, code, population, size, density };
+// }
 
-const rows = [
-  createData('India', 'IN', 1324171354, 3287263),
-  createData('China', 'CN', 1403500365, 9596961),
-  createData('Italy', 'IT', 60483973, 301340)
-];
+// const rows = [
+//   createData('India', 'IN', 1324171354, 3287263),
+//   createData('China', 'CN', 1403500365, 9596961),
+//   createData('Italy', 'IT', 60483973, 301340)
+// ];
 
 export default function TransactionTable() {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+	const accounts = Accounts();
+	const rows = [];
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
+	useEffect(() => {
+		const fetchUserAccounts = () => {
+			console.log("Inside fetchUserAccounts");	
+			accounts.map((account) => async () => {
+				const depositeObject = await getIncomes(account.id);
+				const deposite = depositeObject.deposits;
+				rows.push(...deposite);
+			});
+		};
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
+		fetchUserAccounts();
+		console.log(rows);
+	}, []);
 
-  const [expanded, setExpanded] = React.useState(false);
+	const [page, setPage] = useState(0);
+	const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
-  };
+	const handleChangePage = (event, newPage) => {
+		setPage(newPage);
+	};
 
-  return (
-    <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-      <TableContainer sx={{ maxHeight: 440 }}>
-        <Table stickyHeader aria-label="sticky table">
-          <TableHead>
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell
-                  key={column.id}
-                  align={column.align}
-                  style={{ minWidth: column.minWidth }}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
+	const handleChangeRowsPerPage = (event) => {
+		setRowsPerPage(+event.target.value);
+		setPage(0);
+	};
 
+	const [expanded, setExpanded] = React.useState(false);
 
-        </Table>
+	const handleExpandClick = () => {
+		setExpanded(!expanded);
+	};
 
-        <div style={{ paddingLeft: '10px' }}>
-          Expenses
-          <ExpandMore
-            expand={expanded}
-            onClick={handleExpandClick}
-            aria-expanded={expanded}
-            aria-label="show more"
-          >
-            <ExpandMoreIcon />
-          </ExpandMore>
-        </div>
+	// const [incomes, setIncomes] = useState([]);
+	// useEffect(() => {
+	//   getIncomes().then((res) => {
+	//     // console.log(res);
+	//     setIncomes(res);
+	//   });
+	// }, []);
 
-        <Collapse sx={{ width: "100%" }} in={expanded} timeout="auto" unmountOnExit>
-          <Table stickyHeader aria-label="sticky table">
-            <TableBody>
-              {rows
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => {
-                  return (
-                    <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                      {columns.map((column) => {
-                        const value = row[column.id];
-                        return (
-                          <TableCell key={column.id} align={column.align}>
-                            {column.format && typeof value === 'number'
-                              ? column.format(value)
-                              : value}
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                  );
-                })}
-            </TableBody>
-          </Table>
-          <TablePagination
-            rowsPerPageOptions={[10, 25, 100]}
-            component="div"
-            count={rows.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </Collapse>
-
-        <div style={{ paddingLeft: '10px' }}>
-          Incomes
-          <ExpandMore
-            expand={expanded}
-            onClick={handleExpandClick}
-            aria-expanded={expanded}
-            aria-label="show more"
-          >
-            <ExpandMoreIcon />
-          </ExpandMore>
-        </div>
-
-        <Collapse sx={{ width: "100%" }} in={expanded} timeout="auto" unmountOnExit>
-          <Table stickyHeader aria-label="sticky table">
-            <TableBody>
-              {rows
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => {
-                  return (
-                    <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                      {columns.map((column) => {
-                        const value = row[column.id];
-                        return (
-                          <TableCell key={column.id} align={column.align}>
-                            {column.format && typeof value === 'number'
-                              ? column.format(value)
-                              : value}
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                  );
-                })}
-            </TableBody>
-          </Table>
-          <TablePagination
-            rowsPerPageOptions={[10, 25, 100]}
-            component="div"
-            count={rows.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </Collapse>
-      </TableContainer>
+	return (
+		<Paper sx={{ width: '100%', overflow: 'hidden' }}>
+			<TableContainer sx={{ maxHeight: 440 }}>
+				<Table stickyHeader aria-label="sticky table">
+					<TableHead>
+						<TableRow>
+							{columns.map((column) => (
+								<TableCell
+									key={column.id}
+									align={column.align}
+									style={{ minWidth: column.minWidth }}
+								>
+									{column.label}
+								</TableCell>
+							))}
+						</TableRow>
+					</TableHead>
 
 
-    </Paper>
-  );
+				</Table>
+
+				<div style={{ paddingLeft: '10px' }}>
+					Expenses
+					<ExpandMore
+						expand={expanded}
+						onClick={handleExpandClick}
+						aria-expanded={expanded}
+						aria-label="show more"
+					>
+						<ExpandMoreIcon />
+					</ExpandMore>
+				</div>
+
+				<Collapse sx={{ width: "100%" }} in={expanded} timeout="auto" unmountOnExit>
+					<Table stickyHeader aria-label="sticky table">
+						<TableBody>
+							{rows
+								.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+								.map((row) => {
+									return (
+										<TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+											{columns.map((column) => {
+												const value = row[column.id];
+												return (
+													<TableCell key={column.id} align={column.align}>
+														{column.format && typeof value === 'number'
+															? column.format(value)
+															: value}
+													</TableCell>
+												);
+											})}
+										</TableRow>
+									);
+								})}
+						</TableBody>
+					</Table>
+					<TablePagination
+						rowsPerPageOptions={[10, 25, 100]}
+						component="div"
+						count={rows.length}
+						rowsPerPage={rowsPerPage}
+						page={page}
+						onPageChange={handleChangePage}
+						onRowsPerPageChange={handleChangeRowsPerPage}
+					/>
+				</Collapse>
+
+				<div style={{ paddingLeft: '10px' }}>
+					Incomes
+					<ExpandMore
+						expand={expanded}
+						onClick={handleExpandClick}
+						aria-expanded={expanded}
+						aria-label="show more"
+					>
+						<ExpandMoreIcon />
+					</ExpandMore>
+				</div>
+
+				<Collapse sx={{ width: "100%" }} in={expanded} timeout="auto" unmountOnExit>
+					<Table stickyHeader aria-label="sticky table">
+						<TableBody>
+							{rows
+								.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+								.map((row) => {
+									return (
+										<TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+											{columns.map((column) => {
+												const value = row[column.id];
+												return (
+													<TableCell key={column.id} align={column.align}>
+														{column.format && typeof value === 'number'
+															? column.format(value)
+															: value}
+													</TableCell>
+												);
+											})}
+										</TableRow>
+									);
+								})}
+						</TableBody>
+					</Table>
+					<TablePagination
+						rowsPerPageOptions={[10, 25, 100]}
+						component="div"
+						count={rows.length}
+						rowsPerPage={rowsPerPage}
+						page={page}
+						onPageChange={handleChangePage}
+						onRowsPerPageChange={handleChangeRowsPerPage}
+					/>
+				</Collapse>
+			</TableContainer>
+
+
+		</Paper>
+	);
 }

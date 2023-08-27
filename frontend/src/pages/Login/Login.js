@@ -51,6 +51,8 @@ export const Login = () => {
                 Cookies.set('access_token', access_token);
                 Cookies.set('refresh_token', refresh_token);
 
+                localStorage.setItem('access_token', access_token);
+
                 setErrorMessage("Login Successful!");
                 history.push("/home");
             }
