@@ -38,7 +38,7 @@ export default function SavingCard(props) {
     //const [targetDate, setTargetDate] = useState(props.goal.target_date);
     const [targetDate, setTargetDate] = useState(dayjs('2023-08-20'));
     const [savedSoFar, setSavedSoFar] = useState(props.goal.saved_so_far);
-    const [account, setAccount] = useState(props.goal.account);
+    const [account, setAccount] = useState(props.goal.account_id);
     const [monthlyContribution, setMonthlyContribution] = useState(props.goal.monthly_contribution);
     const history = useHistory();
 

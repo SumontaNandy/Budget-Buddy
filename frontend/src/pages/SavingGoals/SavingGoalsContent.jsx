@@ -24,32 +24,32 @@ import SavingGoalsData from "../../data/SavingGoalsData";
 
 export default function SavingGoalsContent() {
 
-    let result = [
-        {
-            "name": "Cox's Bazar Vacation",
-            "goal_amount": 100000,
-            "saved_so_far": 5000,
-            "account": "ICCU Savings",
-            "target_date": "10/10/2029",
-            "monthly_contribution": 2500
-        },
-        {
-            "name": "Eid Shopping",
-            "goal_amount": 10000,
-            "saved_so_far": 2000,
-            "account": "ICCU Savings",
-            "target_date": "10/10/2024",
-            "monthly_contribution": 1000
-        },
-        {
-            "name": "Grad Night",
-            "goal_amount": 1000,
-            "saved_so_far": 200,
-            "account": "ICCU Savings",
-            "target_date": "10/10/2024",
-            "monthly_contribution": 100
-        }
-    ]
+    // let result = [
+    //     {
+    //         "name": "Cox's Bazar Vacation",
+    //         "goal_amount": 100000,
+    //         "saved_so_far": 5000,
+    //         "account": "ICCU Savings",
+    //         "target_date": "10/10/2029",
+    //         "monthly_contribution": 2500
+    //     },
+    //     {
+    //         "name": "Eid Shopping",
+    //         "goal_amount": 10000,
+    //         "saved_so_far": 2000,
+    //         "account": "ICCU Savings",
+    //         "target_date": "10/10/2024",
+    //         "monthly_contribution": 1000
+    //     },
+    //     {
+    //         "name": "Grad Night",
+    //         "goal_amount": 1000,
+    //         "saved_so_far": 200,
+    //         "account": "ICCU Savings",
+    //         "target_date": "10/10/2024",
+    //         "monthly_contribution": 100
+    //     }
+    // ]
 
     const [goals, setGoals] = useState([])
     const [name, setName] = useState('');
@@ -67,16 +67,43 @@ export default function SavingGoalsContent() {
     const [targetDate, setTargetDate] = useState(dayjs('2023-08-20'));
 
     useEffect(() => {
-        const cookies = document.cookie;
+        const getTokenFromCookies = (tokenType) => {
+            const cookies = document.cookie.split('; ');
+            for (const cookie of cookies) {
+                const [name, value] = cookie.split('=');
+                if (name === tokenType) {
+                    return value;
+                }
+            }
+            return null;
+        };
+
+        const accessToken = getTokenFromCookies('access_token');
+        const refreshToken = getTokenFromCookies('refresh_token');
+        console.log("access token is : ", accessToken);
+
         const headers = new Headers({
+            'Authorization': `Bearer ${accessToken}`,
             'Content-Type': 'application/json',
-            'Cookie': cookies
         });
         // Fetch saving goals data from the Flask backend API
-        fetch('http://127.0.0.1:5000/api/user/goal', { headers })
-            .then(response => response.json())
-            .then(data => setGoals(data))
+        fetch('http://127.0.0.1:5000/api/1/user/goal/', { method: 'GET', headers: headers })
+            .then(
+                response => {
+                    console.log('just got the response')
+                    if (!response.ok) {
+                        console.log("Khaise re baba")
+                    }
+                    return response.json();
+                }
+            )
+            .then(data => {
+                setGoals(data.goal_list);
+                console.log("gulli mari", data);
+            })
             .catch(error => console.error('Error fetching data:', error));
+
+        // console.log(goals);
     }, []);
 
 
@@ -110,20 +137,36 @@ export default function SavingGoalsContent() {
     const handleCreateThird = async () => {
         handleCloseThird();
         try {
-            let link = "http://127.0.0.1:5000/api/user/goal/create"
-            const cookies = document.cookie;
+            let link = "http://127.0.0.1:5000/api/1/user/goal/"
+            
+            const getTokenFromCookies = (tokenType) => {
+                const cookies = document.cookie.split('; ');
+                for (const cookie of cookies) {
+                    const [name, value] = cookie.split('=');
+                    if (name === tokenType) {
+                        return value;
+                    }
+                }
+                return null;
+            };
+
+            const accessToken = getTokenFromCookies('access_token');
+            const refreshToken = getTokenFromCookies('refresh_token');
+
             const res = await fetch(link, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json",
-                    'Cookie': cookies
+                    'Authorization': `Bearer ${accessToken}`,
+                    "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
+                    account_id: account,
+                    category: "test",
                     name: name,
                     goal_amount: goalAmount,
                     saved_so_far: savedSoFar,
+                    spent_so_far: 4,
                     target_date: targetDate,
-                    account: account,
                     monthly_contribution: monthlyContribution
                 })
             });
@@ -150,7 +193,7 @@ export default function SavingGoalsContent() {
                 <h1> Saving Goals </h1>
 
                 <Grid container spacing={2}>
-                    {result.map(goal => {
+                    {goals.map(goal => {
                         return (
                             <Grid item xs={3}>
                                 <SavingCard
