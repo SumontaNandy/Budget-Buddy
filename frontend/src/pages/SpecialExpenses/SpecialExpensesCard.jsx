@@ -26,11 +26,12 @@ export default function SpecialExpensesCard(props) {
     const [openEditSecond, setOpenEditSecond] = useState(false);
     const [openEditThird, setOpenEditThird] = useState(false);
 
+    const [id, setId] = useState(props.expense.id); 
     const [name, setName] = useState(props.expense.name);
     const [type, setType] = useState(props.expense.type);
-    const [category, setCategory] = useState(props.expense.categories);
-    const [setTarget, setSetTarget] = useState(props.expense.setTarget);
-    const [amount, setAmount] = useState(props.expense.amount);
+    const [category, setCategory] = useState(props.expense.tags);
+    const [setTarget, setSetTarget] = useState(true);
+    const [amount, setAmount] = useState(props.expense.target);
 
     //const [selectedSet, setSelectedSet] = useState('set')
 
