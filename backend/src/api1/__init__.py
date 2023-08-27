@@ -9,6 +9,7 @@ from .route.recurrent_expense import api as ns_recurrent_expense
 from .route.transaction import api as ns_transaction
 from .route.watchlist import api as ns_watchlist
 from .route.goal import api as ns_goal
+from .route.user import api as ns_user
 
 blueprint = Blueprint('api1', __name__, url_prefix='/api/1/user')
 
@@ -36,3 +37,4 @@ api.add_namespace(ns_recurrent_expense, path='/spending-plan/recur')
 api.add_namespace(ns_transaction, path='/transaction')
 api.add_namespace(ns_watchlist, path='/watchlist')
 api.add_namespace(ns_goal, path='/goal')
+api.add_namespace(ns_user, path='/info')
