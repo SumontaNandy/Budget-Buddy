@@ -20,7 +20,11 @@ class WatchlistCR(Resource):
         """
             get all watchlists' list
         """
-        pass
+        user_id = get_jwt_identity()
+
+        data, http_response = get_watchlists_controller(user_id)
+
+        return watchlist_arr_serializer.dump(data), http_response
     
     @expect(watchlist_serializer)
     @jwt_required()

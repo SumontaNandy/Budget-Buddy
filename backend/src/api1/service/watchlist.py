@@ -54,6 +54,18 @@ def get_watchlist_controller(watchlist_id):
     return watchlist, HTTPStatus.OK
 
 
+def get_watchlists_controller(user_id):
+    watchlists = Watchlist.query.filter_by(user=user_id).all()
+    watchlists = [x.toDict() for x in watchlists]
+
+    for watchlist in watchlists:
+        tags = WatchlistTag.query.filter_by(watchlist=watchlist.get('id')).all()
+        tags = [x.toDict().get('tags') for x in tags]
+        watchlist['tags'] = tags
+
+    return watchlists, HTTPStatus.OK
+
+
 def update_watchlist_controller(watchlist_id, data):
     watchlist = Watchlist.get_by_id(watchlist_id)
 
