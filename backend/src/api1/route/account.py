@@ -5,7 +5,7 @@ from flask import request
 from ..utils.authorize import authorize
 from ..utils.expect import expect
 
-from ..schema.account import account_ip_serializer, account_op_serializer
+from ..schema.account import account_ip_serializer, account_op_serializer, account_list_serializer
 from ..schema.deposite import deposite_serializer, deposite_list_serializer
 
 from ..service.account import *
@@ -29,6 +29,16 @@ class AccountCR(Resource):
 
         return http_response
     
+    @jwt_required()
+    def get(self):
+        """
+            returns all the accounts of a user
+        """
+        user_id = get_jwt_identity()
+
+        data, http_response = AccountUtil().get_accounts(user_id)
+
+        return account_list_serializer.dump(data), http_response
 
 @api.route('/<account_id>')
 class iAccountRUD(Resource):

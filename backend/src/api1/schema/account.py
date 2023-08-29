@@ -17,3 +17,4 @@ class AccountSchema(Schema):
 
 account_ip_serializer = AccountSchema(exclude=('account_type_name', 'segment_list'))
 account_op_serializer = AccountSchema(exclude=('account_type_id',))
+account_list_serializer = AccountSchema(many=True, exclude=('account_type_id', 'segment_list'))

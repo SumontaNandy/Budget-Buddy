@@ -99,3 +99,9 @@ class AccountUtil:
     def get_deposite_history(self, filters=None):
         data = DepositeUtil(self.id).get_deposite_history(filters)  
         return data, HTTPStatus.OK
+    
+    def get_accounts(self, user_id):
+        accounts = Account.query.filter_by(user=user_id).all()
+        accounts = [ob.toDict() for ob in accounts]
+
+        return accounts, HTTPStatus.OK
