@@ -1,8 +1,4 @@
 import React, { useState, useEffect } from 'react';
-//import { Link } from "react-router-dom";
-
-import Breadcrumbs from '@mui/material/Breadcrumbs';
-import Typography from '@mui/material/Typography';
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
@@ -20,6 +16,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export default function AccountTypesContent() {
+	console.log("Inside AccountTypesContent");
 	const [types, setTypes] = useState([]);
 
 	useEffect(() => {

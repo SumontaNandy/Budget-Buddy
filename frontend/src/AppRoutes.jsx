@@ -1,9 +1,9 @@
-import React, { lazy } from "react";
-import { Switch, BrowserRouter as Router, Link, Route } from "react-router-dom";
+import React from "react";
+import { Switch, BrowserRouter as Router, Route } from "react-router-dom";
 
 //const AccountTypes = lazy(() => import('./AccountTypes'));
 import AccountTypes from './pages/AccountTypes/AccountTypes';
-import Type from './pages/AccountTypes/Type';
+import AccountType from './pages/AccountTypes/AccountType';
 import Contact from './pages/Contact/Contact';
 import { Login } from './pages/Login/Login';
 import { Signup } from './pages/Signup/Signup';
@@ -24,8 +24,8 @@ export default function AppRoutes()
 
                 <Route path="/home" component={Home} />
 
+                <Route path="/account-types/id/:type_id" component={AccountType} />
                 <Route path="/account-types" component={AccountTypes} />
-                <Route path="/account-types/id/:type_id" component={Type} />
                 <Route path="/transactions" component={Transaction} />
                 <Route path="/recurring" component={Recurring} />
          
