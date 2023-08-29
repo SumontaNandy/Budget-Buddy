@@ -9,3 +9,6 @@ export const getAllAccountTypes = () =>
 
 export const getAccountsForAccountType = (type_id) =>
   axios.get(api_url(`account-types/${type_id}`)).then((res) => res.data);
+
+export const getAllAccounts = () =>
+  axios.get(api_url(`account/`)).then((res) => res.data);
