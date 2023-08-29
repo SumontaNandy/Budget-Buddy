@@ -1,16 +1,9 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
-import axios from "axios";
-import { api_url } from ".";
+import { getAllAccountTypes, getAccountsForAccountType } from "./Account";
 
-export const getAllAccountTypes = () =>
-    axios.get(api_url(`account-types/`)).then((res) => res.data);
-
-export const getAccountsForAccountType = (type_id) =>
-    axios.get(api_url(`account-types/${type_id}`)).then((res) => res.data);
-
-export const Accounts = () => {
-    console.log("Inside Accounts");
+export const AllAccounts = () => {
+    //console.log("Inside Accounts");
     const [userAccounts, setUserAccounts] = useState([]);
 
     useEffect(() => {
@@ -51,5 +44,3 @@ export const Accounts = () => {
     //console.log("User Accounts: ", userAccounts);
     return userAccounts;
 };
-
-export default Accounts;

@@ -13,9 +13,8 @@ import Collapse from "@mui/material/Collapse";
 import IconButton from "@mui/material/IconButton";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-import { getIncomes } from '../../api/Transaction';
-import Accounts from '../../api/Accounts';
-
+import { getIncomes } from '../../api/Account';
+import { AllAccounts } from '../../api/AllAccounts';
 
 const ExpandMore = styled((props) => {
 	const { expand, ...other } = props;
@@ -59,22 +58,35 @@ const columns = [
 // ];
 
 export default function TransactionTable() {
-	const accounts = Accounts();
-	const rows = [];
+	// Initialize accounts as an empty array
+	//const [accounts, setAccounts] = useState([]);
+	const [rows, setRows] = useState([]);
+	var accounts = AllAccounts();
+	console.log("Trans Accounts: ", accounts);
 
 	useEffect(() => {
-		const fetchUserAccounts = () => {
-			console.log("Inside fetchUserAccounts");	
-			accounts.map((account) => async () => {
-				const depositeObject = await getIncomes(account.id);
-				const deposite = depositeObject.deposits;
-				rows.push(...deposite);
-			});
+		console.log("Effect Accounts: ", accounts)
+		const fetchUserAccounts = async () => {
+			try {
+				// Now that accounts are available, fetch data based on accounts
+				const depositPromises = accounts.map(async (account) => {
+					console.log("Inside map ", account.id);
+					const depositeObject = await getIncomes(account.id);
+					console.log("Deposite: ", depositeObject);
+					const deposite = depositeObject.deposits;
+					setRows((prevRows) => [...prevRows, ...deposite]);
+				});
+
+				await Promise.all(depositPromises);
+			} catch (error) {
+				console.error("Error fetching data:", error);
+			}
 		};
 
 		fetchUserAccounts();
-		console.log(rows);
 	}, []);
+
+	// Rest of your component code...
 
 	const [page, setPage] = useState(0);
 	const [rowsPerPage, setRowsPerPage] = useState(10);
