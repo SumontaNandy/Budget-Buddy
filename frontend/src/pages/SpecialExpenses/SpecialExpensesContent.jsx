@@ -20,6 +20,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import SpecialExpensesCard from "./SpecialExpensesCard";
+import axios from 'axios';
 //import SavingGoalsData from "../../data/SavingGoalsData";
 
 
@@ -84,16 +85,14 @@ export default function SpecialExpensesContent() {
         });
         // Fetch special expenses/watchlist data from the Flask backend API
         console.log('fetching data');
-        fetch('http://127.0.0.1:5000/api/1/user/watchlist', { method: 'GET', headers: headers })
-            .then(
-                response => {
-                    console.log('just got the response')
-                    if (!response.ok) {
-                        console.log("Khaise re baba")
-                    }
-                    return response.json();
+        axios.get('http://127.0.0.1:5000/api/1/user/watchlist', { headers: headers })
+            .then(response => {
+                console.log('just got the response');
+                if (!response.status === 200) {
+                    console.log("Khaise re baba");
                 }
-            )
+                return response.data;
+            })
             .then(data => {
                 setExpenses(data);
                 console.log("gulli mari", data);
