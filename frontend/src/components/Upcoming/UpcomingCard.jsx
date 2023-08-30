@@ -20,13 +20,13 @@ export default function UpcomingCard(props) {
             { dueTime }
         </Typography>
         <Typography variant="h5" component="div">
-            { props.category }
+            { props.name }
         </Typography>
         <Typography sx={{ mb: 1.5 }} color="text.secondary">
-            { props.amount }
+            Amount: { props.amount }
         </Typography>
         <Typography variant="body2">
-            { props.account }
+            Category: { props.category }
         </Typography>
       </CardContent>
     </Card>

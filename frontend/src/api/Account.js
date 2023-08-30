@@ -15,3 +15,6 @@ export const getAllAccounts = () =>
 
 export const addAccount = (account) =>
   axios.post(api_url(`account/`), account, params).then((res) => res.data);
+
+export const getUpcomingTransactions = () =>
+  axios.get(api_url(`spending-plan/recur/?upcoming=1`)).then((res) => res.data);
