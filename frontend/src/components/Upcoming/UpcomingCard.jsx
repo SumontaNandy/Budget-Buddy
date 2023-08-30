@@ -23,10 +23,7 @@ export default function UpcomingCard(props) {
             { props.name }
         </Typography>
         <Typography sx={{ mb: 1.5 }} color="text.secondary">
-            Amount: { props.amount }
-        </Typography>
-        <Typography variant="body2">
-            Category: { props.category }
+            Amount: { props.amount } Tk
         </Typography>
       </CardContent>
     </Card>

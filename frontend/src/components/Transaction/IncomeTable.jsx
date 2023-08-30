@@ -27,7 +27,7 @@ const ExpandMore = styled((props) => {
 }));
 
 const columns = [
-    { id: 'date', label: 'Date', minWidth: 120, format: (value) => new Date(value).toLocaleDateString('en-US') },
+    { id: 'date', label: 'Date', minWidth: 120, format: (value) => new Date(value).toLocaleDateString('en-UK') },
     //{ id: 'code', label: 'Category', minWidth: 100 },
     { id: 'amount', label: 'Amount', minWidth: 170, format: (value) => value.toLocaleString('en-US') }
     //{ id: 'size', label: 'Account', minWidth: 170, align: 'right', format: (value) => value.toLocaleString('en-US') }
