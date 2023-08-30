@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -6,10 +6,15 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 
-export default function AddAccount() {
-  const [open, setOpen] = React.useState(false);
-  const [email, setEmail] = React.useState(''); // State to hold email
-  const [name, setName] = React.useState('');   // State to hold name
+import { addAccount } from '../../api/Account';
+
+export default function AddAccount(props) {
+  const { type_id, setAccounts } = props;
+
+  const [open, setOpen] = useState(false);
+  const [account_no, setAccountNumber] = useState('');
+  const [account_name, setAccountName] = useState('');
+  const [balance, setBalance] = useState('');
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -20,13 +25,21 @@ export default function AddAccount() {
   };
 
   const handleAdd = () => {
-    // Here you can access the email and name values
-    console.log('Email: ', email);
-    console.log('Name: ', name);
+    const newAccount = {
+      account_no: account_no,
+      account_name: account_name,
+      balance: parseFloat(balance),
+      date: new Date(),
+      account_type_id: type_id
+    };
     
-    // You can also perform further actions with the captured data
-    // For example, sending the data to a server, updating state, etc.
-    
+    console.log(newAccount);
+    console.log(JSON.stringify(newAccount));
+
+    addAccount(JSON.stringify(newAccount)).then(res => {
+      setAccounts(prev => [...prev, newAccount])
+    });
+
     setOpen(false); // Close the dialog
   };
 
@@ -41,24 +54,35 @@ export default function AddAccount() {
           <TextField
             autoFocus
             margin="dense"
-            id="email"
-            label="Email Address"
-            type="email"
+            id="account_no"
+            label="Account Number"
+            type="number"
             fullWidth
             variant="standard"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)} // Update email state
+            value={account_no}
+            onChange={(e) => setAccountNumber(e.target.value)}
           />
           <TextField
             autoFocus
             margin="dense"
-            id="name"
-            label="Name"
+            id="account_name"
+            label="Account Name"
             type="text"
             fullWidth
             variant="standard"
-            value={name}
-            onChange={(e) => setName(e.target.value)} // Update name state
+            value={account_name}
+            onChange={(e) => setAccountName(e.target.value)}
+          />
+          <TextField
+            autoFocus
+            margin="dense"
+            id="balance"
+            label="Balance"
+            type="number"
+            fullWidth
+            variant="standard"
+            value={balance}
+            onChange={(e) => setBalance(e.target.value)}
           />
         </DialogContent>
         <DialogActions>

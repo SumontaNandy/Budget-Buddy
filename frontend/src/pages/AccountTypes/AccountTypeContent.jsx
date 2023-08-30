@@ -33,7 +33,7 @@ export default function AccountTypesContent() {
             setData(accountData);
         };
         fetchAccountData();
-    }, []);
+    }, [data, accountItems]);
 
     const { parent, child, accounts } = data;
 
@@ -91,7 +91,7 @@ export default function AccountTypesContent() {
             });
             setAccounts(items);
         }
-    }, [data]);
+    }, [data, accountItems]);
 
     let showChildTypes = childItems.length > 0 ?
         <Box m={1.5} sx={{ flexGrow: 1 }}>
@@ -117,7 +117,7 @@ export default function AccountTypesContent() {
 
             {showChildTypes}
             {showAccounts}
-            <AddAccount />  
+            <AddAccount type_id={type_id} setAccounts={setAccounts}  />  
         </>
     );
 }

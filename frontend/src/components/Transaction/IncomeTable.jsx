@@ -69,8 +69,6 @@ export default function IncomeTable() {
         setExpanded(!expanded);
     };
 
-    console.log(rows);
-
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden' }}>
             <TableContainer sx={{ maxHeight: 440 }}>

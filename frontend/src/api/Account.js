@@ -1,5 +1,5 @@
 import axios from "axios";
-import { api_url } from ".";
+import { api_url, params } from ".";
 
 export const getIncomes = (account_id) =>
   axios.get(api_url(`account/${account_id}/deposite`)).then((res) => res.data);
@@ -12,3 +12,6 @@ export const getAccountsForAccountType = (type_id) =>
 
 export const getAllAccounts = () =>
   axios.get(api_url(`account/`)).then((res) => res.data);
+
+export const addAccount = (account) =>
+  axios.post(api_url(`account/`), account, params).then((res) => res.data);
