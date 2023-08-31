@@ -3,10 +3,11 @@ import Grid from '@mui/material/Grid';
 import { Card, CardContent, CardActionArea, Typography } from '@mui/material';
 
 import IncomeTable from './IncomeTable';
+import BillTable from './BillTable';
 
 export default function SpendingPlanContent() {
     const [ panel, setPanel ] = useState("FirstDiv");
-    const [ firstDivAmount, setFirstDivAmount ] = useState(120);
+    const [ firstDivAmount, setFirstDivAmount ] = useState(0);
     const [ secondDivAmount, setSecondDivAmount ] = useState(120);
 
     let panelContent = null;
@@ -14,6 +15,7 @@ export default function SpendingPlanContent() {
         panelContent = (
             <>
                 <IncomeTable setFirstDivAmount={setFirstDivAmount} />
+                <BillTable setFirstDivAmount={setFirstDivAmount} />
             </>
         )
     }
@@ -32,7 +34,7 @@ export default function SpendingPlanContent() {
                 <Grid item xs={3}>
 
                     <Card sx={{ maxWidth: 345 }} style={{ margin: '10px' }}>
-                        <CardActionArea onClick={ () => setPanel("FirstDiv") }>
+                        <CardActionArea onClick={ () => { setFirstDivAmount(0); setPanel("FirstDiv") } }>
                             <CardContent>
                                 <Typography gutterBottom variant="h5" component="div">
                                     { firstDivAmount }

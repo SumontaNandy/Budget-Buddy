@@ -12,8 +12,9 @@ import { styled } from "@mui/material/styles";
 import Collapse from "@mui/material/Collapse";
 import IconButton from "@mui/material/IconButton";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { Button } from '@mui/material';
 
-import { getAllAccounts, getIncomes } from '../../api/Account';
+import { getAllBills } from '../../api/Account';
 import AddIncome from './AddIncome';
 
 const ExpandMore = styled((props) => {
@@ -28,10 +29,10 @@ const ExpandMore = styled((props) => {
 }));
 
 const columns = [
-    { id: 'date', label: 'Date', minWidth: 120, format: (value) => new Date(value).toLocaleDateString('en-UK') },
-    //{ id: 'code', label: 'Category', minWidth: 100 },
-    { id: 'amount', label: 'Amount', minWidth: 170, format: (value) => value.toLocaleString('en-US') }
-    //{ id: 'size', label: 'Account', minWidth: 170, align: 'right', format: (value) => value.toLocaleString('en-US') }
+    { id: 'name', label: 'Name', minWidth: 170 },
+    { id: 'amount', label: 'Amount', minWidth: 170, format: (value) => value.toLocaleString('en-US') },
+    { id: 'category', label: 'Category', minWidth: 100 },
+    { id: 'type', label: 'Type', minWidth: 100 }
 ];
 
 export default function IncomeTable(props) {
@@ -40,20 +41,13 @@ export default function IncomeTable(props) {
 
     useEffect(() => {
         (async () => {
-            const accounts = await getAllAccounts();
-            const depositPromises = accounts.map((account) => (getIncomes(account.account_id)));
+            const bills = await getAllBills();
+            setRows(bills.recurrent_expenses);
 
-            const deposites = (await Promise.all(depositPromises))
-                .map((deposite) => deposite.deposites)
-                .filter((deposite) => deposite.length > 0)
-                .reduce((acc, val) => acc.concat(val), []);
-
-            setRows(deposites);
-
-            const totalDeposit = deposites.reduce((accumulator, currentDeposite) => {
-                return accumulator + currentDeposite.amount;
+            const totalBill = bills.recurrent_expenses.reduce((accumulator, currentBill) => {
+                return accumulator + currentBill.amount;
             }, 0);
-            setFirstDivAmount(prev => prev + totalDeposit);
+            setFirstDivAmount(prev => prev - totalBill);
         })();
     }, []);
 
@@ -81,9 +75,11 @@ export default function IncomeTable(props) {
             <TableContainer sx={{ maxHeight: 440 }}>
 
                 <div style={{ paddingLeft: '10px' }}>
-                    <AddIncome setIncomes={setRows} />
+                    <Button variant="contained" style={{ margin: '10px' }}>
+                        Add Bill
+                    </Button>
 
-                    Income
+                    Bills
 
                     <ExpandMore
                         expand={expanded}

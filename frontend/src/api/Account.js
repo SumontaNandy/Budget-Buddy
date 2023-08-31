@@ -33,3 +33,8 @@ export const getAllOneTimeExpenses = (page, per_page) =>
   axios.get(api_url(`spending-plan/one/`), null, {
     params: { page, per_page }
   }).then((res) => res.data);
+
+export const getAllBills = () =>
+  axios.get(api_url(`spending-plan/recur/`), {
+    params: { type: "BILL" }
+  }).then((res) => res.data);

@@ -47,8 +47,8 @@ export default function AddIncome(props) {
     };
 
     return (
-        <div>
-            <Button variant="contained" onClick={handleClickOpen}>
+        <>
+            <Button variant="contained" style={{ margin: '10px' }} onClick={handleClickOpen}>
                 Add Income
             </Button>
             <Dialog open={open} onClose={handleClose}>
@@ -82,6 +82,6 @@ export default function AddIncome(props) {
                     <Button onClick={handleClose}>Cancel</Button>
                 </DialogActions>
             </Dialog>
-        </div>
+        </>
     );
 }
