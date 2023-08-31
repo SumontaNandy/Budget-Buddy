@@ -7,7 +7,10 @@ import AccountType from './pages/AccountTypes/AccountType';
 import Contact from './pages/Contact/Contact';
 import { Login } from './pages/Login/Login';
 import { Signup } from './pages/Signup/Signup';
+
 import Home from './pages/Home/Home';
+import SpendingPlan from './pages/SpendingPlan/SpendingPlan';
+
 import Transaction from './pages/Transaction/Transaction';
 import Recurring from './pages/Recurring/Recurring';
 import SavingGoals from './pages/SavingGoals/SavingGoals';
@@ -23,6 +26,7 @@ export default function AppRoutes()
                 <Route path="/signup" component={Signup} />
 
                 <Route path="/home" component={Home} />
+                <Route path="/spending-plan" component={SpendingPlan} />
 
                 <Route path="/account-types/id/:type_id" component={AccountType} />
                 <Route path="/account-types" component={AccountTypes} />

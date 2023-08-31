@@ -4,6 +4,10 @@ const MenuData = [
     link: "/home"
   },
   {
+    name: "Spending Plan",
+    link: "/spending-plan"
+  },
+  {
     name: "Accounts",
     link: "/account-types"
   },

@@ -32,9 +32,6 @@ export default function AddAccount(props) {
       date: new Date(),
       account_type_id: type_id
     };
-    
-    console.log(newAccount);
-    console.log(JSON.stringify(newAccount));
 
     addAccount(JSON.stringify(newAccount)).then(res => {
       setAccounts(prev => [...prev, newAccount])

@@ -18,6 +18,9 @@ export const addAccount = (account) =>
 export const getIncomes = (account_id) =>
   axios.get(api_url(`account/${account_id}/deposite`)).then((res) => res.data);
 
+export const addIncome = (account_id, income) =>
+  axios.post(api_url(`account/${account_id}/deposite`), income, params).then((res) => res.data);
+
 export const getUpcomingTransactions = () =>
   axios.get(api_url(`spending-plan/recur/?upcoming=1`)).then((res) => res.data);
 

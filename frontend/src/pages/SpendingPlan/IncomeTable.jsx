@@ -14,6 +14,7 @@ import IconButton from "@mui/material/IconButton";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 import { getAllAccounts, getIncomes } from '../../api/Account';
+import AddIncome from './AddIncome';
 
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
@@ -74,6 +75,7 @@ export default function IncomeTable() {
             <TableContainer sx={{ maxHeight: 440 }}>
 
                 <div style={{ paddingLeft: '10px' }}>
+                    <AddIncome setIncomes={setRows}/>
                     Income
                     <ExpandMore
                         expand={expanded}
@@ -83,6 +85,7 @@ export default function IncomeTable() {
                     >
                         <ExpandMoreIcon />
                     </ExpandMore>
+                    
                 </div>
 
                 <Collapse sx={{ width: "100%" }} in={expanded} timeout="auto" unmountOnExit>
