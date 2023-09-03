@@ -23,8 +23,6 @@ const Item = styled(Paper)(({ theme }) => ({
 export default function AccountTypesContent() {
     const { type_id } = useParams();
     const [data, setData] = useState({});
-    const [breadcrumbs, setBreadcrumbs] = useState([]);
-    const [childItems, setChildItems] = useState([]);
     const [accountItems, setAccounts] = useState([]);
 
     useEffect(() => {
@@ -33,91 +31,76 @@ export default function AccountTypesContent() {
             setData(accountData);
         };
         fetchAccountData();
-    }, [data, accountItems]);
+    }, [accountItems]);
 
     const { parent, child, accounts } = data;
 
-    useEffect(() => {
-        if (parent) {
-            const breadcrumbItems = parent.map((type, index) => {
-                if (index === 0) {
-                    return (
-                        <Link underline="hover" key={type.id} color="inherit" href="/account-types">
-                            {type.name}
-                        </Link>
-                    )
-                }
-                else if (index !== parent.length - 1) {
-                    return (
-                        <Link underline="hover" key={type.id} color="inherit" href={`/account-types/id/${type.id}`}>
-                            {type.name}
-                        </Link>
-                    )
-                }
-            });
-            breadcrumbItems.push(
-                <Typography key={parent[parent.length - 1].id} color="text.primary">
-                    {parent[parent.length - 1].name}
-                </Typography>
-            );
-            setBreadcrumbs(breadcrumbItems);
-        }
-
-        if (child) {
-            const items = child.map(type => {
-                return (
-                    <Grid item xs={3}>
-                        <Link href={`/account-types/id/${type.id}`}>
-                            <Item>
-                                {type.name}
-                            </Item>
-                        </Link>
-                    </Grid>
-                )
-            });
-            setChildItems(items);
-        }
-
-        if (accounts) {
-            const items = accounts.map(acc => {
-                return (
-                    <Grid item xs={3}>
-                        <AccountCard
-                            name={acc.account_name}
-                            balance={acc.balance}
-                        />
-                    </Grid>
-                )
-            });
-            setAccounts(items);
-        }
-    }, [data, accountItems]);
-
-    let showChildTypes = childItems.length > 0 ?
+    let showChildTypes = child && child.length > 0 ?
         <Box m={1.5} sx={{ flexGrow: 1 }}>
             <h1> Child Account Types </h1>
             <Grid container spacing={2}>
-                {childItems}
+                {child.map(type => {
+                    return (
+                        <Grid item xs={3}>
+                            <Link href={`/account-types/id/${type.id}`}>
+                                <Item>
+                                    {type.name}
+                                </Item>
+                            </Link>
+                        </Grid>
+                    )
+                })}
             </Grid>
         </Box> : null;
 
-    let showAccounts = accountItems.length > 0 ?
+    let showAccounts = accounts && accounts.length > 0 ?
         <Box m={1.5} sx={{ flexGrow: 1 }}>
             <h1> Accounts </h1>
             <Grid container spacing={2}>
-                {accountItems}
+                {accounts.map(acc => {
+                    return (
+                        <Grid item xs={3}>
+                            <AccountCard
+                                name={acc.account_name}
+                                balance={acc.balance}
+                            />
+                        </Grid>
+                    )
+                })}
             </Grid>
         </Box> : null;
 
     return (
         <>
             <Breadcrumbs m={1} separator="›" aria-label="breadcrumb">
-                {breadcrumbs}
+                {parent && parent.map((type, index) => {
+                    if (index === 0) {
+                        return (
+                            <Link underline="hover" key={type.id} color="inherit" href="/account-types">
+                                {type.name}
+                            </Link>
+                        )
+                    }
+                    else if (index !== parent.length - 1) {
+                        return (
+                            <Link underline="hover" key={type.id} color="inherit" href={`/account-types/id/${type.id}`}>
+                                {type.name}
+                            </Link>
+                        )
+                    }
+                    else {
+                        return (
+                            <Typography key={parent[parent.length - 1].id} color="text.primary">
+                                {parent[parent.length - 1].name}
+                            </Typography>
+                        )
+                    }
+                })}
             </Breadcrumbs>
 
             {showChildTypes}
             {showAccounts}
-            <AddAccount type_id={type_id} setAccounts={setAccounts}  />  
+            <AddAccount type_id={type_id} setAccounts={setAccounts} />
         </>
     );
 }

@@ -16,7 +16,6 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export default function AccountTypesContent() {
-	console.log("Inside AccountTypesContent");
 	const [types, setTypes] = useState([]);
 
 	useEffect(() => {
