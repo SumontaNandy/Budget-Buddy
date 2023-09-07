@@ -89,8 +89,11 @@ class TransactionUtil:
         total = query.count()
         data = query.paginate(page=page, per_page=per_page)
 
+        items = [item.toDict() for item in data.items]
+        print(items)
+
         transaction_list = {
-            'transactions': data.items,
+            'transactions': items,
             'page_info': {
                 'page': page,
                 'per_page': per_page,

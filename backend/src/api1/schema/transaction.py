@@ -19,7 +19,7 @@ class GoalTransactionSchema(Schema):
 
 class TransactionSchema(Schema):
     id = fields.String(dump_only=True)
-    account_id = fields.String()
+    account_id = fields.String(attribute='account')
     date = fields.DateTime()
     status = fields.String(enum=PaidStatus)
     payee = fields.String()
