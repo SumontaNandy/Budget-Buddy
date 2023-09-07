@@ -2,12 +2,13 @@ from werkzeug.exceptions import Conflict, InternalServerError
 from http import HTTPStatus
 import uuid
 
+from sqlalchemy.sql.expression import func
+
 from datetime import datetime
 
 from ..model.spending_plan import SpendingPlan
 from ..model.user import User
 from ..model.onetime_expense import OneTimeExpense
-
 
 class OneTimeExpenseUtil:
     def __init__(self, id=None):
@@ -58,7 +59,17 @@ class OneTimeExpenseUtil:
         
     def get_one_time_expense(self):
         try:
-            one_time_expense = SpendingPlan.get_by_id(self.id)
+            one_time_expense = SpendingPlan.get_by_id(self.id).toDict()
+
+            from ..model.sp_transaction import SpTransaction
+            x = SpTransaction.query\
+                .with_entities(func.avg(SpTransaction.amount))\
+                .filter(SpTransaction.spending_plan == one_time_expense.get('id'))\
+                .first()[0]
+            if x is None:
+                x = "0"
+
+            one_time_expense['amount_used'] = x
 
             return one_time_expense, HTTPStatus.OK
         except Exception as e:
@@ -83,8 +94,21 @@ class OneTimeExpenseUtil:
             total = query.count()
             data = query.paginate(page=page, per_page=per_page)
 
+            items = [item.toDict() for item in data.items]
+            for i in range(len(items)):
+                from ..model.sp_transaction import SpTransaction
+                x = SpTransaction.query\
+                    .with_entities(func.avg(SpTransaction.amount))\
+                    .filter(SpTransaction.spending_plan == items[i].get('id'))\
+                    .first()[0]
+                if x is None:
+                    x = "0"
+                items[i]['amount_used'] = float(x)
+                
+            print(items)
+                
             one_time_expense_list = {
-                "one_time_expenses": data.items,
+                "one_time_expenses": items,
                 "page_info": {
                     "page": page,
                     "per_page": per_page,

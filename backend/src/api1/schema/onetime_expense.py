@@ -6,6 +6,7 @@ class OneTimeExpenseSchema(Schema):
     name = fields.String()
     amount = fields.Float()
     amount_left = fields.Float(dump_only=True)
+    amount_used = fields.Float(dump_only=True)
     category = fields.String()
 
 class OneTimeExpenseListSchema(Schema):
