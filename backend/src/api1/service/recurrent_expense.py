@@ -3,6 +3,9 @@ from http import HTTPStatus
 import uuid
 from datetime import datetime
 
+from sqlalchemy.sql.expression import func
+
+
 from __init__ import db
 
 from ..model.spending_plan import SpendingPlan
@@ -55,15 +58,39 @@ class RecurrentExpenseUtil:
         except Exception as e:
             raise InternalServerError(str(e))
         
+    def get_dict(self, ob):
+        dict = {
+            "id": ob[0],
+            "name": ob[1],
+            "amount": ob[2],
+            "category": ob[3],
+            "next_date": ob[4],
+            "end_date": ob[5],
+            "frequency": ob[6],
+            "type": ob[7],
+        }
+
+        return dict
+        
     def get_recurrent_expense(self):
-        data = db.session.query(SpendingPlan.id, SpendingPlan.name, SpendingPlan.category, SpendingPlan.amount, RecurrentExpense.next_date, 
+        data = db.session.query(SpendingPlan.id, SpendingPlan.name, SpendingPlan.amount, SpendingPlan.category, RecurrentExpense.next_date, 
                                 RecurrentExpense.end_date, RecurrentExpense.frequency, RecurrentExpense.type).\
                                 join(RecurrentExpense).filter(SpendingPlan.id==self.id).first()
+        
+        from ..model.sp_transaction import SpTransaction
+        x = SpTransaction.query\
+            .with_entities(func.avg(SpTransaction.amount))\
+            .filter(SpTransaction.spending_plan == data[0])\
+            .first()[0]
+        if x is None:
+            x = "0"
+        data = self.get_dict(data)
+        data['amount_used'] = float(x)
 
         return data, HTTPStatus.OK
     
     def get_recurrent_expense_list(self, user_id, filters=None):
-        query = db.session.query(SpendingPlan.id, SpendingPlan.name, SpendingPlan.category, SpendingPlan.amount, RecurrentExpense.next_date, 
+        query = db.session.query(SpendingPlan.id, SpendingPlan.name, SpendingPlan.amount, SpendingPlan.category, RecurrentExpense.next_date, 
                                 RecurrentExpense.end_date, RecurrentExpense.frequency, RecurrentExpense.type).\
                                 join(RecurrentExpense).filter(SpendingPlan.user==user_id)
         
@@ -89,8 +116,21 @@ class RecurrentExpenseUtil:
         total = query.count()
 
         data = query.paginate(page, per_page)
+
+        items = data.items
+        for i in range(len(items)):
+            from ..model.sp_transaction import SpTransaction
+            x = SpTransaction.query\
+                .with_entities(func.avg(SpTransaction.amount))\
+                .filter(SpTransaction.spending_plan == items[i][0])\
+                .first()[0]
+            if x is None:
+                x = "0"
+            items[i] = self.get_dict(items[i])
+            items[i]['amount_used'] = float(x)
+
         recurrent_expense_list = {
-            "recurrent_expenses": data.items,
+            "recurrent_expenses": items,
             "page_info": {
                 "page": page,
                 "per_page": per_page,

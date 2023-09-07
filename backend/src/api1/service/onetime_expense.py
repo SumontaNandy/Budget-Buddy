@@ -105,7 +105,7 @@ class OneTimeExpenseUtil:
                     x = "0"
                 items[i]['amount_used'] = float(x)
                 
-            print(items)
+            # print(items)
                 
             one_time_expense_list = {
                 "one_time_expenses": items,

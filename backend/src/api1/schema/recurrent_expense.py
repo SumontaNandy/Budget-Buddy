@@ -12,6 +12,7 @@ class RecurrentExpenseSchema(Schema):
     end_date = fields.DateTime()
     frequency = fields.String(enum=RecurrentFreq)
     type = fields.String(enum=RecurrentType)
+    amount_used = fields.Float(dump_only=True)
 
 
 class RecurrentExpenseListSchema(Schema):
