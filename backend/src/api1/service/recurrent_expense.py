@@ -129,9 +129,9 @@ class RecurrentExpenseUtil:
 
         page, per_page = 1, 2
         if filters.get('page'):
-            page = filters.get('page')
+            page = int(filters.get('page'))
         if filters.get('per_page'):
-            per_page = filters.get('per_page')
+            per_page = int(filters.get('per_page'))
 
         total = query.count()
 
