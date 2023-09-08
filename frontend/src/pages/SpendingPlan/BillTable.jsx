@@ -15,7 +15,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Button } from '@mui/material';
 
 import { getAllBills } from '../../api/Account';
-import AddIncome from './AddIncome';
+import AddIncome from './AddOnetime';
 
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
@@ -41,7 +41,7 @@ export default function IncomeTable(props) {
 
     useEffect(() => {
         (async () => {
-            const bills = await getAllBills();
+            const bills = await getAllBills(props.start, props.end);
             setRows(bills.recurrent_expenses);
 
             const totalBill = bills.recurrent_expenses.reduce((accumulator, currentBill) => {

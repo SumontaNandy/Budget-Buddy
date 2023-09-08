@@ -29,12 +29,12 @@ export const getAllRecurringExpenses = (page, per_page) =>
     params: { page, per_page }
   }).then((res) => res.data);
 
-export const getAllOneTimeExpenses = (page, per_page) =>
-  axios.get(api_url(`spending-plan/one/`), null, {
-    params: { page, per_page }
+export const getAllOneTimeExpenses = (params) =>
+  axios.get(api_url(`spending-plan/one/`), {
+    params: params
   }).then((res) => res.data);
 
-export const getAllBills = () =>
+export const getAllBills = (start, end) =>
   axios.get(api_url(`spending-plan/recur/`), {
     params: { type: "BILL" }
   }).then((res) => res.data);
