@@ -28,6 +28,9 @@ class ReportUtil:
         for acc in accounts:
             id = acc.get('id')
 
+            start_date = datetime(filter, 1, 1)
+            end_date = datetime(filter, 12, 31)
+            
             dh = DepositeHistory.query.filter_by(account=id)
             dh = [ob.toDict() for ob in dh]
             
@@ -36,7 +39,7 @@ class ReportUtil:
                     month = x.get('date').month
                     depo[month-1] += float(x.get('amount'))
 
-        return depo
+            return depo
         
     def get_cost(self, filter):
         query = Transaction.query.filter_by(user=self.user_id).all()
@@ -66,14 +69,15 @@ class ReportUtil:
         return depo
 
     def get_summary(self, filter=None):
-        year = filter.get('year')
-        depo = self.get_deposite_list(year)
-        cost = self.get_cost(year)    
+
+        filter = int(filter.get('year'))
+
+        depo = self.get_deposite_list(filter)
+        cost = self.get_cost(filter)    
 
         dict = []
 
-        names = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October',
-                  'November', 'December']
+        names = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 
         for i in range(12):
             dict.append({
