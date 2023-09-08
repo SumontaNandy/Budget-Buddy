@@ -85,6 +85,12 @@ class OneTimeExpenseUtil:
             if filters.get('creation_time'):
                 query = query.filter(SpendingPlan.creation_time == filters.get('creation_time'))
 
+            if filters.get('start'):
+                query = query.filter(SpendingPlan.creation_time >= filters.get('start'))
+
+            if filters.get('end'):
+                query = query.filter(SpendingPlan.creation_time <= filters.get('end'))
+
             page, per_page = 1, 2
             if filters.get('page'):
                 page = int(filters.get('page'))

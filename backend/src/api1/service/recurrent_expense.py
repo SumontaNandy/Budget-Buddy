@@ -106,6 +106,10 @@ class RecurrentExpenseUtil:
             query = query.filter(RecurrentExpense.frequency == filters.get('frequency'))
         if filters.get('upcoming'):
             query = query.filter(RecurrentExpense.next_date >= datetime.now())
+        if filters.get('start'):
+            query = query.filter(SpendingPlan.creation_time >= filters.get('start'))
+        if filters.get('end'):
+            query = query.filter(SpendingPlan.creation_time <= filters.get('end'))
 
         page, per_page = 1, 2
         if filters.get('page'):
