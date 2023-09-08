@@ -90,7 +90,22 @@ class TransactionUtil:
         data = query.paginate(page=page, per_page=per_page)
 
         items = [item.toDict() for item in data.items]
-        print(items)
+
+
+        for i in range(len(items)):
+            items[i]['amount'] = 0
+            tp = SPTransactionUtil().get_sp_transaction(items[i]['id'])
+            if len(tp) > 0:
+                items[i]['amount'] = 0
+                for j in range(len(tp)):
+                    items[i]['amount'] += float(tp[j]['amount'])
+
+            gp = GoalTransactionUtil().get_goal_transaction(items[i]['id'])
+            if len(gp) > 0:
+                items[i]['amount'] = 0
+                for j in range(len(gp)):
+                    items[i]['amount'] += float(gp[j]['amount'])
+        # print(items)
 
         transaction_list = {
             'transactions': items,
