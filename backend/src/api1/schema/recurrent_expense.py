@@ -13,6 +13,7 @@ class RecurrentExpenseSchema(Schema):
     frequency = fields.String(enum=RecurrentFreq)
     type = fields.String(enum=RecurrentType)
     amount_used = fields.Float(dump_only=True)
+    amount_used_within_range = fields.Float(dump_only=True)
 
 
 class RecurrentExpenseListSchema(Schema):

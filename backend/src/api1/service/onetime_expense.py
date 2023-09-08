@@ -10,6 +10,8 @@ from ..model.spending_plan import SpendingPlan
 from ..model.user import User
 from ..model.onetime_expense import OneTimeExpense
 
+from __init__ import db
+
 class OneTimeExpenseUtil:
     def __init__(self, id=None):
         self.id = str(uuid.uuid4())
@@ -57,7 +59,7 @@ class OneTimeExpenseUtil:
         except Exception as e:
             raise InternalServerError(str(e))
         
-    def get_one_time_expense(self):
+    def get_one_time_expense(self, filters=None):
         try:
             one_time_expense = SpendingPlan.get_by_id(self.id).toDict()
 
@@ -70,6 +72,22 @@ class OneTimeExpenseUtil:
                 x = "0"
 
             one_time_expense['amount_used'] = x
+
+            if filters.get('transaction_start') and filters.get('transaction_end'):    
+                from ..model.transaction import Transaction
+                from ..model.sp_transaction import SpTransaction
+                x = db.session.query(func.sum(SpTransaction.amount)).\
+                    join(Transaction).\
+                    filter(SpTransaction.spending_plan == one_time_expense.get('id')).\
+                    filter(Transaction.date >= filters.get('transaction_start')).\
+                    filter(Transaction.date <= filters.get('transaction_end')).\
+                    first()[0]
+            
+                if x is None:
+                    x = "0"
+
+                one_time_expense['amount_used_within_range'] = float(x)
+
 
             return one_time_expense, HTTPStatus.OK
         except Exception as e:
@@ -85,10 +103,10 @@ class OneTimeExpenseUtil:
             if filters.get('creation_time'):
                 query = query.filter(SpendingPlan.creation_time == filters.get('creation_time'))
 
-            if filters.get('start'):
+            if filters.get('creation_start'):
                 query = query.filter(SpendingPlan.creation_time >= filters.get('start'))
 
-            if filters.get('end'):
+            if filters.get('creation_end'):
                 query = query.filter(SpendingPlan.creation_time <= filters.get('end'))
 
             page, per_page = 1, 2
@@ -104,14 +122,29 @@ class OneTimeExpenseUtil:
             for i in range(len(items)):
                 from ..model.sp_transaction import SpTransaction
                 x = SpTransaction.query\
-                    .with_entities(func.avg(SpTransaction.amount))\
+                    .with_entities(func.sum(SpTransaction.amount))\
                     .filter(SpTransaction.spending_plan == items[i].get('id'))\
                     .first()[0]
                 if x is None:
                     x = "0"
                 items[i]['amount_used'] = float(x)
+
+            if filters.get('transaction_start') and filters.get('transaction_end'):    
+                for i in range(len(items)):
+                    from ..model.transaction import Transaction
+                    from ..model.sp_transaction import SpTransaction
+                    x = db.session.query(func.sum(SpTransaction.amount)).\
+                        join(Transaction).\
+                        filter(SpTransaction.spending_plan == items[i].get('id')).\
+                        filter(Transaction.date >= filters.get('transaction_start')).\
+                        filter(Transaction.date <= filters.get('transaction_end')).\
+                        first()[0]
                 
-            # print(items)
+                    if x is None:
+                        x = "0"
+
+                    items[i]['amount_used_within_range'] = float(x)
+
                 
             one_time_expense_list = {
                 "one_time_expenses": items,
