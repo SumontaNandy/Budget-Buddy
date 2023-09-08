@@ -11,6 +11,8 @@ from ..model.user import User
 from ..service.balance_segment import BalanceSegmentUtil
 from ..service.deposite import DepositeUtil
 
+from sqlalchemy.sql.expression import func
+
 
 class AccountUtil:
     """
@@ -100,8 +102,23 @@ class AccountUtil:
         data = DepositeUtil(self.id).get_deposite_history(filters)  
         return data, HTTPStatus.OK
     
-    def get_accounts(self, user_id):
+    def get_accounts(self, user_id, filters=None):
         accounts = Account.query.filter_by(user=user_id).all()
         accounts = [ob.toDict() for ob in accounts]
+
+        if filters is not None:
+            if filters.get('start') and filters.get('end'):
+                from ..model.deposite_history import DepositeHistory
+
+                for i in range(len(accounts)):
+                    total_deposite = DepositeHistory.query.\
+                                    with_entities(func.sum(DepositeHistory.amount)).\
+                                    filter(DepositeHistory.account == accounts[i].get('id')).\
+                                    filter(DepositeHistory.date >= filters.get('start')).\
+                                    filter(DepositeHistory.date <= filters.get('end')).\
+                                    first()[0]
+                    if total_deposite is None:
+                        total_deposite = 0
+                    accounts[i]['total_deposite'] = float(total_deposite)
 
         return accounts, HTTPStatus.OK

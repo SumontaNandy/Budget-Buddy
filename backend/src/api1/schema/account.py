@@ -13,6 +13,7 @@ class AccountSchema(Schema):
     account_type_id = fields.String(required=True)
     account_type_name = fields.String()
     segment_list = fields.List(fields.Nested(BalanceSegmentSchema(only=('segment_name', 'amount'))))
+    total_deposite = fields.Float(dump_only=True)
 
 
 account_ip_serializer = AccountSchema(exclude=('account_type_name', 'segment_list'))

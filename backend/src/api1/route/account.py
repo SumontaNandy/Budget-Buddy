@@ -36,7 +36,9 @@ class AccountCR(Resource):
         """
         user_id = get_jwt_identity()
 
-        data, http_response = AccountUtil().get_accounts(user_id)
+        filters = request.args
+
+        data, http_response = AccountUtil().get_accounts(user_id, filters)
 
         return account_list_serializer.dump(data), http_response
 
