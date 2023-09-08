@@ -55,8 +55,11 @@ export default function OneTimeTable(props) {
         newDate.setMonth(newDate.getMonth() + 1);
 
         // Check if the next month exceeds the current month
-        if (newDate <= currentDate) {
+        if (newDate <= currentDate) 
+        {
             setSelectedDate(newDate);
+            setPage(0);
+            setFirstDivAmount(0);
         }
     };
 
@@ -64,6 +67,8 @@ export default function OneTimeTable(props) {
         const newDate = new Date(selectedDate);
         newDate.setMonth(newDate.getMonth() - 1);
         setSelectedDate(newDate);
+        setPage(0);
+        setFirstDivAmount(0);
     };
 
     // Format the selectedDate as "MMM yyyy" (e.g., "Sep 2023")

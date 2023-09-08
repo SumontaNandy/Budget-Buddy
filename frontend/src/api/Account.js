@@ -24,9 +24,9 @@ export const addIncome = (account_id, income) =>
 export const getUpcomingTransactions = () =>
   axios.get(api_url(`spending-plan/recur/?upcoming=1`)).then((res) => res.data);
 
-export const getAllRecurringExpenses = (page, per_page) =>
-  axios.get(api_url(`spending-plan/recur/`), null, {
-    params: { page, per_page }
+export const getAllRecurringExpenses = (params) =>
+  axios.get(api_url(`spending-plan/recur/`), {
+    params: params
   }).then((res) => res.data);
 
 export const getAllOneTimeExpenses = (params) =>
