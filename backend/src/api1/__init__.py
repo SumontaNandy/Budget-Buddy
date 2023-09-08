@@ -10,6 +10,7 @@ from .route.transaction import api as ns_transaction
 from .route.watchlist import api as ns_watchlist
 from .route.goal import api as ns_goal
 from .route.user import api as ns_user
+from .route.report import api as ns_report
 
 blueprint = Blueprint('api1', __name__, url_prefix='/api/1/user')
 
@@ -38,3 +39,4 @@ api.add_namespace(ns_transaction, path='/transaction')
 api.add_namespace(ns_watchlist, path='/watchlist')
 api.add_namespace(ns_goal, path='/goal')
 api.add_namespace(ns_user, path='/info')
+api.add_namespace(ns_report, path='/report')
