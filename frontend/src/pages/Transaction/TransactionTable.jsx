@@ -84,9 +84,6 @@ export default function TransactionTable(props) {
     const [totalRows, setTotalRows] = useState(0);
     useEffect(() => {
         (async () => {
-            const startDateOfMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
-            const endDateOfMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 0);
-            //console.log(startDateOfMonth, endDateOfMonth);
             const params = {
                 page: page + 1,
                 per_page: rowsPerPage
@@ -96,7 +93,7 @@ export default function TransactionTable(props) {
                 params['start'] = startDate;
                 params['end'] = endDate;
             }
-            //console.log(startDate, endDate);
+            console.log(startDate, endDate);
 
             let tempTransactions = await getAllTransactions(params);
             setTotalRows(tempTransactions.page_info.total);
