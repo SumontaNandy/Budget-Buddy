@@ -38,3 +38,14 @@ export const getAllBills = () =>
   axios.get(api_url(`spending-plan/recur/`), {
     params: { type: "BILL" }
   }).then((res) => res.data);
+
+export const getSavingGoals = () =>
+  axios.get(api_url(`goal/`)).then((res) => res.data);
+
+
+export const createGoal = (goal) =>
+  axios.post(api_url(`goal/create`), goal, params).then((res) => res.data);
+
+export const editGoal = (goal) =>
+  axios.post(api_url(`goal/edit`), goal, params).then((res) => res.data);
+

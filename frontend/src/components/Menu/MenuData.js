@@ -8,6 +8,10 @@ const MenuData = [
     link: "/spending-plan"
   },
   {
+    name: "Transaction Summary",
+    link: "/transaction-summary"
+  },
+  {
     name: "Accounts",
     link: "/account-types"
   },

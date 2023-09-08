@@ -21,41 +21,47 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import SavingCard from "./SavingCard";
 import SavingGoalsData from "../../data/SavingGoalsData";
+import { getSavingGoals } from '../../api/Account';
+import { createGoal } from '../../api/Account';
+import { getAllAccounts } from '../../api/Account';
 
 export default function SavingGoalsContent() {
 
-    let result = [
-        {
-            "name": "Cox's Bazar Vacation",
-            "goal_amount": 100000,
-            "saved_so_far": 5000,
-            "account": "ICCU Savings",
-            "target_date": "10/10/2029",
-            "monthly_contribution": 2500
-        },
-        {
-            "name": "Eid Shopping",
-            "goal_amount": 10000,
-            "saved_so_far": 2000,
-            "account": "ICCU Savings",
-            "target_date": "10/10/2024",
-            "monthly_contribution": 1000
-        },
-        {
-            "name": "Grad Night",
-            "goal_amount": 1000,
-            "saved_so_far": 200,
-            "account": "ICCU Savings",
-            "target_date": "10/10/2024",
-            "monthly_contribution": 100
-        }
-    ]
+    // let result = [
+    //     {
+    //         "name": "Cox's Bazar Vacation",
+    //         "goal_amount": 100000,
+    //         "saved_so_far": 5000,
+    //         "account": "ICCU Savings",
+    //         "target_date": "10/10/2029",
+    //         "monthly_contribution": 2500
+    //     },
+    //     {
+    //         "name": "Eid Shopping",
+    //         "goal_amount": 10000,
+    //         "saved_so_far": 2000,
+    //         "account": "ICCU Savings",
+    //         "target_date": "10/10/2024",
+    //         "monthly_contribution": 1000
+    //     },
+    //     {
+    //         "name": "Grad Night",
+    //         "goal_amount": 1000,
+    //         "saved_so_far": 200,
+    //         "account": "ICCU Savings",
+    //         "target_date": "10/10/2024",
+    //         "monthly_contribution": 100
+    //     }
+    // ]
 
     const [goals, setGoals] = useState([])
+    const [account, setAccount] = useState('');
+    const [allAccounts, setAllAccounts] = useState([]);
+    const [category, setCategory] = useState('')
     const [name, setName] = useState('');
     const [goalAmount, setGoalAmount] = useState('');
     const [savedSoFar, setSavedSoFar] = useState('');
-    const [account, setAccount] = useState('');
+    const [spentSoFar, setSpentSoFar] = useState('');
     const [monthlyContribution, setMonthlyContribution] = useState('');
     const history = useHistory();
 
@@ -67,16 +73,19 @@ export default function SavingGoalsContent() {
     const [targetDate, setTargetDate] = useState(dayjs('2023-08-20'));
 
     useEffect(() => {
-        const cookies = document.cookie;
-        const headers = new Headers({
-            'Content-Type': 'application/json',
-            'Cookie': cookies
-        });
-        // Fetch saving goals data from the Flask backend API
-        fetch('http://127.0.0.1:5000/api/user/goal', { headers })
-            .then(response => response.json())
-            .then(data => setGoals(data))
-            .catch(error => console.error('Error fetching data:', error));
+        const fetchGoalsAndAccounts = async () => {
+            try {
+                const data = await getSavingGoals();
+                setGoals(data);
+
+                const accounts = await getAllAccounts();
+                setAllAccounts(accounts);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+
+        fetchGoalsAndAccounts();
     }, []);
 
 
@@ -107,42 +116,27 @@ export default function SavingGoalsContent() {
     }
 
 
-    const handleCreateThird = async () => {
-        handleCloseThird();
-        try {
-            let link = "http://127.0.0.1:5000/api/user/goal/create"
-            const cookies = document.cookie;
-            const res = await fetch(link, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    'Cookie': cookies
-                },
-                body: JSON.stringify({
-                    name: name,
-                    goal_amount: goalAmount,
-                    saved_so_far: savedSoFar,
-                    target_date: targetDate,
-                    account: account,
-                    monthly_contribution: monthlyContribution
-                })
-            });
+    const handleCreateThird = () => {
+        const newGoal = {
+            account_id: account,
+            category: category,
+            name: name,
+            goal_amount: goalAmount,
+            saved_so_far: savedSoFar,
+            spent_so_far: spentSoFar,
+            target_date: targetDate,
+            monthly_contribution: monthlyContribution
+        };
 
-            if (res.ok) {
-                const data = await res.json();
-                const { status } = data;
+        createGoal(JSON.stringify(newGoal)).then(res => {
+            setGoals(prev => [...prev, newGoal]);
+            if (res.goal_list.length > 0) {
+                setAccount(res.goal_list[0].account_id);
+            }
+        });
 
-                if (status === "success") {
-                    history.push("/saving-goals");
-                }
-            }
-            else {
-                alert("Goal Creation Not Successful");
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    }
+        setOpenCreateThird(false); // Close the dialog
+    };
 
     return (
         <>
@@ -150,7 +144,7 @@ export default function SavingGoalsContent() {
                 <h1> Saving Goals </h1>
 
                 <Grid container spacing={2}>
-                    {result.map(goal => {
+                    {goals.map(goal => {
                         return (
                             <Grid item xs={3}>
                                 <SavingCard
@@ -215,10 +209,11 @@ export default function SavingGoalsContent() {
                         onChange={(e) => setAccount(e.target.value)}
                         label="Select an Account"
                     >
-                        <MenuItem value={account}>{account}</MenuItem>
-                        <MenuItem value="ICCU-Checking">ICCU-Checking</MenuItem>
-                        <MenuItem value="Cash">Cash</MenuItem>
-                        <MenuItem value="Sonali-Bank">Sonali Bank</MenuItem>
+                        {allAccounts.map((account) => (
+                            <MenuItem value={account.account_id}>
+                                {account.account_no} - {account.account_name}
+                            </MenuItem>
+                        ))}
                     </Select>
                     <RadioGroup
                         value={selectedSet}
@@ -242,7 +237,7 @@ export default function SavingGoalsContent() {
                                 <DatePicker
                                     label="Target Date"
                                     value={targetDate}
-                                    onChange={(e) => { setTargetDate(e) }}
+                                    onChange={(e) => { setTargetDate(e.d) }}
                                 />
                             </DemoContainer>
                         </LocalizationProvider>) : (<div></div>)}
@@ -266,9 +261,31 @@ export default function SavingGoalsContent() {
                         value={monthlyContribution}
                         onChange={(e) => setMonthlyContribution(e.target.value)}
                     />
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="category"
+                        label="Category"
+                        type="text"
+                        fullWidth
+                        variant="standard"
+                        value={category}
+                        onChange={(e) => setCategory(e.target.value)}
+                    />
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="spentSoFar"
+                        label="Spent So Far"
+                        type="text"
+                        fullWidth
+                        variant="standard"
+                        value={spentSoFar}
+                        onChange={(e) => setSpentSoFar(e.target.value)}
+                    />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleCreateThird}>Save</Button>
+                    <Button onClick={handleCreateThird}>Create</Button>
                     <Button onClick={handleCloseThird}>Cancel</Button>
                 </DialogActions>
             </Dialog>

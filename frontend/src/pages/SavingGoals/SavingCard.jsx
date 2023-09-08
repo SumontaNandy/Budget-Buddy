@@ -21,6 +21,7 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { editGoal } from '../../api/Account';
 
 
 //import { CardActions } from '@mui/material';
@@ -68,42 +69,22 @@ export default function SavingCard(props) {
         setOpenEditThird(true);
     }
 
-    const handleEditThird = async () => {
-        handleCloseThird();
-        try {
-            let link = "http://127.0.0.1:5000/api/user/goal/edit/" + name
-            const cookies = document.cookie;
-            const res = await fetch(link, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Cookie": cookies
-                },
-                body: JSON.stringify({
-                    name: name,
-                    goal_amount: goalAmount,
-                    saved_so_far: savedSoFar,
-                    target_date: targetDate,
-                    account: account,
-                    monthly_contribution: monthlyContribution
-                })
-            });
-
-            if (res.ok) {
-                const data = await res.json();
-                const { status } = data;
-
-                if (status === "success") {
-                    history.push("/saving-goals");
-                }
-            }
-            else {
-                alert("Edit Not Successful");
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    }
+    const handleEditThird = () => {
+        const updatedGoal = {
+            name: name,
+            goal_amount: goalAmount,
+            saved_so_far: savedSoFar,
+            target_date: targetDate,
+            account: account,
+            monthly_contribution: monthlyContribution
+        };
+    
+        editGoal(JSON.stringify(updatedGoal)).then(res => {
+            // Update the state or do something with the response
+        });
+    
+        setOpenEditThird(false); // Close the dialog
+    };
 
 
     const onDelete = async (nAme) => {
