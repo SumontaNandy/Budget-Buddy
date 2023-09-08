@@ -36,7 +36,7 @@ class ReportUtil:
                     month = x.get('date').month
                     depo[month-1] += float(x.get('amount'))
 
-            return depo
+        return depo
         
     def get_cost(self, filter):
         query = Transaction.query.filter_by(user=self.user_id).all()
