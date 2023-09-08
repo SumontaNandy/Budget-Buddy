@@ -20,34 +20,35 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import SpecialExpensesCard from "./SpecialExpensesCard";
+import axios from 'axios';
 //import SavingGoalsData from "../../data/SavingGoalsData";
 
 
 export default function SpecialExpensesContent() {
 
-    let result = [
-        {
-            "type": "by category",
-            "name": "Dinning Out",
-            "categories": "resturant",
-            "setTarget": "true",
-            "amount": 100
-        },
-        {
-            "type": "by category",
-            "name": "Dinning Out",
-            "categories": "resturant",
-            "setTarget": "true",
-            "amount": 100
-        },
-        {
-            "type": "by category",
-            "name": "Dinning Out",
-            "categories": "resturant",
-            "setTarget": "true",
-            "amount": 100
-        }
-    ]
+    // let result = [
+    //     {
+    //         "type": "by category",
+    //         "name": "Dinning Out",
+    //         "categories": "resturant",
+    //         "setTarget": "true",
+    //         "amount": 100
+    //     },
+    //     {
+    //         "type": "by category",
+    //         "name": "Dinning Out",
+    //         "categories": "resturant",
+    //         "setTarget": "true",
+    //         "amount": 100
+    //     },
+    //     {
+    //         "type": "by category",
+    //         "name": "Dinning Out",
+    //         "categories": "resturant",
+    //         "setTarget": "true",
+    //         "amount": 100
+    //     }
+    // ]
 
     const [expenses, setExpenses] = useState([])
 
@@ -63,15 +64,39 @@ export default function SpecialExpensesContent() {
     const [openCreateThird, setOpenCreateThird] = useState(false);
 
     useEffect(() => {
-        const cookies = document.cookie;
+        const getTokenFromCookies = (tokenType) => {
+            const cookies = document.cookie.split('; ');
+            for (const cookie of cookies) {
+                const [name, value] = cookie.split('=');
+                if (name === tokenType) {
+                    return value;
+                }
+            }
+            return null;
+        };
+
+        const accessToken = getTokenFromCookies('access_token');
+        const refreshToken = getTokenFromCookies('refresh_token');
+        console.log("access token is : ", accessToken);
+
         const headers = new Headers({
+            'Authorization': `Bearer ${accessToken}`,
             'Content-Type': 'application/json',
-            'Cookie': cookies
         });
-        // Fetch saving goals data from the Flask backend API
-        fetch('http://127.0.0.1:5000/api/user/special-expenses', { headers })
-            .then(response => response.json())
-            .then(data => setExpenses(data))
+        // Fetch special expenses/watchlist data from the Flask backend API
+        console.log('fetching data');
+        axios.get('http://127.0.0.1:5000/api/1/user/watchlist', { headers: headers })
+            .then(response => {
+                console.log('just got the response');
+                if (!response.status === 200) {
+                    console.log("Khaise re baba");
+                }
+                return response.data;
+            })
+            .then(data => {
+                setExpenses(data);
+                console.log("gulli mari", data);
+            })
             .catch(error => console.error('Error fetching data:', error));
     }, []);
 
@@ -107,19 +132,33 @@ export default function SpecialExpensesContent() {
         handleCloseThird();
         try {
             let link = "http://127.0.0.1:5000/api/user/watchlist/create"
-            const cookies = document.cookie;
+
+            const getTokenFromCookies = (tokenType) => {
+                const cookies = document.cookie.split('; ');
+                for (const cookie of cookies) {
+                    const [name, value] = cookie.split('=');
+                    if (name === tokenType) {
+                        return value;
+                    }
+                }
+                return null;
+            };
+
+            const accessToken = getTokenFromCookies('access_token');
+            const refreshToken = getTokenFromCookies('refresh_token');
+
             const res = await fetch(link, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json",
-                    'Cookie': cookies
+                    'Authorization': `Bearer ${accessToken}`,
+                    "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    type: type,
+                    id: 1,
                     name: name,
-                    categories: category,
-                    setTarget: setTarget,
-                    amount: amount
+                    type: type,
+                    target: amount,
+                    tags: category
                 })
             });
 
@@ -145,7 +184,7 @@ export default function SpecialExpensesContent() {
                 <h1> Special Expenses </h1>
 
                 <Grid container spacing={2}>
-                    {result.map(expense => {
+                    {expenses.map(expense => {
                         return (
                             <Grid item xs={3}>
                                 <SpecialExpensesCard
