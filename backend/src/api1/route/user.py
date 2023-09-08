@@ -51,7 +51,7 @@ class UserImg(Resource):
         img = request.files['img']
 
         if img is not None:
-            filename = 'profile-pic' + user_id + "." + img.filename.rsplit('.')[-1].lower()
+            filename = 'profile-pic_' + user_id + "." + img.filename.rsplit('.')[-1].lower()
             filename = upload_file(img, filename)
 
             UserUtil(user_id).update_img(filename)
