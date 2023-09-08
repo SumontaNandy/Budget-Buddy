@@ -50,7 +50,8 @@ class iOneTimeExpenseRUD(Resource):
         """
             get a one-time spending_plan's details with an spending_plan_id
         """
-        data, http_response = OneTimeExpenseUtil(spending_plan_id).get_one_time_expense()
+        filter = request.args
+        data, http_response = OneTimeExpenseUtil(spending_plan_id).get_one_time_expense(filter)
 
         return onetime_expense_serializer.dump(data), http_response
     

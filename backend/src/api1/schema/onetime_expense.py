@@ -8,6 +8,7 @@ class OneTimeExpenseSchema(Schema):
     amount_left = fields.Float(dump_only=True)
     amount_used = fields.Float(dump_only=True)
     category = fields.String()
+    amount_used_within_range = fields.Float(dump_only=True)
 
 class OneTimeExpenseListSchema(Schema):
     one_time_expenses = fields.List(fields.Nested(OneTimeExpenseSchema))

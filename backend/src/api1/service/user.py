@@ -63,9 +63,18 @@ class UserUtil:
         data.pop('password')
 
         return data, HTTPStatus.OK
+    
+    def update_img(self, img):
+        user = User.get_by_id(self.id)
+
+        setattr(user, 'img', img)
+        user.save()
 
     def update_info(self, data):
-        data = self.extract_user_data(data)       
+        data = self.extract_user_data(data)     
+        
+        if data.get('img') is not None:
+            data.pop('img')
 
         new_user = User.get_by_id(self.id)
         for key in data.keys():

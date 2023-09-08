@@ -21,15 +21,18 @@ class DevelopmentConfig(Config):
 class TestingConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = os.getenv("TEST_DATABASE_URL")
+    UPLOAD_FOLDER = os.getenv('UPLOAD_FOLDER')
 
 class StagingConfig(Config):
     DEVELOPMENT = True
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.getenv("STAGING_DATABASE_URL")
+    UPLOAD_FOLDER = os.getenv('UPLOAD_FOLDER')
 
 class ProductionConfig(Config):
     DEBUG = False
     SQLALCHEMY_DATABASE_URI = os.getenv("PRODUCTION_DATABASE_URL")
+    UPLOAD_FOLDER = os.getenv('UPLOAD_FOLDER')
 
 config_dict = {
     "development": DevelopmentConfig,

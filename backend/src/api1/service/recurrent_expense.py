@@ -72,20 +72,36 @@ class RecurrentExpenseUtil:
 
         return dict
         
-    def get_recurrent_expense(self):
+    def get_recurrent_expense(self, filters=None):
         data = db.session.query(SpendingPlan.id, SpendingPlan.name, SpendingPlan.amount, SpendingPlan.category, RecurrentExpense.next_date, 
                                 RecurrentExpense.end_date, RecurrentExpense.frequency, RecurrentExpense.type).\
                                 join(RecurrentExpense).filter(SpendingPlan.id==self.id).first()
         
         from ..model.sp_transaction import SpTransaction
         x = SpTransaction.query\
-            .with_entities(func.avg(SpTransaction.amount))\
+            .with_entities(func.sum(SpTransaction.amount))\
             .filter(SpTransaction.spending_plan == data[0])\
             .first()[0]
         if x is None:
             x = "0"
         data = self.get_dict(data)
         data['amount_used'] = float(x)
+
+
+        if filters.get('transaction_start') and filters.get('transaction_end'):    
+            from ..model.transaction import Transaction
+            from ..model.sp_transaction import SpTransaction
+            x = db.session.query(func.sum(SpTransaction.amount)).\
+                join(Transaction).\
+                filter(SpTransaction.spending_plan == self.id).\
+                filter(Transaction.date >= filters.get('transaction_start')).\
+                filter(Transaction.date <= filters.get('transaction_end')).\
+                first()[0]
+        
+            if x is None:
+                x = "0"
+
+            data['amount_used_within_range'] = float(x)
 
         return data, HTTPStatus.OK
     
@@ -106,6 +122,10 @@ class RecurrentExpenseUtil:
             query = query.filter(RecurrentExpense.frequency == filters.get('frequency'))
         if filters.get('upcoming'):
             query = query.filter(RecurrentExpense.next_date >= datetime.now())
+        if filters.get('start'):
+            query = query.filter(SpendingPlan.creation_time >= filters.get('start'))
+        if filters.get('end'):
+            query = query.filter(SpendingPlan.creation_time <= filters.get('end'))
 
         page, per_page = 1, 2
         if filters.get('page'):
@@ -128,6 +148,23 @@ class RecurrentExpenseUtil:
                 x = "0"
             items[i] = self.get_dict(items[i])
             items[i]['amount_used'] = float(x)
+
+
+        if filters.get('transaction_start') and filters.get('transaction_end'):    
+            for i in range(len(items)):
+                from ..model.transaction import Transaction
+                from ..model.sp_transaction import SpTransaction
+                x = db.session.query(func.sum(SpTransaction.amount)).\
+                    join(Transaction).\
+                    filter(SpTransaction.spending_plan == items[i].get('id')).\
+                    filter(Transaction.date >= filters.get('transaction_start')).\
+                    filter(Transaction.date <= filters.get('transaction_end')).\
+                    first()[0]
+            
+                if x is None:
+                    x = "0"
+
+                items[i]['amount_used_within_range'] = float(x)
 
         recurrent_expense_list = {
             "recurrent_expenses": items,

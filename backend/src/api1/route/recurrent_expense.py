@@ -49,7 +49,8 @@ class iRecurrentExpenseRUD(Resource):
         """
             get a recurrent spending_plan's details with an spending_plan_id
         """
-        data, http_response = RecurrentExpenseUtil(spending_plan_id).get_recurrent_expense()
+        filter = request.args
+        data, http_response = RecurrentExpenseUtil(spending_plan_id).get_recurrent_expense(filter)
         # pass
         return recurrent_expense_serializer.dump(data), http_response
     
