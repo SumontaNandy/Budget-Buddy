@@ -14,8 +14,9 @@ import Collapse from "@mui/material/Collapse";
 import IconButton from "@mui/material/IconButton";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-import { getAllOneTimeExpenses } from '../../api/Account';
-import AddOnetime from './AddOnetime';
+import { getAllTransactions } from '../../api/Transaction';
+import AddTransaction from './AddTransaction';
+import DateRangePicker from './DateRangePicker';
 
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
@@ -29,20 +30,22 @@ const ExpandMore = styled((props) => {
 }));
 /* ======= @Part-1 ======= */
 const columns = [
-    { id: 'name', label: 'Name', minWidth: 120 },
-    { id: 'category', label: 'Category', minWidth: 100 },
-    { id: 'amount_used', label: 'Spent', minWidth: 170, format: (value) => value.toLocaleString('en-US') },
-    { id: 'amount', label: 'Budget', minWidth: 170, format: (value) => value.toLocaleString('en-US') }
+    { id: 'date', label: 'Date', minWidth: 120, format: (value) => new Date(value).toLocaleDateString('en-UK') },
+    { id: 'amount', label: 'Amount', minWidth: 170, format: (value) => value.toLocaleString('en-US') },
+    { id: 'payee', label: 'Payee', minWidth: 120 }
 ];
 /* ======= @Part-1 ends ======= */
 
-export default function OneTimeTable(props) {
+export default function TransactionTable(props) {
     /* ======= @Part-2 ======= */
     const { setFirstDivAmount } = props;
-     /* ======= @Part-2 ends ======= */
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
+    const [selectedOption, setSelectedOption] = useState('none');
+    /* ======= @Part-2 ends ======= */
 
     const [rows, setRows] = useState([]);
-    
+
     // Rest of your component code...
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(3);
@@ -55,8 +58,7 @@ export default function OneTimeTable(props) {
         newDate.setMonth(newDate.getMonth() + 1);
 
         // Check if the next month exceeds the current month
-        if (newDate <= currentDate) 
-        {
+        if (newDate <= currentDate) {
             setSelectedDate(newDate);
             setPage(0);
             setFirstDivAmount(0);
@@ -83,26 +85,24 @@ export default function OneTimeTable(props) {
     useEffect(() => {
         (async () => {
             const startDateOfMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
-            const endDateOfMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth()+1, 0);
+            const endDateOfMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 0);
             //console.log(startDateOfMonth, endDateOfMonth);
             const params = {
-                start: startDateOfMonth,
-                end: endDateOfMonth,
-                page: page+1,
+                page: page + 1,
                 per_page: rowsPerPage
             };
 
-            let onetimeExpenses = await getAllOneTimeExpenses(params);
-            setTotalRows(onetimeExpenses.page_info.total);
-            onetimeExpenses = onetimeExpenses.one_time_expenses;
-            setRows(onetimeExpenses);
+            if (selectedOption !== 'none') {
+                params['start'] = startDate;
+                params['end'] = endDate;
+            }
+            //console.log(startDate, endDate);
 
-            const totalOnetime = onetimeExpenses.reduce((accumulator, current) => {
-                return accumulator + current.amount;
-            }, 0);
-            setFirstDivAmount(prev => prev + totalOnetime);
+            let tempTransactions = await getAllTransactions(params);
+            setTotalRows(tempTransactions.page_info.total);
+            setRows(tempTransactions.transactions);
         })();
-    }, [selectedDate, page, rowsPerPage]);
+    }, [startDate, endDate, page, rowsPerPage]);
     /* ======= @Part-3 ends ======= */
 
     const handleChangePage = (event, newPage) => {
@@ -125,15 +125,20 @@ export default function OneTimeTable(props) {
             <TableContainer sx={{ maxHeight: 440 }}>
 
                 <div style={{ paddingLeft: '10px' }}>
-                    <Button variant="text" style={{ maxWidth: '1px' }} onClick={handlePrevMonth}>&lt;</Button>
-                    <span>{formattedDate}</span>
-                    <Button variant="text" onClick={handleNextMonth} disabled={selectedDate >= currentDate}>&gt;</Button>
+                    <DateRangePicker
+                        startDate={startDate}
+                        endDate={endDate}
+                        selectedOption={selectedOption}
+                        setStartDate={setStartDate}
+                        setEndDate={setEndDate}
+                        setSelectedOption={setSelectedOption}
+                    />
                     <br />
 
                     {/* ======= @Part-4 ======= */}
-                    <AddOnetime setOnetimes={setRows} />
+                    <AddTransaction />
 
-                    Onetime Expenses
+                    Transactions
                     {/* ======= @Part-4 ends ======= */}
 
                     <ExpandMore
@@ -164,21 +169,21 @@ export default function OneTimeTable(props) {
                         </TableHead>
                         <TableBody>
                             {rows.map((row) => {
-                                    return (
-                                        <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                                            {columns.map((column) => {
-                                                const value = row[column.id];
-                                                return (
-                                                    <TableCell key={column.id} align={column.align}>
-                                                        {column.format
-                                                            ? column.format(value)
-                                                            : value}
-                                                    </TableCell>
-                                                );
-                                            })}
-                                        </TableRow>
-                                    );
-                                })}
+                                return (
+                                    <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                                        {columns.map((column) => {
+                                            const value = row[column.id];
+                                            return (
+                                                <TableCell key={column.id} align={column.align}>
+                                                    {column.format
+                                                        ? column.format(value)
+                                                        : value}
+                                                </TableCell>
+                                            );
+                                        })}
+                                    </TableRow>
+                                );
+                            })}
                         </TableBody>
                     </Table>
                     <TablePagination

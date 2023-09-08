@@ -1,12 +1,13 @@
 import * as React from 'react';
 import Upcoming from "../../components/Upcoming/Upcoming";
-import TransactionTable from "../../components/Transaction/TransactionTable";
+import TransactionTable from "./TransactionTable";
 
 export default function TransactionContent() {
     return (
         <>
             <Upcoming />
-            {/* <TransactionTable /> */}
+            <hr/>
+            <TransactionTable />
         </>
     )
 }
