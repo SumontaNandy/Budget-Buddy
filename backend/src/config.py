@@ -1,5 +1,8 @@
 import os
 from datetime import timedelta
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = True
@@ -12,6 +15,8 @@ class DevelopmentConfig(Config):
     DEVELOPMENT = True
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.getenv("DEVELOPMENT_DATABASE_URL")
+    # MAX_CONTENT_LENGTH = os.getenv('MAX_CONTENT_LENGTH')
+    UPLOAD_FOLDER = os.getenv('UPLOAD_FOLDER')
 
 class TestingConfig(Config):
     TESTING = True
@@ -26,7 +31,7 @@ class ProductionConfig(Config):
     DEBUG = False
     SQLALCHEMY_DATABASE_URI = os.getenv("PRODUCTION_DATABASE_URL")
 
-config = {
+config_dict = {
     "development": DevelopmentConfig,
     "testing": TestingConfig,
     "staging": StagingConfig,

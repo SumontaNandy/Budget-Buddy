@@ -1,0 +1,30 @@
+INSERT INTO public.account_type (id, name) VALUES 
+('0','Accounts');
+
+INSERT INTO public.account_type (id, name, parent_id) VALUES 
+('236e15e5-efe8-4161-83c6-b3c763697ffe','Banking','0'),
+('b2e6fc48-1462-41cc-acd2-c386aeb5e3c9','Investments','0'),
+('6096d156-79e9-47d8-b6bc-6f9382b0e72d','Property','0'),
+('d950c077-c768-4a4b-aa81-b2c092b30bff','Loans','0');
+
+INSERT INTO public.account_type (id, name, parent_id) VALUES 
+('313f54cf-c7b4-439a-bb29-b1cb3368ef48','Cash & Checking','236e15e5-efe8-4161-83c6-b3c763697ffe'),
+('bef41ab4-9582-44ad-b303-4a3f419a576f','Credit','236e15e5-efe8-4161-83c6-b3c763697ffe'),
+('d4c9049f-eb33-4198-8fee-d871f9c15c7a','Savings','236e15e5-efe8-4161-83c6-b3c763697ffe'),
+('633c4065-0e4c-417c-b541-30b88a9c1d04','Other Banking','236e15e5-efe8-4161-83c6-b3c763697ffe');
+
+INSERT INTO public.account_type (id, name, parent_id) VALUES 
+('d6c7dc3d-00f2-41b7-b750-55276c90e006','Brokerage','b2e6fc48-1462-41cc-acd2-c386aeb5e3c9'),
+('352d5577-dc32-47d8-806f-be0d386f3ba6','Retirement','b2e6fc48-1462-41cc-acd2-c386aeb5e3c9'),
+('fb333c97-1054-46f3-8c9e-2b3b1adad75e','Other Investments','b2e6fc48-1462-41cc-acd2-c386aeb5e3c9');
+
+INSERT INTO public.account_type (id, name, parent_id) VALUES 
+('72aff35d-82b4-4cc3-9666-9c248b0ae610','Real Estate','6096d156-79e9-47d8-b6bc-6f9382b0e72d'),
+('e3dc0f7e-5efa-468d-b680-e4c6214003aa','Vehicle','6096d156-79e9-47d8-b6bc-6f9382b0e72d'),
+('33660f00-dca6-4c5a-a948-58dddd0ee02e','Other Property','6096d156-79e9-47d8-b6bc-6f9382b0e72d');
+
+INSERT INTO public.account_type (id, name, parent_id) VALUES 
+('b73ab10f-bb08-42ca-90d0-7131c233e214','Home','d950c077-c768-4a4b-aa81-b2c092b30bff'),
+('4adafa02-d3d0-4cc2-a04b-9e97b039a585','Vehicle','d950c077-c768-4a4b-aa81-b2c092b30bff'),
+('bfa3e35c-3a3e-4d2c-bc55-826baff0ff0b','Personal','d950c077-c768-4a4b-aa81-b2c092b30bff'),
+('afb75edf-c1bd-410e-bdda-ee42b8f5b0d6','Other Loan','d950c077-c768-4a4b-aa81-b2c092b30bff');

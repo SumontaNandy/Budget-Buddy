@@ -22,25 +22,55 @@ pip install -r requirements.txt
 
 * go to src folder
 
+* create a .env file [see .env_sample]
+
 * run the flask app
 ```python
-flask run
+python manage.py runserver
 ```
-run the flask app with dubug mode on
-```python
-flask run --debug
-```
+
 ***Note: AttributeError: '_FakeStack' object has no attribute '__ident_func__'*** 
 ```python
 python -m pip uninstall flask-sqlalchemy
 python -m pip install flask-sqlalchemy
 ```
 
+* create database models, e.g.:
+```python
+python
+from manage import db
+from api1.model.account import Account # import all models
+db.create_all()
+exit()
+```
+
 * migrate the new database models
 ```python
-flask db init
-flask db migrate
-flask db upgrade
+# flask db init
+# flask db migrate
+# flask db upgrade
+python manage.py db init
+python manage.py db migrate
+python manage.py db upgrade
+```
+
+> **__PROBLEMS__**:
+- database migration problem
+```python
+python manage.py db stamp head
+python manage.py db migrate
+python manage.py db upgrade
+```
+
+- Flask-Script: from flask._compat import text_type ModuleNotFoundError: No module named 'flask._compat'
+* change in file where this error occured, \
+from 
+```python
+from flask._compat import text_type
+```
+to
+```python
+from flask_script._compat import text_type
 ```
 
 ## Database Configuration
