@@ -5,15 +5,15 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
+import DatePicker from 'react-datepicker';
 
-import { addOnetime } from '../../api/SpendingPlan';
+import { addDeposite } from '../../api/Account';
 
-export default function AddOnetime(props) {
-    const { setLoad } = props;
+export default function AddIncome(props) {
+    const { account_id, setLoad } = props;
 
     const [open, setOpen] = useState(false);
-    const [name, setName] = useState('');
-    const [category, setCategory] = useState('');
+    const [date, setDate] = useState(null);
     const [amount, setAmount] = useState('');
 
     const handleClickOpen = () => {
@@ -25,24 +25,23 @@ export default function AddOnetime(props) {
     };
 
     const handleAdd = () => {
-        if (!name || !category || !amount) {
-            alert("Name, Category, Budget cannot be blank!");
-        }
+        if(!amount || amount < 0)
+            alert("Amount is invalid!");
+        else if(!date)
+            alert("Date is invalid!");
         else {
-
-            const newOnetimeExpense = {
-                name: name,
-                category: category,
-                amount: parseFloat(amount)
+            const newDeposite = {
+                amount: parseFloat(amount),
+                date: date,
             };
-
-            addOnetime(JSON.stringify(newOnetimeExpense)).then(res => {
+    
+            addDeposite(account_id, JSON.stringify(newDeposite)).then(res => {
                 if(res === 200)
                     setLoad(true);
                 else
-                    alert("Add Onetime Expense Failed!");
+                    alert("Add Deposite Failed!");
             });
-
+    
             setOpen(false); // Close the dialog
         }
     };
@@ -53,35 +52,18 @@ export default function AddOnetime(props) {
                 Add
             </Button>
             <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>Add Onetime Expense</DialogTitle>
+                <DialogTitle>Add Income</DialogTitle>
                 <DialogContent>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="name"
-                        label="Name"
-                        type="text"
-                        fullWidth
-                        variant="standard"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                    />
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="category"
-                        label="Category"
-                        type="text"
-                        fullWidth
-                        variant="standard"
-                        value={category}
-                        onChange={(e) => setCategory(e.target.value)}
+                    <DatePicker
+                        selected={date}
+                        onChange={(date) => setDate(date)}
+                        placeholderText="Date"
                     />
                     <TextField
                         autoFocus
                         margin="dense"
                         id="amount"
-                        label="Budget"
+                        label="Amount"
                         type="number"
                         fullWidth
                         variant="standard"

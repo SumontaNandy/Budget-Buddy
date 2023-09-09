@@ -58,7 +58,6 @@ export default function AccountTypesContent() {
             <Grid container spacing={2}>
                 {
                     accounts.map(acc => {
-                    console.log("Account", acc);
                     return (
                         <Grid item xs={3}>
                             <AccountCard

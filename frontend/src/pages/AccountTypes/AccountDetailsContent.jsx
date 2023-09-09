@@ -7,12 +7,11 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { getAccount } from '../../api/Account';
+import DepositeTable from './DepositeTable';
 
 export default function TransactionDetails() {
     const { account_id } = useParams();
     const [account, setAccount] = useState({});
-    const [title, setTitle] = useState('');
-    const [list, setList] = useState([]);
 
     useEffect(() => {
         (async () => {
@@ -22,7 +21,7 @@ export default function TransactionDetails() {
     }, []);
 
     let availableBalanceSegment;
-    if(account.segment_list) {
+    if (account.segment_list) {
         availableBalanceSegment = account.segment_list.find(segment => segment.segment_name === 'available_balance');
     }
     const availableBalance = availableBalanceSegment ? availableBalanceSegment.amount : 'N/A';
@@ -50,27 +49,8 @@ export default function TransactionDetails() {
                     </CardContent>
                 </Card>
             </div>
-
-            <h1 style={{ textAlign: 'center', margin: '10px' }}> Deposites </h1>
-            {/* <Grid container spacing={2}>
-                {list.map((item) => {
-                    return (
-                        <Grid item xs={3}>
-                            <Card sx={{ minWidth: 275 }} style={{ backgroundColor: '#FEFFAC' }}>
-                                <CardContent>
-                                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                                        Name: {item.name}
-                                    </Typography>
-
-                                    <Typography variant="h5" component="div">
-                                        Amount: {item.amount}
-                                    </Typography>
-                                </CardContent>
-                            </Card>
-                        </Grid>
-                    )
-                })}
-            </Grid> */}
+            {/* {{ console.log("Account ID", account.account_id); }} */}
+            <DepositeTable account_id={account.account_id} />
         </>
 
     );
