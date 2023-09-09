@@ -27,11 +27,11 @@ export default function SpecialExpensesCard(props) {
     const [openEditSecond, setOpenEditSecond] = useState(false);
     const [openEditThird, setOpenEditThird] = useState(false);
 
-    const [id, setId] = useState(props.expense.id);
-    const [name, setName] = useState(props.expense.name);
-    const [type, setType] = useState(props.expense.type);
-    const [amount, setAmount] = useState(props.expense.target);
-    const [tags, setTags] = useState(props.expense.tags);
+    const [id, setId] = useState(props.id);
+    const [name, setName] = useState(props.name);
+    const [type, setType] = useState(props.type);
+    const [amount, setAmount] = useState(props.target);
+    const [tags, setTags] = useState(props.tags);
 
     const [newTag, setNewTag] = useState('');
 
@@ -86,8 +86,9 @@ export default function SpecialExpensesCard(props) {
                 tags: tags
             };
 
-            await editSpecialExpense(id, updatedExpense);
-            history.push("/special-expenses");
+            editSpecialExpense(JSON.stringify(updatedExpense), id).then(res => {
+                history.push("/special-expenses");
+            });
             // Handle success or navigation logic
         } catch (error) {
             console.error('Error editing special expense:', error);
@@ -115,19 +116,23 @@ export default function SpecialExpensesCard(props) {
                 <Card variant="outlined">
                     <CardContent>
                         <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                            {props.expense.name}
+                            {name}
                         </Typography>
 
                         <Typography variant="h5" component="div">
-                            Name: {name} <br />
                             Type: {type} <br />
+                        </Typography>
+                        <Typography variant="h5" component="div">
                             {setTarget ? "Target Amount: " + amount : ""} <br />
+                        </Typography>
+                        <Typography variant="h5" component="div">
                             Tags: {tags.map(tag => `${tag}, `)}
                         </Typography>
+
                     </CardContent>
                     <CardActions>
                         <Button variant="outlined" onClick={() => { onEditFirst() }} startIcon={<EditIcon />}></Button>
-                        <Button variant="outlined" onClick={() => { onDelete(id) }} startIcon={<DeleteIcon />}></Button>
+                        {/*<Button variant="outlined" onClick={() => { onDelete(id) }} startIcon={<DeleteIcon />}></Button>*/}
                     </CardActions>
                 </Card>
             </Box>

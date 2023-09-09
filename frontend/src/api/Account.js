@@ -59,8 +59,8 @@ export const getSpecialExpenses = () =>
 export const createSpecialExpense = (expense) =>
   axios.post(api_url(`watchlist`), expense, params).then((res) => res.data);
 
-export const editSpecialExpense = (id, expense) =>
-  axios.post(api_url(`watchlist/${id}`), expense, params).then((res) => res.data);
+export const editSpecialExpense = (expense, id) =>
+  axios.put(api_url(`watchlist/${id}`), expense, params).then((res) => res.data);
 
 export const deleteSpecialExpense = (id) =>
   axios.delete(api_url(`watchlist/${id}`), params).then((res) => res.data);

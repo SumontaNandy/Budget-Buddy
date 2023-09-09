@@ -56,11 +56,11 @@ export default function SpecialExpensesContent() {
 
     const [name, setName] = useState('');
     const [type, setType] = useState('');
+    const [amount, setAmount] = useState(''); //target
     const [setTarget, setSetTarget] = useState(true);
     const [tags, setTags] = useState([]);
 
     const [newTag, setNewTag] = useState('');
-    const [amount, setAmount] = useState('');
     const history = useHistory();
 
     const [openCreateFirst, setOpenCreateFirst] = useState(false);
@@ -68,16 +68,12 @@ export default function SpecialExpensesContent() {
     const [openCreateThird, setOpenCreateThird] = useState(false);
 
     useEffect(() => {
-        const fetchSpecialExpenses = async () => {
-            try {
-                const specialExpenses = await getSpecialExpenses();
-                setExpenses(specialExpenses);
-            } catch (error) {
-                console.error('Error fetching special expenses:', error);
-            }
-        };
-
-        fetchSpecialExpenses();
+        (async () => {
+            let data = await getSpecialExpenses();
+            setExpenses(data);
+            console.log("data dekhaitesi");
+            console.log(data);
+        })();
     }, []);
 
 
@@ -125,7 +121,10 @@ export default function SpecialExpensesContent() {
                 tags: tags
             };
 
-            await createSpecialExpense(expense);
+            createSpecialExpense(JSON.stringify(expense)).then(res => {
+                setExpenses(prev => [...prev, expense]);
+            });
+
             history.push("/special-expenses");
         } catch (error) {
             console.error('Error creating special expense:', error);
@@ -139,11 +138,16 @@ export default function SpecialExpensesContent() {
                 <h1> Special Expenses </h1>
 
                 <Grid container spacing={2}>
-                    {expenses.map(expense => {
+                    {expenses.map((expense, index) => {
                         return (
                             <Grid item xs={3}>
                                 <SpecialExpensesCard
-                                    expense={expense}
+                                    id={expense.id}
+                                    name={expense.name}
+                                    type={expense.type}
+                                    target={expense.target}
+                                    tags={expense.tags}
+                                    key={index}
                                 />
                             </Grid>
                         )

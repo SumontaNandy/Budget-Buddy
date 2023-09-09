@@ -27,30 +27,30 @@ import { getAllAccounts } from '../../api/Account';
 
 export default function SavingGoalsContent() {
 
-     let result = [
-        {
-            "id": "1976401e-281e-44b4-a0db-b29c4717e99a",
-            "account_id": "9f439984-4b27-4136-93ac-3a7a03626b02",
-            "category": "test",
-            "name": "test",
-            "goal_amount": 4000,
-            "saved_so_far": 100,
-            "spent_so_far": 4,
-            "target_date": "2023-08-17T18:45:42.361539+06:00",
-            "monthly_contribution": 4
-        },
-        {
-            "id": "dfbc76fe-b92b-41d9-81b3-94eb89494e3a",
-            "account_id": "9f439984-4b27-4136-93ac-3a7a03626b02",
-            "category": "test",
-            "name": "test",
-            "goal_amount": 4000,
-            "saved_so_far": 98,
-            "spent_so_far": 8,
-            "target_date": "2023-08-17T18:45:42.361539+06:00",
-            "monthly_contribution": 4
-        }
-    ]
+    //  let result = [
+    //     {
+    //         "id": "1976401e-281e-44b4-a0db-b29c4717e99a",
+    //         "account_id": "9f439984-4b27-4136-93ac-3a7a03626b02",
+    //         "category": "test",
+    //         "name": "test",
+    //         "goal_amount": 4000,
+    //         "saved_so_far": 100,
+    //         "spent_so_far": 4,
+    //         "target_date": "2023-08-17T18:45:42.361539+06:00",
+    //         "monthly_contribution": 4
+    //     },
+    //     {
+    //         "id": "dfbc76fe-b92b-41d9-81b3-94eb89494e3a",
+    //         "account_id": "9f439984-4b27-4136-93ac-3a7a03626b02",
+    //         "category": "test",
+    //         "name": "test",
+    //         "goal_amount": 4000,
+    //         "saved_so_far": 98,
+    //         "spent_so_far": 8,
+    //         "target_date": "2023-08-17T18:45:42.361539+06:00",
+    //         "monthly_contribution": 4
+    //     }
+    // ]
 
     const [goals, setGoals] = useState([])
     const [account, setAccount] = useState('');
@@ -75,7 +75,7 @@ export default function SavingGoalsContent() {
             let data = await getSavingGoals();
             setGoals(data.goal_list);
             setAccount(data.goal_list[0].account_id);
-            console.log(data.goal_list[0].account_id);
+            //console.log(data.goal_list[0].account_id);
             const accounts = await getAllAccounts();
             setAllAccounts(accounts);
         })();
@@ -151,7 +151,6 @@ export default function SavingGoalsContent() {
                                             target_date = {goal.target_date}
                                             category = {goal.category}
                                             key = {index}/>
-                                {console.log("data pathaisi")}
                             </Grid>
                         )
                     })}
