@@ -39,9 +39,9 @@ export const getAllBills = () =>
     params: { type: "BILL" }
   }).then((res) => res.data);
 
+
 export const getSavingGoals = () =>
   axios.get(api_url(`goal/`)).then((res) => res.data);
-
 
 export const createGoal = (goal) =>
   axios.post(api_url(`goal/create`), goal, params).then((res) => res.data);
@@ -51,6 +51,20 @@ export const editGoal = (goal) =>
 
 export const deleteGoal = (goalName) =>
   axios.post(api_url(`goal/delete/${goalName}`), params).then((res) => res.data);
+
+
+export const getSpecialExpenses = () =>
+  axios.get(api_url(`watchlist`)).then((res) => res.data);
+
+export const createSpecialExpense = (expense) =>
+  axios.post(api_url(`watchlist`), expense, params).then((res) => res.data);
+
+export const editSpecialExpense = (id, expense) =>
+  axios.post(api_url(`watchlist/${id}`), expense, params).then((res) => res.data);
+
+export const deleteSpecialExpense = (id) =>
+  axios.delete(api_url(`watchlist/${id}`), params).then((res) => res.data);
+
 
 
 

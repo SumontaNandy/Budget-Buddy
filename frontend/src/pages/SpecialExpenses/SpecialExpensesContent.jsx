@@ -22,6 +22,8 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import SpecialExpensesCard from "./SpecialExpensesCard";
 import axios from 'axios';
 //import SavingGoalsData from "../../data/SavingGoalsData";
+import { getSpecialExpenses } from '../../api/Account';
+import { createSpecialExpense } from '../../api/Account';
 
 
 export default function SpecialExpensesContent() {
@@ -54,8 +56,10 @@ export default function SpecialExpensesContent() {
 
     const [name, setName] = useState('');
     const [type, setType] = useState('');
-    const [category, setCategory] = useState('');
     const [setTarget, setSetTarget] = useState(true);
+    const [tags, setTags] = useState([]);
+
+    const [newTag, setNewTag] = useState('');
     const [amount, setAmount] = useState('');
     const history = useHistory();
 
@@ -64,40 +68,16 @@ export default function SpecialExpensesContent() {
     const [openCreateThird, setOpenCreateThird] = useState(false);
 
     useEffect(() => {
-        const getTokenFromCookies = (tokenType) => {
-            const cookies = document.cookie.split('; ');
-            for (const cookie of cookies) {
-                const [name, value] = cookie.split('=');
-                if (name === tokenType) {
-                    return value;
-                }
+        const fetchSpecialExpenses = async () => {
+            try {
+                const specialExpenses = await getSpecialExpenses();
+                setExpenses(specialExpenses);
+            } catch (error) {
+                console.error('Error fetching special expenses:', error);
             }
-            return null;
         };
 
-        const accessToken = getTokenFromCookies('access_token');
-        const refreshToken = getTokenFromCookies('refresh_token');
-        console.log("access token is : ", accessToken);
-
-        const headers = new Headers({
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-        });
-        // Fetch special expenses/watchlist data from the Flask backend API
-        console.log('fetching data');
-        axios.get('http://127.0.0.1:5000/api/1/user/watchlist', { headers: headers })
-            .then(response => {
-                console.log('just got the response');
-                if (!response.status === 200) {
-                    console.log("Khaise re baba");
-                }
-                return response.data;
-            })
-            .then(data => {
-                setExpenses(data);
-                console.log("gulli mari", data);
-            })
-            .catch(error => console.error('Error fetching data:', error));
+        fetchSpecialExpenses();
     }, []);
 
 
@@ -127,54 +107,29 @@ export default function SpecialExpensesContent() {
         setOpenCreateThird(true);
     }
 
+    const handleAddTag = () => {
+        if (newTag.trim() !== '') {
+            setTags([...tags, newTag]);
+            setNewTag('');
+        }
+    };
+
 
     const handleCreateThird = async () => {
         handleCloseThird();
         try {
-            let link = "http://127.0.0.1:5000/api/user/watchlist/create"
-
-            const getTokenFromCookies = (tokenType) => {
-                const cookies = document.cookie.split('; ');
-                for (const cookie of cookies) {
-                    const [name, value] = cookie.split('=');
-                    if (name === tokenType) {
-                        return value;
-                    }
-                }
-                return null;
+            const expense = {
+                name: name,
+                type: type,
+                target: amount,
+                tags: tags
             };
 
-            const accessToken = getTokenFromCookies('access_token');
-            const refreshToken = getTokenFromCookies('refresh_token');
-
-            const res = await fetch(link, {
-                method: "POST",
-                headers: {
-                    'Authorization': `Bearer ${accessToken}`,
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    id: 1,
-                    name: name,
-                    type: type,
-                    target: amount,
-                    tags: category
-                })
-            });
-
-            if (res.ok) {
-                const data = await res.json();
-                const { status } = data;
-
-                if (status === "success") {
-                    history.push("/special-expenses");
-                }
-            }
-            else {
-                alert("Special Expense Creation Not Successful");
-            }
+            await createSpecialExpense(expense);
+            history.push("/special-expenses");
         } catch (error) {
-            console.log(error);
+            console.error('Error creating special expense:', error);
+            alert("Special Expense Creation Not Successful");
         }
     }
 
@@ -218,10 +173,10 @@ export default function SpecialExpensesContent() {
                         onChange={(e) => setType(e.target.value)}
                         label="Select A Type"
                     >
-                        <MenuItem value={type}>{type}</MenuItem>
                         <MenuItem value="Extra">Extra</MenuItem>
                         <MenuItem value="Eating">Eating</MenuItem>
                         <MenuItem value="Recreation">Recreation</MenuItem>
+                        <MenuItem value="Tour">Tour</MenuItem>
                     </Select>
                 </DialogContent>
                 <DialogActions>
@@ -232,17 +187,25 @@ export default function SpecialExpensesContent() {
             <Dialog open={openCreateSecond} onClose={handleCloseSecond}>
                 <DialogTitle>Add Special Expense</DialogTitle>
                 <DialogContent>
-                    <InputLabel>Select A Category</InputLabel>
-                    <Select
-                        value={category}
-                        onChange={(e) => setCategory(e.target.value)}
-                        label="Select A Category"
-                    >
-                        <MenuItem value={category}>{category}</MenuItem>
-                        <MenuItem value="Restaurant">Restaurant</MenuItem>
-                        <MenuItem value="MI-28-Attack-Helicopter">MI-28-Attack-Helicopter</MenuItem>
-                        <MenuItem value="Otomat-MKII-Missile">Otomat-MKII-Missile</MenuItem>
-                    </Select>
+                    <InputLabel>Tags</InputLabel>
+                    {tags.map((tag, index) => (
+                        <TextField
+                            key={index}
+                            value={tag}
+                            onChange={(e) => {
+                                const newTags = [...tags];
+                                newTags[index] = e.target.value;
+                                setTags(newTags);
+                            }}
+                            label={`Tag ${index + 1}`}
+                        />
+                    ))}
+                    <TextField
+                        value={newTag}
+                        onChange={(e) => setNewTag(e.target.value)}
+                        label="New Tag"
+                    />
+                    <Button onClick={handleAddTag}>Add Tag</Button>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleCreateSecond}>Next</Button>

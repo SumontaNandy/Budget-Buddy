@@ -16,7 +16,8 @@ import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { InputLabel, MenuItem, Select } from '@mui/material';
 import { FormControlLabel, Radio, RadioGroup } from '@mui/material';
-
+import { editSpecialExpense } from '../../api/Account';
+import { deleteSpecialExpense } from '../../api/Account';
 //import { CardActions } from '@mui/material';
 
 //import ProgressBar from './ProgressBar';
@@ -26,12 +27,16 @@ export default function SpecialExpensesCard(props) {
     const [openEditSecond, setOpenEditSecond] = useState(false);
     const [openEditThird, setOpenEditThird] = useState(false);
 
-    const [id, setId] = useState(props.expense.id); 
+    const [id, setId] = useState(props.expense.id);
     const [name, setName] = useState(props.expense.name);
     const [type, setType] = useState(props.expense.type);
-    const [category, setCategory] = useState(props.expense.tags);
-    const [setTarget, setSetTarget] = useState(true);
     const [amount, setAmount] = useState(props.expense.target);
+    const [tags, setTags] = useState(props.expense.tags);
+
+    const [newTag, setNewTag] = useState('');
+
+    const [setTarget, setSetTarget] = useState(true);
+
 
     //const [selectedSet, setSelectedSet] = useState('set')
 
@@ -63,69 +68,40 @@ export default function SpecialExpensesCard(props) {
         setOpenEditThird(true);
     }
 
+    const handleAddTag = () => {
+        if (newTag.trim() !== '') {
+            setTags([...tags, newTag]);
+            setNewTag('');
+        }
+    };
+
     const handleEditThird = async () => {
         handleCloseThird();
         try {
-            let link = "http://127.0.0.1:5000/api/user/watchlist/update/" + name
-            const cookies = document.cookie;
-            const res = await fetch(link, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Cookie": cookies
-                },
-                body: JSON.stringify({
-                    type: type,
-                    name: name,
-                    categories: category,
-                    setTarget: setTarget,
-                    amount: amount,
-                })
-            });
+            const updatedExpense = {
+                id: id,
+                name: name,
+                type: type,
+                target: amount,
+                tags: tags
+            };
 
-            if (res.ok) {
-                const data = await res.json();
-                const { status } = data;
-
-                if (status === "success") {
-                    history.push("/special-expenses");
-                }
-            }
-            else {
-                alert("Edit Not Successful");
-            }
+            await editSpecialExpense(id, updatedExpense);
+            history.push("/special-expenses");
+            // Handle success or navigation logic
         } catch (error) {
-            console.log(error);
+            console.error('Error editing special expense:', error);
+            alert("Edit Not Successful");
         }
     }
 
-
-    const onDelete = async (nAme) => {
+    const onDelete = async () => {
         try {
-            let link = "http://127.0.0.1:5000/api/user/watchlist/delete/" + nAme
-            const cookies = document.cookie;
-            const res = await fetch(link, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Cookie": cookies
-                },
-                body: JSON.stringify({
-                    name: nAme,
-                })
-            });
-
-            if (res.ok) {
-                const data = await res.json();
-                const { status } = data;
-
-                if (status === "success") {
-                    history.push("/special-expenses");
-                }
-            }
-            else {
+            const res = await deleteSpecialExpense(id);
+            if (res.status === 200) {
+                history.push("/special-expenses");
+            } else {
                 alert("Delete Not Successful");
-                //handleClose();
             }
         } catch (error) {
             console.log(error);
@@ -143,15 +119,15 @@ export default function SpecialExpensesCard(props) {
                         </Typography>
 
                         <Typography variant="h5" component="div">
-                            Name: {props.expense.name} <br />
-                            Type: {props.expense.type} <br />
-                            Categories: {props.expense.categories} <br />
-                            {setTarget ? "Target Amount: " + props.expense.amount : ""} <br />
+                            Name: {name} <br />
+                            Type: {type} <br />
+                            {setTarget ? "Target Amount: " + amount : ""} <br />
+                            Tags: {tags.map(tag => `${tag}, `)}
                         </Typography>
                     </CardContent>
                     <CardActions>
                         <Button variant="outlined" onClick={() => { onEditFirst() }} startIcon={<EditIcon />}></Button>
-                        <Button variant="outlined" onClick={() => { onDelete(props.expense.name) }} startIcon={<DeleteIcon />}></Button>
+                        <Button variant="outlined" onClick={() => { onDelete(id) }} startIcon={<DeleteIcon />}></Button>
                     </CardActions>
                 </Card>
             </Box>
@@ -175,10 +151,10 @@ export default function SpecialExpensesCard(props) {
                         onChange={(e) => setType(e.target.value)}
                         label="Select A Type"
                     >
-                        <MenuItem value={type}>{type}</MenuItem>
                         <MenuItem value="Extra">Extra</MenuItem>
                         <MenuItem value="Eating">Eating</MenuItem>
                         <MenuItem value="Recreation">Recreation</MenuItem>
+                        <MenuItem value="Tour">Tour</MenuItem>
                     </Select>
                 </DialogContent>
                 <DialogActions>
@@ -189,17 +165,25 @@ export default function SpecialExpensesCard(props) {
             <Dialog open={openEditSecond} onClose={handleCloseSecond}>
                 <DialogTitle>Edit Special Expense</DialogTitle>
                 <DialogContent>
-                    <InputLabel>Select A Category</InputLabel>
-                    <Select
-                        value={category}
-                        onChange={(e) => setCategory(e.target.value)}
-                        label="Select A Category"
-                    >
-                        <MenuItem value={category}>{category}</MenuItem>
-                        <MenuItem value="Restaurant">Restaurant</MenuItem>
-                        <MenuItem value="MI-28-Attack-Helicopter">MI-28-Attack-Helicopter</MenuItem>
-                        <MenuItem value="Otomat-MKII-Missile">Otomat-MKII-Missile</MenuItem>
-                    </Select>
+                    <InputLabel>Tags</InputLabel>
+                    {tags.map((tag, index) => (
+                        <TextField
+                            key={index}
+                            value={tag}
+                            onChange={(e) => {
+                                const newTags = [...tags];
+                                newTags[index] = e.target.value;
+                                setTags(newTags);
+                            }}
+                            label={`Tag ${index + 1}`}
+                        />
+                    ))}
+                    <TextField
+                        value={newTag}
+                        onChange={(e) => setNewTag(e.target.value)}
+                        label="New Tag"
+                    />
+                    <Button onClick={handleAddTag}>Add Tag</Button>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleEditSecond}>Next</Button>
