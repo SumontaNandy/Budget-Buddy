@@ -49,3 +49,10 @@ export const createGoal = (goal) =>
 export const editGoal = (goal) =>
   axios.post(api_url(`goal/edit`), goal, params).then((res) => res.data);
 
+export const deleteGoal = (goalName) =>
+  axios.post(api_url(`goal/delete/${goalName}`), params).then((res) => res.data);
+
+
+
+
+

@@ -207,7 +207,7 @@ export default function SavingGoalsContent() {
                     <Select
                         value={account}
                         onChange={(e) => setAccount(e.target.value)}
-                        label="Select an Account"
+                        label="Select An Account"
                     >
                         {allAccounts.map((account) => (
                             <MenuItem value={account.account_id}>
