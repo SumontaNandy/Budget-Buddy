@@ -11,7 +11,9 @@ import { Signup } from './pages/Signup/Signup';
 import Home from './pages/Home/Home';
 import SpendingPlan from './pages/SpendingPlan/SpendingPlan';
 
+import TransactionDetails from "./pages/Transaction/TransactionDetails";
 import Transaction from './pages/Transaction/Transaction';
+
 import Recurring from './pages/Recurring/Recurring';
 import SavingGoals from './pages/SavingGoals/SavingGoals';
 import SpecialExpenses from './pages/SpecialExpenses/SpecialExpenses';
@@ -30,6 +32,8 @@ export default function AppRoutes()
 
                 <Route path="/account-types/id/:type_id" component={AccountType} />
                 <Route path="/account-types" component={AccountTypes} />
+
+                <Route path="/transactions/:transaction_id/details" component={TransactionDetails} />
                 <Route path="/transactions" component={Transaction} />
                 <Route path="/recurring" component={Recurring} />
          

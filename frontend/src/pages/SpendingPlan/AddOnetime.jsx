@@ -37,7 +37,10 @@ export default function AddOnetime(props) {
             };
 
             addOnetime(JSON.stringify(newOnetimeExpense)).then(res => {
-                setLoad(true);
+                if(res.status === 200)
+                    setLoad(true);
+                else
+                    alert("Add Onetime Expense Failed!");
             });
 
             setOpen(false); // Close the dialog

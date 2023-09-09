@@ -10,8 +10,7 @@ import TableRow from '@mui/material/TableRow';
 
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
+import { useHistory } from 'react-router-dom';
 
 import { styled } from "@mui/material/styles";
 import Collapse from "@mui/material/Collapse";
@@ -43,7 +42,7 @@ const columns = [
 
 export default function TransactionTable(props) {
     /* ======= @Part-2 ======= */
-    const { setFirstDivAmount } = props;
+    const history = useHistory();
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
     const [selectedOption, setSelectedOption] = useState('none');
@@ -87,7 +86,7 @@ export default function TransactionTable(props) {
             }
             //console.log(startDate, endDate);
             params['payee'] = payee;
-            if(accountID !== 'none')
+            if (accountID !== 'none')
                 params['account_id'] = accountID;
 
             let tempTransactions = await getAllTransactions(params);
@@ -99,7 +98,7 @@ export default function TransactionTable(props) {
     }, [load, page, rowsPerPage]);
 
     const handleFilter = () => {
-        if(selectedOption !== 'none' && (startDate === null || endDate === null || startDate > endDate))
+        if (selectedOption !== 'none' && (startDate === null || endDate === null || startDate > endDate))
             alert('Please select a valid date range');
         else
             setLoad(true);
@@ -204,17 +203,19 @@ export default function TransactionTable(props) {
                         <TableBody>
                             {rows.map((row) => {
                                 return (
-                                    <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                                        {columns.map((column) => {
-                                            const value = row[column.id];
-                                            return (
-                                                <TableCell key={column.id} align={column.align}>
-                                                    {column.format
-                                                        ? column.format(value)
-                                                        : value}
-                                                </TableCell>
-                                            );
-                                        })}
+                                    <TableRow key={row.id} hover role="checkbox" tabIndex={-1} onClick={() => history.push(`/transactions/${row.id}/details`)} >
+                                        {
+                                            columns.map((column) => {
+                                                const value = row[column.id];
+                                                return (
+                                                    <TableCell key={column.id} align={column.align}>
+                                                        {column.format
+                                                            ? column.format(value)
+                                                            : value}
+                                                    </TableCell>
+                                                );
+                                            })
+                                        }
                                     </TableRow>
                                 );
                             })}
@@ -232,6 +233,6 @@ export default function TransactionTable(props) {
                 </Collapse>
 
             </TableContainer>
-        </Paper>
+        </Paper >
     );
 }

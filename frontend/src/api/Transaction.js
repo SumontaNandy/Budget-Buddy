@@ -6,5 +6,8 @@ export const getAllTransactions = (params) =>
     params: params
   }).then((res) => res.data);
 
+export const getTransaction = (id) =>
+  axios.get(api_url(`transaction/${id}`), params).then((res) => res.data);
+
 export const addTransaction = (transaction) =>
   axios.post(api_url(`transaction/`), transaction, params).then((res) => res.data);
