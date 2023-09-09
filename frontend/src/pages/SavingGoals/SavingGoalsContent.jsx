@@ -55,12 +55,12 @@ export default function SavingGoalsContent() {
     const [goals, setGoals] = useState([])
     const [account, setAccount] = useState('');
     const [allAccounts, setAllAccounts] = useState([]);
-    const [category, setCategory] = useState('')
-    const [name, setName] = useState('');
-    const [goalAmount, setGoalAmount] = useState('');
-    const [savedSoFar, setSavedSoFar] = useState('');
-    const [spentSoFar, setSpentSoFar] = useState('');
-    const [monthlyContribution, setMonthlyContribution] = useState('');
+    const [category, setCategory] = useState('default')
+    const [name, setName] = useState('No Name');
+    const [goalAmount, setGoalAmount] = useState('1000');
+    const [savedSoFar, setSavedSoFar] = useState('0');
+    const [spentSoFar, setSpentSoFar] = useState('0');
+    const [monthlyContribution, setMonthlyContribution] = useState('1000');
     const history = useHistory();
 
     const [openCreateFirst, setOpenCreateFirst] = useState(false);
@@ -73,12 +73,9 @@ export default function SavingGoalsContent() {
     useEffect(() => {
         (async () => {
             let data = await getSavingGoals();
-            console.log(data);
             setGoals(data.goal_list);
-            console.log(goals);
-            console.log(data.goal_list);
-
-
+            setAccount(data.goal_list[0].account_id);
+            console.log(data.goal_list[0].account_id);
             const accounts = await getAllAccounts();
             setAllAccounts(accounts);
         })();
@@ -145,6 +142,7 @@ export default function SavingGoalsContent() {
                         return (
                             <Grid item xs={3}>
                                 <SavingCard name = {goal.name}
+                                            id = {goal.id}
                                             account_id = {goal.account_id}
                                             goal_amount = {goal.goal_amount}
                                             saved_so_far = {goal.saved_so_far}

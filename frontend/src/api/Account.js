@@ -40,11 +40,11 @@ export const getAllBills = () =>
   }).then((res) => res.data);
 
 
-export const getSavingGoals = (page=1, per_page=8) =>
+export const getSavingGoals = (page=1, per_page=12) =>
   axios.get(api_url(`goal/`), { params: { page, per_page} }).then((res) => res.data);
 
 export const createGoal = (goal) =>
-  axios.post(api_url(`goal/create`), goal, params).then((res) => res.data);
+  axios.post(api_url(`goal/`), goal, params).then((res) => res.data);
 
 export const editGoal = (goal, id) =>
   axios.put(api_url(`goal/${id}`), goal, params).then((res) => res.data);

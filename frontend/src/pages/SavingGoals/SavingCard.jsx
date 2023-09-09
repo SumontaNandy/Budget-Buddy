@@ -30,7 +30,6 @@ import { getAllAccounts } from '../../api/Account';
 //import ProgressBar from './ProgressBar';
 
 export default function SavingCard(props) {
-    console.log("props", props)
     const [openEditFirst, setOpenEditFirst] = useState(false);
     const [openEditSecond, setOpenEditSecond] = useState(false);
     const [openEditThird, setOpenEditThird] = useState(false);
@@ -38,6 +37,7 @@ export default function SavingCard(props) {
     const [selectedSet, setSelectedSet] = useState('set')
 
     const [account, setAccount] = useState(props.account_id);
+    const [id, setId] = useState(props.id); // This is the goal id
     const [allAccounts, setAllAccounts] = useState([]);
     const [category, setCategory] = useState(props.category);
     const [name, setName] = useState(props.name);
@@ -80,6 +80,7 @@ export default function SavingCard(props) {
             let accounts = await getAllAccounts();
             setAllAccounts(accounts);
         })();
+        console.log(account);
     }, []);
 
     const handleEditThird = () => {
@@ -94,12 +95,13 @@ export default function SavingCard(props) {
             monthly_contribution: monthlyContribution
         };
 
-        editGoal(JSON.stringify(updatedGoal), account).then(res => {
-            if (res.status === 200) { // or any other condition you want to check on the response
-                history.push("/saving-goals"); // replace "/saving-goals" with the actual path to the saving goals page
-            } else {
-                alert("Update not successful");
-            }
+        editGoal(JSON.stringify(updatedGoal), id).then(res => {
+            history.push("/saving-goals");
+            // if (res.status === 200) { // or any other condition you want to check on the response
+            //     history.push("/saving-goals"); // replace "/saving-goals" with the actual path to the saving goals page
+            // } else {
+            //     alert("Update not successful");
+            // }
         });
 
         setOpenEditThird(false); // Close the dialog
@@ -121,12 +123,10 @@ export default function SavingCard(props) {
 
 
     return (
-        <div>
-            <Box sx={{ minWidth: 575 }} m={2}>
-                {console.log("data paisi")}
-                <Card variant="outlined">
-                    <CardContent>
-                        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+        <div className="shadow bg-white rounded text-center">
+            <Box sx={{ minWidth: 275, minHeight: 250 }} >
+                
+                        <Typography sx={{ fontSize: 20 }} color="text.secondary" gutterBottom>
                             {name}
                         </Typography>
 
@@ -145,12 +145,10 @@ export default function SavingCard(props) {
                         <Typography variant="h5" component="div">
                             Category: {category} <br />
                         </Typography>
-                    </CardContent>
-                    <CardActions>
+                    
                         <Button variant="outlined" onClick={() => { onEditFirst() }} startIcon={<EditIcon />}></Button>
                         {/*<Button variant="outlined" onClick={() => { onDelete(name) }} startIcon={<DeleteIcon />}></Button>*/}
-                    </CardActions>
-                </Card>
+                    
             </Box>
             <Dialog open={openEditFirst} onClose={handleCloseFirst}>
                 <DialogTitle>Edit Goal</DialogTitle>
