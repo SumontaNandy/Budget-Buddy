@@ -1,0 +1,13 @@
+docker build -t budgetbuddy:latest .
+docker run -it budgetbuddy:latest
+docker run -it -d -p 5000:5000 budgetbuddy:latest 
+# docker run -it budgetbuddy:latest /bin/sh
+
+# deletes image
+docker rmi -f <image>
+
+# deletes all containers
+docker rm -vf $(docker ps -aq) 
+
+docker cp <container>:/path/to/file.ext .
+docker cp file.ext <container>:/path/to/file.ext

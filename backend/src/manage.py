@@ -14,9 +14,9 @@ app.register_blueprint(bp)
 manager = Manager(app)
 manager.add_command('db', MigrateCommand)
 
-
-def run():
-    app.run()
+# @manager.command
+def runserver(host='0.0.0.0', port=5000):
+    app.run(host=host, port=port)
 
 
 def test():
