@@ -32,7 +32,7 @@ class SPTransactionUtil:
             id = str(uuid.uuid4()),
             amount = data.get('amount'),
             transaction_id = transaction,
-            spending_plan_id = SpendingPlan.get_by_id(data.get('spending_plan_id'))
+            spending_plan_id = SpendingPlan.get_by_id(data.get('spending_plan'))
         )
         new_spt.add()
         BalanceSegmentUtil(account_id).withdraw_available_balance(data.get('amount'))        
@@ -44,7 +44,7 @@ class SPTransactionUtil:
     def update_a_sp_transaction(self, transaction_id, data):
         if data.get('spending_plan_id'):
             ob = SpTransaction.get_by_id(self.id)
-            ob.spending_plan_id = SpendingPlan.get_by_id(data.get('spending_plan_id'))
+            ob.spending_plan_id = SpendingPlan.get_by_id(data.get('spending_plan'))
             ob.save()
 
         if data.get('amount'):

@@ -36,11 +36,11 @@ class GoalTransactionUtil:
                 id = str(uuid.uuid4()),
                 amount = data.get('amount'),
                 transaction_id = Transaction.get_by_id(transaction_id),
-                goal_id = Goal.get_by_id(data.get('goal_id'))
+                goal_id = Goal.get_by_id(data.get('goal'))
             )
             new_gt.add()
 
-            goal = Goal.get_by_id(data.get('goal_id'))
+            goal = Goal.get_by_id(data.get('goal'))
             goal.spent_so_far = float(goal.spent_so_far) + float(data.get('amount'))
             goal.save()
         
@@ -48,7 +48,7 @@ class GoalTransactionUtil:
             BalanceSegmentUtil(account_id).add_available_balance(data.get('amount'))
             BalanceSegmentUtil(account_id).withdraw_saving_goals(data.get('amount'))  
             
-            goal = Goal.get_by_id(data.get('goal_id'))
+            goal = Goal.get_by_id(data.get('goal'))
             goal.saved_so_far = float(goal.saved_so_far) - float(data.get('amount'))
             goal.save()
 

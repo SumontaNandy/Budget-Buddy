@@ -15,7 +15,7 @@ class GoalTransactionSchema(Schema):
     amount = fields.Float()
     goal = fields.String()
     withdraw_for = fields.String()
-    transaction_id = fields.String(dump_only=True)   
+    transaction_id = fields.String(dump_only=True, attribute='transaction')   
 
 
 class TransactionSchema(Schema):
