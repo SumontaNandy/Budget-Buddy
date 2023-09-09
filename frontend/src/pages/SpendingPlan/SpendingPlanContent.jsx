@@ -33,11 +33,11 @@ export default function SpendingPlanContent() {
                         <CardActionArea onClick={() => { setPanel("FirstDiv") }}>
                             <CardContent>
                                 <Typography gutterBottom variant="h5" component="div">
-                                    {firstDivAmount}
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary">
                                     Onetime Expenses
                                 </Typography>
+                                {/* <Typography variant="body2" color="text.secondary">
+                                    Onetime Expenses
+                                </Typography> */}
                             </CardContent>
                         </CardActionArea>
                     </Card>

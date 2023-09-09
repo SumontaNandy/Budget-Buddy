@@ -7,14 +7,18 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
+
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
 
 import { styled } from "@mui/material/styles";
 import Collapse from "@mui/material/Collapse";
 import IconButton from "@mui/material/IconButton";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
+import { getAllAccounts } from '../../api/Account';
 import { getAllTransactions } from '../../api/Transaction';
 import AddTransaction from './AddTransaction';
 import DateRangePicker from './DateRangePicker';
@@ -57,6 +61,16 @@ export default function TransactionTable(props) {
     const [load, setLoad] = useState(true);
     const [payee, setPayee] = useState('');
 
+    const [accountID, setAccountID] = useState('');
+    const [accounts, setAccounts] = useState([]);
+
+    useEffect(() => {
+        (async () => {
+            const tempAccounts = await getAllAccounts();
+            setAccounts(tempAccounts);
+        })();
+    }, []);
+
     useEffect(() => {
         if (!load)
             return;
@@ -71,7 +85,10 @@ export default function TransactionTable(props) {
                 params['start_date'] = startDate;
                 params['end_date'] = endDate;
             }
-            console.log(startDate, endDate);
+            //console.log(startDate, endDate);
+            params['payee'] = payee;
+            if(accountID !== 'none')
+                params['account_id'] = accountID;
 
             let tempTransactions = await getAllTransactions(params);
             setTotalRows(tempTransactions.page_info.total);
@@ -79,7 +96,15 @@ export default function TransactionTable(props) {
         })();
 
         setLoad(false);
-    }, [page, rowsPerPage]);
+    }, [load, page, rowsPerPage]);
+
+    const handleFilter = () => {
+        if(selectedOption !== 'none' && (startDate === null || endDate === null || startDate > endDate))
+            alert('Please select a valid date range');
+        else
+            setLoad(true);
+    };
+
     /* ======= @Part-3 ends ======= */
 
     const handleChangePage = (event, newPage) => {
@@ -113,6 +138,7 @@ export default function TransactionTable(props) {
                             setEndDate={setEndDate}
                             setSelectedOption={setSelectedOption}
                         />
+
                         <TextField
                             size="small"
                             autoFocus
@@ -124,6 +150,23 @@ export default function TransactionTable(props) {
                             value={payee}
                             onChange={(e) => setPayee(e.target.value)}
                         />
+
+                        <select
+                            fullWidth
+                            variant="standard"
+                            label="Account"
+                            value={accountID}
+                            onChange={(e) => setAccountID(e.target.value)}
+                        >
+                            {accounts.map((account) => (
+                                <option value={account.account_id}> {account.account_no} - {account.account_name} </option>
+                            ))}
+                            <option value="none"> None </option>
+                        </select>
+
+                        <Button variant="contained" color="success" onClick={handleFilter}>
+                            Apply
+                        </Button>
                     </div>
 
                     {/* ======= @Part-4 ======= */}
