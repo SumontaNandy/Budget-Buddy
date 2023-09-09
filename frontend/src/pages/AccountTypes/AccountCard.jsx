@@ -4,10 +4,8 @@ import CardContent from '@mui/material/CardContent';
 import CardActions from "@mui/material/CardActions";
 import Button from "@mui/material/Button";
 import Typography from '@mui/material/Typography';
-import { useHistory } from 'react-router-dom';
 
 export default function AccountCard(props) {
-  const history = useHistory();
   return (
     <Card sx={{ minWidth: 275 }}>
       <CardContent>

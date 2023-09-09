@@ -37,10 +37,10 @@ export default function AddOnetime(props) {
             };
 
             addOnetime(JSON.stringify(newOnetimeExpense)).then(res => {
-                if(res === 200)
+                if(res === 201)
                     setLoad(true);
                 else
-                    alert("Add Onetime Expense Failed!");
+                    alert("Add Onetime Expense Plan Failed!");
             });
 
             setOpen(false); // Close the dialog
@@ -53,7 +53,7 @@ export default function AddOnetime(props) {
                 Add
             </Button>
             <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>Add Onetime Expense</DialogTitle>
+                <DialogTitle>Add Onetime Expense Plan</DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus

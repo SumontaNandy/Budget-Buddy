@@ -49,7 +49,6 @@ export default function TransactionDetails() {
                     </CardContent>
                 </Card>
             </div>
-            {/* {{ console.log("Account ID", account.account_id); }} */}
             <DepositeTable account_id={account.account_id} />
         </>
 

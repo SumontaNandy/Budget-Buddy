@@ -39,7 +39,7 @@ export const getAllOneTimeExpenses = (params) =>
     params: params
   }).then((res) => res.data);
 
-export const getAllBills = (start, end) =>
-  axios.get(api_url(`spending-plan/recur/`), {
-    params: { type: "BILL" }
-  }).then((res) => res.data);
+// export const getAllBills = (start, end) =>
+//   axios.get(api_url(`spending-plan/recur/`), {
+//     params: { type: "BILL" }
+//   }).then((res) => res.data);

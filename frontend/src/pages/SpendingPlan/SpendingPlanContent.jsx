@@ -3,11 +3,11 @@ import Grid from '@mui/material/Grid';
 import { Card, CardContent, CardActionArea, Typography } from '@mui/material';
 
 import OneTimeTable from './OneTimeTable';
-import BillTable from './BillTable';
+import RecurrentTable from './RecurrentTable';
+import AddRecurrent from './AddRecurrent';
 
 export default function SpendingPlanContent() {
     const [panel, setPanel] = useState("FirstDiv");
-    const [secondDivAmount, setSecondDivAmount] = useState(120);
 
     let panelContent = null;
     if (panel === "FirstDiv") {
@@ -15,10 +15,12 @@ export default function SpendingPlanContent() {
             <OneTimeTable />
         )
     }
-    else {
+    else if (panel === "SecondDiv") {
         panelContent = (
             <>
-                {/* <BillTable /> */}
+                <AddRecurrent />
+                <RecurrentTable type="BILL" />
+                <RecurrentTable type="SUBSCRIPTION" />
             </>
         )
     }
@@ -46,10 +48,7 @@ export default function SpendingPlanContent() {
                         <CardActionArea onClick={() => setPanel("SecondDiv")}>
                             <CardContent>
                                 <Typography gutterBottom variant="h5" component="div">
-                                    {secondDivAmount}
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                    Planned spending
+                                    Recurring Expenses
                                 </Typography>
                             </CardContent>
                         </CardActionArea>
