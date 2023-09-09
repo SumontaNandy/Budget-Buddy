@@ -30,22 +30,23 @@ import { getAllAccounts } from '../../api/Account';
 //import ProgressBar from './ProgressBar';
 
 export default function SavingCard(props) {
+    console.log("props", props)
     const [openEditFirst, setOpenEditFirst] = useState(false);
     const [openEditSecond, setOpenEditSecond] = useState(false);
     const [openEditThird, setOpenEditThird] = useState(false);
 
     const [selectedSet, setSelectedSet] = useState('set')
 
-    const [account, setAccount] = useState(props.goal.account_id);
+    const [account, setAccount] = useState(props.account_id);
     const [allAccounts, setAllAccounts] = useState([]);
-    const [category, setCategory] = useState(props.goal.category); 
-    const [name, setName] = useState(props.goal.name);
-    const [goalAmount, setGoalAmount] = useState(props.goal.goal_amount);
+    const [category, setCategory] = useState(props.category);
+    const [name, setName] = useState(props.name);
+    const [goalAmount, setGoalAmount] = useState(props.goal_amount);
     //const [targetDate, setTargetDate] = useState(props.goal.target_date);
     const [targetDate, setTargetDate] = useState(dayjs('2023-08-20'));
-    const [savedSoFar, setSavedSoFar] = useState(props.goal.saved_so_far);
-    const [spentSoFar, setSpentSoFar] = useState(props.goal.spent_so_far);
-    const [monthlyContribution, setMonthlyContribution] = useState(props.goal.monthly_contribution);
+    const [savedSoFar, setSavedSoFar] = useState(props.saved_so_far);
+    const [spentSoFar, setSpentSoFar] = useState(props.spent_so_far);
+    const [monthlyContribution, setMonthlyContribution] = useState(props.monthly_contribution);
     const history = useHistory();
 
     const onEditFirst = () => {
@@ -75,16 +76,10 @@ export default function SavingCard(props) {
     }
 
     useEffect(() => {
-        const fetchAccounts = async () => {
-            try {
-                const accounts = await getAllAccounts();
-                setAllAccounts(accounts);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
-
-        fetchAccounts();
+        (async () => {
+            let accounts = await getAllAccounts();
+            setAllAccounts(accounts);
+        })();
     }, []);
 
     const handleEditThird = () => {
@@ -98,15 +93,15 @@ export default function SavingCard(props) {
             target_date: targetDate,
             monthly_contribution: monthlyContribution
         };
-    
-        editGoal(JSON.stringify(updatedGoal)).then(res => {
+
+        editGoal(JSON.stringify(updatedGoal), account).then(res => {
             if (res.status === 200) { // or any other condition you want to check on the response
                 history.push("/saving-goals"); // replace "/saving-goals" with the actual path to the saving goals page
             } else {
                 alert("Update not successful");
             }
         });
-    
+
         setOpenEditThird(false); // Close the dialog
     };
 
@@ -128,6 +123,7 @@ export default function SavingCard(props) {
     return (
         <div>
             <Box sx={{ minWidth: 575 }} m={2}>
+                {console.log("data paisi")}
                 <Card variant="outlined">
                     <CardContent>
                         <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
@@ -136,15 +132,23 @@ export default function SavingCard(props) {
 
                         <Typography variant="h5" component="div">
                             Goal Amount: {goalAmount} <br />
-                            Saved So Far: {savedSoFar} <br />
+                        </Typography>
+                        <Typography variant="h5" component="div">
+                            Spent So Far: {spentSoFar} <br />
+                        </Typography>
+                        <Typography variant="h5" component="div">
                             Left To Save: {goalAmount - savedSoFar} <br />
-                            Target: {targetDate} <br />
+                        </Typography>
+                        <Typography variant="h5" component="div">
+                            Target Date: {dayjs(targetDate).format('YYYY-MM-DD')}
+                        </Typography>
+                        <Typography variant="h5" component="div">
                             Category: {category} <br />
                         </Typography>
                     </CardContent>
                     <CardActions>
                         <Button variant="outlined" onClick={() => { onEditFirst() }} startIcon={<EditIcon />}></Button>
-                        <Button variant="outlined" onClick={() => { onDelete(name) }} startIcon={<DeleteIcon />}></Button>
+                        {/*<Button variant="outlined" onClick={() => { onDelete(name) }} startIcon={<DeleteIcon />}></Button>*/}
                     </CardActions>
                 </Card>
             </Box>
@@ -199,9 +203,9 @@ export default function SavingCard(props) {
                         onChange={(e) => setAccount(e.target.value)}
                         label="Select An Account"
                     >
-                        {allAccounts.map((account) => (
-                            <MenuItem value={account.account_id}>
-                                {account.account_no} - {account.account_name}
+                        {allAccounts.map((account, index) => (
+                            <MenuItem value={account.account_id} key={index}>
+                                {account.account_name}
                             </MenuItem>
                         ))}
                     </Select>

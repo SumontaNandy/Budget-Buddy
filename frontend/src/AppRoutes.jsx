@@ -7,7 +7,7 @@ import AccountType from './pages/AccountTypes/AccountType';
 import Contact from './pages/Contact/Contact';
 import { Login } from './pages/Login/Login';
 import { Signup } from './pages/Signup/Signup';
-import TransactionSummary from "./pages/TransactionSummary/TransactionSummary";
+import { LogOut } from "./pages/LogOut/LogOut";
 
 import Home from './pages/Home/Home';
 import SpendingPlan from './pages/SpendingPlan/SpendingPlan';
@@ -39,7 +39,7 @@ export default function AppRoutes()
                 <Route path="/tax" component={Tax} />
 
                 <Route path="/contact" component={Contact} />
-                <Route path="/transaction-summary" component={TransactionSummary} />
+                <Route path="/logout" component={LogOut} />
             </Switch>
         </Router>
     );

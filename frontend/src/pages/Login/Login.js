@@ -65,19 +65,19 @@ export const Login = () => {
     
     }
 
-    // const handleLogout = () => {
-    //     Cookies.remove('access_token');
-    //     Cookies.remove('refresh_token');
-    //     history.push("/");
-    // }
+    const handleLogout = () => {
+        Cookies.remove('access_token');
+        Cookies.remove('refresh_token');
+        history.push("/");
+    }
 
     const checkTokensAndRedirect = () => {
         const access_token = Cookies.get('access_token');
         const refresh_token = Cookies.get('refresh_token');
 
-        // if (access_token && refresh_token) {
-        //     history.push("/home");
-        // }
+        if (access_token && refresh_token) {
+            history.push("/home");
+        }
     }
 
     const submit = (e) => {

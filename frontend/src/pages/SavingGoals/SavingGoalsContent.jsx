@@ -27,32 +27,30 @@ import { getAllAccounts } from '../../api/Account';
 
 export default function SavingGoalsContent() {
 
-    // let result = [
-    //     {
-    //         "name": "Cox's Bazar Vacation",
-    //         "goal_amount": 100000,
-    //         "saved_so_far": 5000,
-    //         "account": "ICCU Savings",
-    //         "target_date": "10/10/2029",
-    //         "monthly_contribution": 2500
-    //     },
-    //     {
-    //         "name": "Eid Shopping",
-    //         "goal_amount": 10000,
-    //         "saved_so_far": 2000,
-    //         "account": "ICCU Savings",
-    //         "target_date": "10/10/2024",
-    //         "monthly_contribution": 1000
-    //     },
-    //     {
-    //         "name": "Grad Night",
-    //         "goal_amount": 1000,
-    //         "saved_so_far": 200,
-    //         "account": "ICCU Savings",
-    //         "target_date": "10/10/2024",
-    //         "monthly_contribution": 100
-    //     }
-    // ]
+     let result = [
+        {
+            "id": "1976401e-281e-44b4-a0db-b29c4717e99a",
+            "account_id": "9f439984-4b27-4136-93ac-3a7a03626b02",
+            "category": "test",
+            "name": "test",
+            "goal_amount": 4000,
+            "saved_so_far": 100,
+            "spent_so_far": 4,
+            "target_date": "2023-08-17T18:45:42.361539+06:00",
+            "monthly_contribution": 4
+        },
+        {
+            "id": "dfbc76fe-b92b-41d9-81b3-94eb89494e3a",
+            "account_id": "9f439984-4b27-4136-93ac-3a7a03626b02",
+            "category": "test",
+            "name": "test",
+            "goal_amount": 4000,
+            "saved_so_far": 98,
+            "spent_so_far": 8,
+            "target_date": "2023-08-17T18:45:42.361539+06:00",
+            "monthly_contribution": 4
+        }
+    ]
 
     const [goals, setGoals] = useState([])
     const [account, setAccount] = useState('');
@@ -73,21 +71,18 @@ export default function SavingGoalsContent() {
     const [targetDate, setTargetDate] = useState(dayjs('2023-08-20'));
 
     useEffect(() => {
-        const fetchGoalsAndAccounts = async () => {
-            try {
-                const data = await getSavingGoals();
-                setGoals(data);
+        (async () => {
+            let data = await getSavingGoals();
+            console.log(data);
+            setGoals(data.goal_list);
+            console.log(goals);
+            console.log(data.goal_list);
 
-                const accounts = await getAllAccounts();
-                setAllAccounts(accounts);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
 
-        fetchGoalsAndAccounts();
+            const accounts = await getAllAccounts();
+            setAllAccounts(accounts);
+        })();
     }, []);
-
 
     const onCreateFirst = () => {
         setOpenCreateFirst(true);
@@ -136,20 +131,29 @@ export default function SavingGoalsContent() {
         });
 
         setOpenCreateThird(false); // Close the dialog
+        history.push("/saving-goals");
     };
 
     return (
         <>
             <Box m={1.5} sx={{ flexGrow: 1 }}>
                 <h1> Saving Goals </h1>
+                { console.log("Goals:", goals) }
 
                 <Grid container spacing={2}>
-                    {goals.map(goal => {
+                    {goals.map((goal, index) => {
                         return (
                             <Grid item xs={3}>
-                                <SavingCard
-                                    goal={goal}
-                                />
+                                <SavingCard name = {goal.name}
+                                            account_id = {goal.account_id}
+                                            goal_amount = {goal.goal_amount}
+                                            saved_so_far = {goal.saved_so_far}
+                                            spent_so_far = {goal.spent_so_far}
+                                            monthly_contribution = {goal.monthly_contribution}
+                                            target_date = {goal.target_date}
+                                            category = {goal.category}
+                                            key = {index}/>
+                                {console.log("data pathaisi")}
                             </Grid>
                         )
                     })}
@@ -209,9 +213,9 @@ export default function SavingGoalsContent() {
                         onChange={(e) => setAccount(e.target.value)}
                         label="Select An Account"
                     >
-                        {allAccounts.map((account) => (
-                            <MenuItem value={account.account_id}>
-                                {account.account_no} - {account.account_name}
+                        {allAccounts.map((account, index) => (
+                            <MenuItem value={account.account_id} key={index}>
+                                {account.account_name}
                             </MenuItem>
                         ))}
                     </Select>
