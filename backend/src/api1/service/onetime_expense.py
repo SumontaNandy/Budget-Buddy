@@ -95,7 +95,7 @@ class OneTimeExpenseUtil:
         
     def get_one_time_expense_list(self, user_id, filters=None):
         try:
-            query = SpendingPlan.query.filter_by(user=user_id)
+            query = SpendingPlan.query.filter_by(user=user_id).filter(SpendingPlan.id.in_(db.session.query(OneTimeExpense.id)))
 
             if filters.get('category'):
                 query = query.filter(SpendingPlan.category == filters.get('category'))
