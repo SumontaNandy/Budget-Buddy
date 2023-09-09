@@ -6,14 +6,14 @@ from ..model.enums import PaidStatus
 class SpTransactionSchema(Schema):
     id = fields.String(dump_only=True)
     amount = fields.Float()
-    spending_plan_id = fields.String()
-    transaction_id = fields.String(dump_only=True)
+    spending_plan = fields.String()
+    transaction = fields.String(dump_only=True)
     type = fields.String(dump_only=True)
 
 class GoalTransactionSchema(Schema):
     id = fields.String(dump_only=True)
     amount = fields.Float()
-    goal_id = fields.String()
+    goal = fields.String()
     withdraw_for = fields.String()
     transaction_id = fields.String(dump_only=True)   
 
