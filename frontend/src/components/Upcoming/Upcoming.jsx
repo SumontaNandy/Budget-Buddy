@@ -7,7 +7,7 @@ import { getAllRecurringExpenses } from '../../api/Account';
 import UpcomingCard from './UpcomingCard';
 
 export default function Upcoming() {
-	const rowsPerPage = 2;
+	const rowsPerPage = 4;
     const [upcomings, setUpcomings] = useState([]);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
@@ -41,7 +41,7 @@ export default function Upcoming() {
     return (
         <Box m={1.5} sx={{ flexGrow: 1 }}>
             <h3> Upcoming </h3>
-            <Grid container justifyContent="center" spacing={2}>
+            <Grid container spacing={2}>
                 {upcomings.map(cell => {
                     return (
                         <Grid item xs={12} sm={6} md={4} lg={3}>

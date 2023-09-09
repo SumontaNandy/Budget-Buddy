@@ -9,7 +9,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { addOnetime } from '../../api/SpendingPlan';
 
 export default function AddOnetime(props) {
-    const { setOnetimes } = props;
+    const { setLoad } = props;
 
     const [open, setOpen] = useState(false);
     const [name, setName] = useState('');
@@ -37,8 +37,7 @@ export default function AddOnetime(props) {
             };
 
             addOnetime(JSON.stringify(newOnetimeExpense)).then(res => {
-                newOnetimeExpense['amount_used'] = 0;
-                setOnetimes(prev => [...prev, newOnetimeExpense])
+                setLoad(true);
             });
 
             setOpen(false); // Close the dialog

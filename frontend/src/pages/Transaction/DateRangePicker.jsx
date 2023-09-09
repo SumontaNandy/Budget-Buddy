@@ -19,8 +19,8 @@ export default function DateRangePicker(props) {
                 setEndDate(new Date(today.getFullYear(), today.getMonth(), 0));
                 break;
             case 'lastSixMonths':
-                setStartDate(new Date(today.getFullYear(), today.getMonth() - 6, 1));
-                setEndDate(new Date(today.getFullYear(), today.getMonth() - 5, 0));
+                setStartDate(new Date(today.getFullYear(), today.getMonth() - 5, 1));
+                setEndDate(new Date(today.getFullYear(), today.getMonth(), today.getDate()));
                 break;
             case 'custom':
                 setStartDate(null);
@@ -36,7 +36,7 @@ export default function DateRangePicker(props) {
     };
 
     return (
-        <div>
+        <>
             <select onChange={handleOptionChange} value={selectedOption}>
                 <option value="thisMonth">This Month</option>
                 <option value="lastMonth">Last Month</option>
@@ -64,6 +64,6 @@ export default function DateRangePicker(props) {
                     />
                 </div>
             ) : null}
-        </div>
+        </>
     );
 };

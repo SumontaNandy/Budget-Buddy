@@ -37,16 +37,13 @@ const columns = [
 /* ======= @Part-1 ends ======= */
 
 export default function OneTimeTable(props) {
-    /* ======= @Part-2 ======= */
-    const { setFirstDivAmount } = props;
-     /* ======= @Part-2 ends ======= */
-
     const [rows, setRows] = useState([]);
     
     // Rest of your component code...
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(3);
 
+    /* ======= @Part-2 ======= */
     const currentDate = new Date();
     const [selectedDate, setSelectedDate] = useState(currentDate);
 
@@ -59,7 +56,7 @@ export default function OneTimeTable(props) {
         {
             setSelectedDate(newDate);
             setPage(0);
-            setFirstDivAmount(0);
+            setLoad(true);
         }
     };
 
@@ -68,7 +65,7 @@ export default function OneTimeTable(props) {
         newDate.setMonth(newDate.getMonth() - 1);
         setSelectedDate(newDate);
         setPage(0);
-        setFirstDivAmount(0);
+        setLoad(true);
     };
 
     // Format the selectedDate as "MMM yyyy" (e.g., "Sep 2023")
@@ -76,12 +73,17 @@ export default function OneTimeTable(props) {
         year: 'numeric',
         month: 'short',
     }).format(selectedDate);
+    /* ======= @Part-2 ends ======= */
 
     /* ======= @Part-3 ======= */
     // Add a new state variable for total count of rows
     const [totalRows, setTotalRows] = useState(0);
+    const [load, setLoad] = useState(true);
     useEffect(() => {
         (async () => {
+            if (!load)
+                return;
+
             const startDateOfMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
             const endDateOfMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth()+1, 0);
             //console.log(startDateOfMonth, endDateOfMonth);
@@ -97,21 +99,20 @@ export default function OneTimeTable(props) {
             onetimeExpenses = onetimeExpenses.one_time_expenses;
             setRows(onetimeExpenses);
 
-            const totalOnetime = onetimeExpenses.reduce((accumulator, current) => {
-                return accumulator + current.amount;
-            }, 0);
-            setFirstDivAmount(prev => prev + totalOnetime);
+            setLoad(false);
         })();
-    }, [selectedDate, page, rowsPerPage]);
+    }, [load, selectedDate, page, rowsPerPage]);
     /* ======= @Part-3 ends ======= */
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
+        setLoad(true);
     };
 
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(event.target.value);
         setPage(0);
+        setLoad(true);
     };
 
     const [expanded, setExpanded] = React.useState(false);
@@ -131,7 +132,7 @@ export default function OneTimeTable(props) {
                     <br />
 
                     {/* ======= @Part-4 ======= */}
-                    <AddOnetime setOnetimes={setRows} />
+                    <AddOnetime setLoad={setLoad} />
 
                     Onetime Expenses
                     {/* ======= @Part-4 ends ======= */}

@@ -8,6 +8,7 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
 
 import { styled } from "@mui/material/styles";
 import Collapse from "@mui/material/Collapse";
@@ -50,39 +51,16 @@ export default function TransactionTable(props) {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(3);
 
-    const currentDate = new Date();
-    const [selectedDate, setSelectedDate] = useState(currentDate);
-
-    const handleNextMonth = () => {
-        const newDate = new Date(selectedDate);
-        newDate.setMonth(newDate.getMonth() + 1);
-
-        // Check if the next month exceeds the current month
-        if (newDate <= currentDate) {
-            setSelectedDate(newDate);
-            setPage(0);
-            setFirstDivAmount(0);
-        }
-    };
-
-    const handlePrevMonth = () => {
-        const newDate = new Date(selectedDate);
-        newDate.setMonth(newDate.getMonth() - 1);
-        setSelectedDate(newDate);
-        setPage(0);
-        setFirstDivAmount(0);
-    };
-
-    // Format the selectedDate as "MMM yyyy" (e.g., "Sep 2023")
-    const formattedDate = new Intl.DateTimeFormat('en-US', {
-        year: 'numeric',
-        month: 'short',
-    }).format(selectedDate);
-
     /* ======= @Part-3 ======= */
     // Add a new state variable for total count of rows
     const [totalRows, setTotalRows] = useState(0);
+    const [load, setLoad] = useState(true);
+    const [payee, setPayee] = useState('');
+
     useEffect(() => {
+        if (!load)
+            return;
+
         (async () => {
             const params = {
                 page: page + 1,
@@ -90,8 +68,8 @@ export default function TransactionTable(props) {
             };
 
             if (selectedOption !== 'none') {
-                params['start'] = startDate;
-                params['end'] = endDate;
+                params['start_date'] = startDate;
+                params['end_date'] = endDate;
             }
             console.log(startDate, endDate);
 
@@ -99,16 +77,20 @@ export default function TransactionTable(props) {
             setTotalRows(tempTransactions.page_info.total);
             setRows(tempTransactions.transactions);
         })();
-    }, [startDate, endDate, page, rowsPerPage]);
+
+        setLoad(false);
+    }, [page, rowsPerPage]);
     /* ======= @Part-3 ends ======= */
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
+        setLoad(true);
     };
 
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(event.target.value);
         setPage(0);
+        setLoad(true);
     };
 
     const [expanded, setExpanded] = React.useState(false);
@@ -122,15 +104,27 @@ export default function TransactionTable(props) {
             <TableContainer sx={{ maxHeight: 440 }}>
 
                 <div style={{ paddingLeft: '10px' }}>
-                    <DateRangePicker
-                        startDate={startDate}
-                        endDate={endDate}
-                        selectedOption={selectedOption}
-                        setStartDate={setStartDate}
-                        setEndDate={setEndDate}
-                        setSelectedOption={setSelectedOption}
-                    />
-                    <br />
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '40px', paddingLeft: '10px' }}>
+                        <DateRangePicker
+                            startDate={startDate}
+                            endDate={endDate}
+                            selectedOption={selectedOption}
+                            setStartDate={setStartDate}
+                            setEndDate={setEndDate}
+                            setSelectedOption={setSelectedOption}
+                        />
+                        <TextField
+                            size="small"
+                            autoFocus
+                            margin="dense"
+                            name="payee"
+                            label="Payee"
+                            type="text"
+                            variant="standard" // Change variant to "standard"
+                            value={payee}
+                            onChange={(e) => setPayee(e.target.value)}
+                        />
+                    </div>
 
                     {/* ======= @Part-4 ======= */}
                     <AddTransaction />

@@ -7,19 +7,18 @@ import BillTable from './BillTable';
 
 export default function SpendingPlanContent() {
     const [panel, setPanel] = useState("FirstDiv");
-    const [firstDivAmount, setFirstDivAmount] = useState(0);
     const [secondDivAmount, setSecondDivAmount] = useState(120);
 
     let panelContent = null;
     if (panel === "FirstDiv") {
         panelContent = (
-            <OneTimeTable setFirstDivAmount={setFirstDivAmount} />
+            <OneTimeTable />
         )
     }
     else {
         panelContent = (
             <>
-                {/* <BillTable setFirstDivAmount={setFirstDivAmount} /> */}
+                {/* <BillTable /> */}
             </>
         )
     }
@@ -31,7 +30,7 @@ export default function SpendingPlanContent() {
                 <Grid item xs={3}>
 
                     <Card sx={{ maxWidth: 345 }} style={{ margin: '10px' }}>
-                        <CardActionArea onClick={() => { setFirstDivAmount(0); setPanel("FirstDiv") }}>
+                        <CardActionArea onClick={() => { setPanel("FirstDiv") }}>
                             <CardContent>
                                 <Typography gutterBottom variant="h5" component="div">
                                     {firstDivAmount}
