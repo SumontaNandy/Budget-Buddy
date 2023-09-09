@@ -120,30 +120,35 @@ export default function SavingCard(props) {
     return (
         <div className="shadow bg-white rounded text-center">
             <Box sx={{ minWidth: 275, minHeight: 250 }} >
-                
-                        <Typography sx={{ fontSize: 20 }} color="text.secondary" gutterBottom>
-                            {name}
-                        </Typography>
 
-                        <Typography variant="h5" component="div">
-                            Goal Amount: {goalAmount} <br />
-                        </Typography>
-                        <Typography variant="h5" component="div">
-                            Spent So Far: {spentSoFar} <br />
-                        </Typography>
-                        <Typography variant="h5" component="div">
-                            Left To Save: {goalAmount - savedSoFar} <br />
-                        </Typography>
-                        <Typography variant="h5" component="div">
-                            Target Date: {dayjs(targetDate).format('YYYY-MM-DD')}
-                        </Typography>
-                        <Typography variant="h5" component="div">
-                            Category: {category} <br />
-                        </Typography>
-                    
-                        <Button variant="outlined" onClick={() => { onEditFirst() }} startIcon={<EditIcon />}></Button>
-                        {/*<Button variant="outlined" onClick={() => { onDelete(name) }} startIcon={<DeleteIcon />}></Button>*/}
-                    
+                <Typography sx={{ fontSize: 20 }} color="text.secondary" gutterBottom>
+                    {name}
+                </Typography>
+
+                <Typography variant="h6" component="div">
+                    Goal Amount: {goalAmount} <br />
+                </Typography>
+                <Typography variant="h6" component="div">
+                    Spent So Far: {spentSoFar} <br />
+                </Typography>
+                <Typography variant="h6" component="div">
+                    Left To Save: {goalAmount - savedSoFar} <br />
+                </Typography>
+                <Typography variant="h6" component="div">
+                    Target Date: {dayjs(targetDate).format('YYYY-MM-DD')}
+                </Typography>
+                <Typography variant="h6" component="div">
+                    Category: {category} <br />
+                </Typography>
+
+                <div className="progress" style={{ width: "80%", marginLeft: "35px" }}>
+                    <div className="progress-bar progress-bar-striped bg-success" role="progressbar" style={{ width: `${((savedSoFar) / goalAmount) * 100}%` }} aria-valuenow={savedSoFar} aria-valuemin="0" aria-valuemax="100"></div>
+                    <div className="progress-bar progress-bar-striped bg-danger" role="progressbar" style={{ width: `${((goalAmount - savedSoFar) / goalAmount) * 100}%` }} aria-valuenow={goalAmount - savedSoFar} aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+
+                <Button variant="outlined" onClick={() => { onEditFirst() }} startIcon={<EditIcon />}></Button>
+                {/*<Button variant="outlined" onClick={() => { onDelete(name) }} startIcon={<DeleteIcon />}></Button>*/}
+
             </Box>
             <Dialog open={openEditFirst} onClose={handleCloseFirst}>
                 <DialogTitle>Edit Goal</DialogTitle>
