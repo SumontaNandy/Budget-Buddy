@@ -97,11 +97,6 @@ export default function SavingCard(props) {
 
         editGoal(JSON.stringify(updatedGoal), id).then(res => {
             history.push("/saving-goals");
-            // if (res.status === 200) { // or any other condition you want to check on the response
-            //     history.push("/saving-goals"); // replace "/saving-goals" with the actual path to the saving goals page
-            // } else {
-            //     alert("Update not successful");
-            // }
         });
 
         setOpenEditThird(false); // Close the dialog

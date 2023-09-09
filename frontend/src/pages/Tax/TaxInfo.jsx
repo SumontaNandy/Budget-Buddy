@@ -17,6 +17,8 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { Container, Paper, Typography } from '@mui/material';
+import { getTaxInfo } from '../../api/Account';
+import { editTaxInfo } from '../../api/Account';
 //import SpecialExpensesCard from "./SpecialExpensesCard";
 //import SavingGoalsData from "../../data/SavingGoalsData";
 
@@ -29,24 +31,22 @@ export const TaxInfo = (props) => {
         alignItems: 'center'
     };
 
-    const [name, setName] = useState(props.info.personal.name);
-    const [fatherName, setFatherName] = useState(props.info.personal.father_name);
-    const [motherName, setMotherName] = useState(props.info.personal.mother_name);
-    const [dob, setDob] = useState(dayjs(props.info.personal.dob).format('YYYY-MM-DD'));
-    const [mobile, setMobile] = useState(props.info.personal.mobile);
-    const [address, setAddress] = useState(props.info.personal.address);
+    console.log(props.info);
 
-    const [nid, setNid] = useState(props.info.ids.nid);
-    const [tiin, setTiin] = useState(props.info.ids.tiin);
-    const [utin, setUtin] = useState(props.info.ids.utin);
-    const [vatRegNo, setVatRegNo] = useState(props.info.ids.vat_reg_no);
+    const [id, setId] = useState(props.id);
 
-    const [profession, setProfession] = useState(props.info.income_info.profession);
-    const [organisation, setOrganisation] = useState(props.info.income_info.organisation);
-    const [designation, setDesignation] = useState(props.info.income_info.designation);
-    const [salary, setSalary] = useState(props.info.income_info.salary);
-    const [allowance, setAllowance] = useState(props.info.income_info.allowance);
-    const [bonus, setBonus] = useState(props.info.income_info.bonus);
+    const [name, setName] = useState(props.name || "No Name Found");
+    const [spouse, setSpouse] = useState(props.spouseName || "No Name Found");
+    const [fatherName, setFatherName] = useState(props.fatherName || "No Name Found");
+    const [motherName, setMotherName] = useState(props.motherName || "No Name Found");
+    
+    const [dob, setDob] = useState(dayjs(props.dob).format('YYYY-MM-DD') || "No Date Found");
+    const [mobile, setMobile] = useState(props.contactNo || "No Mobile Number Found");
+    const [email, setEmail] = useState(props.email || "No Email Found");
+    const [address, setAddress] = useState(props.address || "No Address Found");
+
+    const [nid, setNid] = useState(props.nid || "No NID Found");
+    const [tiin, setTiin] = useState(props.tin || "No TIIN Found");
 
     const history = useHistory();
 
@@ -83,56 +83,56 @@ export const TaxInfo = (props) => {
 
 
     const handleCreateThird = async () => {
-        handleCloseThird();
-        try {
-            let link = "http://127.0.0.1:5000/api/user/tax/update"
-            const cookies = document.cookie;
-            const res = await fetch(link, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    'Cookie': cookies
-                },
-                body: JSON.stringify({
-                    "personal": {
-                        "name": name,
-                        "father_name": fatherName,
-                        "mother_name": motherName,
-                        "dob": dob,
-                        "mobile": mobile,
-                        "address": address
-                    },
-                    "ids": {
-                        "nid": nid,
-                        "tiin": tiin,
-                        "utin": utin,
-                        "vat_reg_no": vatRegNo
-                    },
-                    "income_info": {
-                        "profession": profession,
-                        "organisation": organisation,
-                        "designation": designation,
-                        "salary": salary,
-                        "allowance": allowance,
-                        "bonus": bonus
-                    }
-                })
-            });
-
-            if (res.ok) {
-                const data = await res.json();
-                const { status } = data;
-
-                if (status === "success") {
-                    history.push("/special-expenses");
-                }
-            }
-            else {
-                alert("Special Expense Creation Not Successful");
-            }
-        } catch (error) {
-            console.log(error);
+        const updatedTaxInfo = {
+            "id": id,
+            "email": email,
+            "user": {
+                "first_name": name,
+                "middle_initial": null,
+                "last_name": null
+            },
+            "spouse": {
+                "first_name": spouse,
+                "middle_initial": null,
+                "last_name": null
+            },
+            "father": {
+                "first_name": fatherName,
+                "middle_initial": null,
+                "last_name": null
+            },
+            "mother": {
+                "first_name": motherName,
+                "middle_initial": null,
+                "last_name": null
+            },
+            "permanent_address": {
+                "village_house": null,
+                "road_block_sector": null,
+                "police_station": null,
+                "post_office": null,
+                "post_code": null,
+                "district": null
+            },
+            "present_address": {
+                "village_house": address,
+                "road_block_sector": null,
+                "police_station": null,
+                "post_office": null,
+                "post_code": null,
+                "district": null
+            },
+            "contact_no": mobile,
+            "nid": nid,
+            "tin": tiin,
+            "dob": dob,
+            "img": null
         }
+
+        editTaxInfo(JSON.stringify(updatedTaxInfo), id).then(res => {
+            history.push("/tax");
+        });
+        handleCloseThird();
     }
 
     return (
@@ -162,6 +162,12 @@ export const TaxInfo = (props) => {
                             {motherName}
                         </Typography>
                     </div>
+                    <div className='col'>
+                        <Typography variant="body1" component="div">
+                            <b><small><u>Spouse's Name</u></small></b><br />
+                            {spouse}
+                        </Typography>
+                    </div>
                 </div>
 
                 <br />
@@ -179,6 +185,23 @@ export const TaxInfo = (props) => {
                             {mobile}
                         </Typography>
                     </div>
+                    <div className='col'>
+                        <Typography variant="body1" component="div">
+                            <b><small><u>Email</u></small></b><br />
+                            {email}
+                        </Typography>
+                    </div>
+                    <div className='col'>
+                        <Typography variant="body1" component="div">
+                            <b><small><u>Address</u></small></b><br />
+                            {address}
+                        </Typography>
+                    </div>
+                </div>
+
+                <br />
+
+                <div className='row text-center'>
                     <div className='col'>
                         <Typography variant="body1" component="div">
                             <b><small><u>Address</u></small></b><br />
@@ -211,76 +234,6 @@ export const TaxInfo = (props) => {
                         </Typography>
                     </div>
                 </div>
-
-                <br />
-
-                <div className='row text-center'>
-                    <div className='col'>
-                        <Typography variant="body1" component="div">
-                            <b><small><u>UTIN No</u></small></b><br />
-                            {utin}
-                        </Typography>
-                    </div>
-                    <div className='col'>
-                        <Typography variant="body1" component="div">
-                            <b><small><u>VAT Registration No</u></small></b><br />
-                            {vatRegNo}
-                        </Typography>
-                    </div>
-                </div>
-            </Box>
-
-
-
-            <Box m={1.5} sx={{ flexGrow: 1, width: "1200px" }}>
-                <Typography variant="h6" component="div">
-                    <div className="shadow-lg p-3 mb-2 bg-white rounded text-center"><b>Income Information</b></div>
-                </Typography>
-
-
-                <div className='row text-center'>
-                    <div className='col'>
-                        <Typography variant="body1" component="div">
-                            <b><small><u>Profession</u></small></b><br />
-                            {profession}
-                        </Typography>
-                    </div>
-                    <div className='col'>
-                        <Typography variant="body1" component="div">
-                            <b><small><u>Organisation</u></small></b><br />
-                            {organisation}
-                        </Typography>
-                    </div>
-                    <div className='col'>
-                        <Typography variant="body1" component="div">
-                            <b><small><u>Designation</u></small></b><br />
-                            {designation}
-                        </Typography>
-                    </div>
-                </div>
-
-                <br />
-
-                <div className='row text-center'>
-                    <div className='col'>
-                        <Typography variant="body1" component="div">
-                            <b><small><u>Basic Salary</u></small></b><br />
-                            {salary}
-                        </Typography>
-                    </div>
-                    <div className='col'>
-                        <Typography variant="body1" component="div">
-                            <b><small><u>Special Allowance</u></small></b><br />
-                            {allowance}
-                        </Typography>
-                    </div>
-                    <div className='col'>
-                        <Typography variant="body1" component="div">
-                            <b><small><u>Bonus Allowance</u></small></b><br />
-                            {bonus}
-                        </Typography>
-                    </div>
-                </div>
             </Box>
 
 
@@ -292,7 +245,7 @@ export const TaxInfo = (props) => {
 
 
             <Dialog open={openCreateFirst} onClose={handleCloseFirst}>
-                <DialogTitle>Add Special Expense</DialogTitle>
+                <DialogTitle>Update Tax Information</DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus
@@ -353,6 +306,7 @@ export const TaxInfo = (props) => {
                         <DemoContainer components={['DatePicker']}>
                             <DatePicker
                                 label="Date of Birth"
+                                value={dob}
                                 onChange={(e) => { setDob(e.d) }}
                             />
                         </DemoContainer>
@@ -366,7 +320,7 @@ export const TaxInfo = (props) => {
 
 
             <Dialog open={openCreateSecond} onClose={handleCloseSecond}>
-                <DialogTitle>Add Special Expense</DialogTitle>
+                <DialogTitle>Update Tax Information</DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus
@@ -390,28 +344,6 @@ export const TaxInfo = (props) => {
                         value={tiin}
                         onChange={(e) => setTiin(e.target.value)}
                     />
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="utin"
-                        label="UTIN"
-                        type="text"
-                        fullWidth
-                        variant="standard"
-                        value={utin}
-                        onChange={(e) => setUtin(e.target.value)}
-                    />
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="vatRegNo"
-                        label="VAT Registration Number"
-                        type="text"
-                        fullWidth
-                        variant="standard"
-                        value={vatRegNo}
-                        onChange={(e) => setVatRegNo(e.target.value)}
-                    />
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleCreateSecond}>Next</Button>
@@ -419,73 +351,29 @@ export const TaxInfo = (props) => {
                 </DialogActions>
             </Dialog>
             <Dialog open={openCreateThird} onClose={handleCloseThird}>
-                <DialogTitle>Add Special Expense</DialogTitle>
+                <DialogTitle>Update Tax Information</DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus
                         margin="dense"
-                        id="profession"
-                        label="Profession"
-                        type="text"
+                        id="email"
+                        label="email"
+                        type="email"
                         fullWidth
                         variant="standard"
-                        value={profession}
-                        onChange={(e) => setProfession(e.target.value)}
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                     />
                     <TextField
                         autoFocus
                         margin="dense"
-                        id="organisation"
-                        label="Organisation"
+                        id="spouse"
+                        label="spouse"
                         type="text"
                         fullWidth
                         variant="standard"
-                        value={organisation}
-                        onChange={(e) => setOrganisation(e.target.value)}
-                    />
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="designation"
-                        label="Designation"
-                        type="text"
-                        fullWidth
-                        variant="standard"
-                        value={designation}
-                        onChange={(e) => setDesignation(e.target.value)}
-                    />
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="salary"
-                        label="Salary"
-                        type="text"
-                        fullWidth
-                        variant="standard"
-                        value={salary}
-                        onChange={(e) => setSalary(e.target.value)}
-                    />
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="allowance"
-                        label="Allowance"
-                        type="text"
-                        fullWidth
-                        variant="standard"
-                        value={allowance}
-                        onChange={(e) => setAllowance(e.target.value)}
-                    />
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="bonus"
-                        label="Bonus"
-                        type="text"
-                        fullWidth
-                        variant="standard"
-                        value={bonus}
-                        onChange={(e) => setBonus(e.target.value)}
+                        value={spouse}
+                        onChange={(e) => setSpouse(e.target.value)}
                     />
                 </DialogContent>
                 <DialogActions>

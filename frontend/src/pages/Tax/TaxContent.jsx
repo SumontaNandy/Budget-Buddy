@@ -3,60 +3,92 @@ import React, { useState, useEffect } from 'react'
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import { TaxInfo } from "./TaxInfo";
+import { getTaxInfo } from "../../api/Account";
+import { editTaxInfo } from "../../api/Account";
 
 
 export default function TaxContent() {
-    const [taxInfo, setTaxInfo] = useState(null)
+    const [taxInfo, setTaxInfo] = useState({});
 
-    let result = {
-        "personal": {
-            "name": "Farhan Tanvir Pappu",
-            "father_name": "Sumonta Nandy",
-            "mother_name": "Amita Mahmuda",
-            "dob": "1999-10-11",
-            "mobile": "01978962345",
-            "address": "248, West Nakhalpara, Dhaka - 1215"
-        },
-        "ids": {
-            "nid": "1310534678",
-            "tiin": "1824567891",
-            "utin": "890787653464",
-            "vat_reg_no": "1234567899876"
-        },
-        "income_info": {
-            "profession": "University Teacher",
-            "organisation": "Brac University",
-            "designation": "Lecturer",
-            "salary": 1000,
-            "allowance": 100,
-            "bonus": 50
-        }
-    }
+    // let result = {
+    //     "id": "efb6b1be-b30a-465d-be85-bb14269e945d",
+    //     "email": "user@gmail.com",
+    //     "user": {
+    //         "first_name": "user",
+    //         "middle_initial": null,
+    //         "last_name": null
+    //     },
+    //     "spouse": {
+    //         "first_name": null,
+    //         "middle_initial": null,
+    //         "last_name": null
+    //     },
+    //     "father": {
+    //         "first_name": null,
+    //         "middle_initial": null,
+    //         "last_name": null
+    //     },
+    //     "mother": {
+    //         "first_name": null,
+    //         "middle_initial": null,
+    //         "last_name": null
+    //     },
+    //     "permanent_address": {
+    //         "village_house": null,
+    //         "road_block_sector": null,
+    //         "police_station": null,
+    //         "post_office": null,
+    //         "post_code": null,
+    //         "district": null
+    //     },
+    //     "present_address": {
+    //         "village_house": null,
+    //         "road_block_sector": null,
+    //         "police_station": null,
+    //         "post_office": null,
+    //         "post_code": null,
+    //         "district": null
+    //     },
+    //     "contact_no": null,
+    //     "nid": null,
+    //     "tin": null,
+    //     "dob": null,
+    //     "img": null
+    // }
 
-    // useEffect(() => {
-    //     const cookies = document.cookie;
-    //     const headers = new Headers({
-    //         'Content-Type': 'application/json',
-    //         'Cookie': cookies
-    //     });
-    //     // Fetch saving goals data from the Flask backend API
-    //     fetch('http://127.0.0.1:5000/api/user/tax', { headers })
-    //         .then(response => response.json())
-    //         .then(data => setTaxInfo(data))
-    //         .catch(error => console.error('Error fetching data:', error));
+    useEffect(() => {
+        (async () => {
+            //console.log("Inside useEffect");
+            let data = await getTaxInfo();
+            //console.log("Data paisi");
+            console.log(data);
+            setTaxInfo(data);
+        })();
+    }, []);
 
-    //     console.log(taxInfo)
-    // }, []);
+
 
     return (
         <Box m={1.5} sx={{ flexGrow: 1 }}>
             <h1> Tax Return Information </h1>
-
+            {/* {console.log("Tax Info")}
+            {console.log(taxInfo)} */}
             <Grid container spacing={2}>
                 <Grid item xs={3}>
                     <TaxInfo
-                        info={result}
-                    />
+                        id={taxInfo.id}
+                        name={taxInfo.user ? (taxInfo.user.first_name ? taxInfo.user.first_name : "") : ""}
+                        email={taxInfo.email ? taxInfo.email : ""}
+                        fatherName={taxInfo.father ? (taxInfo.father.first_name ? taxInfo.father.first_name : "") : ""}
+                        motherName={taxInfo.mother ? (taxInfo.mother.first_name ? taxInfo.mother.first_name : "") : ""}
+                        spouseName={taxInfo.spouse ? (taxInfo.spouse.first_name ? taxInfo.spouse.first_name : "") : ""}
+                        dob={taxInfo.dob ? taxInfo.dob : ""}
+                        nid={taxInfo.nid ? taxInfo.nid : ""}
+                        tin={taxInfo.tin ? taxInfo.tin : ""}
+                        contactNo={taxInfo.contact_no ? taxInfo.contact_no : ""}
+                        address={taxInfo.present_address ? (taxInfo.present_address.village_house ? taxInfo.present_address.village_house : "") : ""}
+                    /> 
+                    
                 </Grid>
             </Grid>
         </Box>

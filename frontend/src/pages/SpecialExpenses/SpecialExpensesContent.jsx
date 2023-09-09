@@ -71,8 +71,8 @@ export default function SpecialExpensesContent() {
         (async () => {
             let data = await getSpecialExpenses();
             setExpenses(data);
-            console.log("data dekhaitesi");
-            console.log(data);
+            //console.log("data dekhaitesi");
+            //console.log(data);
         })();
     }, []);
 
@@ -120,10 +120,14 @@ export default function SpecialExpensesContent() {
                 target: amount,
                 tags: tags
             };
+            console.log(expense);
+            console.log("ekbar dekhaisi");
 
             createSpecialExpense(JSON.stringify(expense)).then(res => {
                 setExpenses(prev => [...prev, expense]);
             });
+
+            console.log(expense);
 
             history.push("/special-expenses");
         } catch (error) {

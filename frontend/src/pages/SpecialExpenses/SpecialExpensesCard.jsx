@@ -75,25 +75,18 @@ export default function SpecialExpensesCard(props) {
         }
     };
 
-    const handleEditThird = async () => {
-        handleCloseThird();
-        try {
-            const updatedExpense = {
-                id: id,
-                name: name,
-                type: type,
-                target: amount,
-                tags: tags
-            };
+    const handleEditThird = () => {
+        const updatedExpense = {
+            name: name,
+            type: type,
+            target: amount,
+            tags: tags
+        };
 
-            editSpecialExpense(JSON.stringify(updatedExpense), id).then(res => {
-                history.push("/special-expenses");
-            });
-            // Handle success or navigation logic
-        } catch (error) {
-            console.error('Error editing special expense:', error);
-            alert("Edit Not Successful");
-        }
+        editSpecialExpense(JSON.stringify(updatedExpense), id).then(res => {
+            history.push("/special-expenses");
+        });
+        handleCloseThird();
     }
 
     const onDelete = async () => {

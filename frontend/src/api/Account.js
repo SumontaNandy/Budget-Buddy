@@ -54,16 +54,23 @@ export const deleteGoal = (goalName) =>
 
 
 export const getSpecialExpenses = () =>
-  axios.get(api_url(`watchlist`)).then((res) => res.data);
+  axios.get(api_url(`watchlist/`)).then((res) => res.data);
 
 export const createSpecialExpense = (expense) =>
-  axios.post(api_url(`watchlist`), expense, params).then((res) => res.data);
+  axios.post(api_url(`watchlist/`), expense, params).then((res) => res.data);
 
 export const editSpecialExpense = (expense, id) =>
   axios.put(api_url(`watchlist/${id}`), expense, params).then((res) => res.data);
 
 export const deleteSpecialExpense = (id) =>
   axios.delete(api_url(`watchlist/${id}`), params).then((res) => res.data);
+
+
+export const getTaxInfo = () =>
+  axios.get(api_url(`info/`)).then((res) => res.data);
+
+export const editTaxInfo = (info) =>
+  axios.put(api_url(`info/`), info, params).then((res) => res.data);
 
 
 
