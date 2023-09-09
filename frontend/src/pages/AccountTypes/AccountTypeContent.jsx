@@ -26,11 +26,10 @@ export default function AccountTypesContent() {
     const [accountItems, setAccounts] = useState([]);
 
     useEffect(() => {
-        const fetchAccountData = async () => {
+        (async () => {
             const accountData = await getAccountsForAccountType(type_id);
             setData(accountData);
-        };
-        fetchAccountData();
+        })();
     }, [accountItems]);
 
     const { parent, child, accounts } = data;
@@ -57,10 +56,13 @@ export default function AccountTypesContent() {
         <Box m={1.5} sx={{ flexGrow: 1 }}>
             <h1> Accounts </h1>
             <Grid container spacing={2}>
-                {accounts.map(acc => {
+                {
+                    accounts.map(acc => {
+                    console.log("Account", acc);
                     return (
                         <Grid item xs={3}>
                             <AccountCard
+                                id={acc.account_id}
                                 name={acc.account_name}
                                 balance={acc.balance}
                             />

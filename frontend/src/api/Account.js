@@ -14,6 +14,9 @@ export const getAllAccounts = () =>
 export const addAccount = (account) =>
   axios.post(api_url(`account/`), account, params).then((res) => res.data);
 
+export const getAccount = (account_id) =>
+  axios.get(api_url(`account/${account_id}`)).then((res) => res.data);
+
 /* Transaction */
 export const getIncomes = (account_id) =>
   axios.get(api_url(`account/${account_id}/deposite`)).then((res) => res.data);

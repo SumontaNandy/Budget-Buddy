@@ -75,9 +75,8 @@ export const Login = () => {
         const access_token = Cookies.get('access_token');
         const refresh_token = Cookies.get('refresh_token');
 
-        // if (access_token && refresh_token) {
-        //     history.push("/home");
-        // }
+        if (access_token && refresh_token)
+            history.push("/home");
     }
 
     const submit = (e) => {

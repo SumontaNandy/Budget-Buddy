@@ -2,45 +2,30 @@ import React from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
-import Grid from '@mui/material/Grid';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { getTransaction } from '../../api/Transaction';
-import { getGoal } from '../../api/SavingsGoal';
-import { getOnetime, getRecurring } from '../../api/SpendingPlan';
+import { getAccount } from '../../api/Account';
 
 export default function TransactionDetails() {
-    const { transaction_id } = useParams();
-    const [transaction, setTransaction] = useState({});
+    const { account_id } = useParams();
+    const [account, setAccount] = useState({});
     const [title, setTitle] = useState('');
     const [list, setList] = useState([]);
 
     useEffect(() => {
         (async () => {
-            const transactionData = await getTransaction(transaction_id);
-            setTransaction(transactionData);
-    
-            if (transactionData.gp) {
-                setTitle('Contributions to Savings Goals');
-                const goalPromises = transactionData.gp.map((goal) =>  getGoal(goal.goal));
-                const goals = (await Promise.all(goalPromises));
-                setList(goals.map((goal, index) => ({...goal, amount: transactionData.gp[index].amount})));
-            }
-            else if (transactionData.tp) {
-                setTitle('Contributions to Spending Plans');
-                const planPromises = transactionData.tp.map((plan) => {
-                    if(plan.type === "onetime")
-                        return getOnetime(plan.spending_plan);
-                    else if(plan.type === "recurring")
-                        return getRecurring(plan.spending_plan);
-                });
-                const plans = (await Promise.all(planPromises));
-                setList(plans.map((plan, index) => ({...plan, amount: transactionData.tp[index].amount})));
-            }
+            const accountData = await getAccount(account_id);
+            setAccount(accountData);
         })();
     }, []);
+
+    let availableBalanceSegment;
+    if(account.segment_list) {
+        availableBalanceSegment = account.segment_list.find(segment => segment.segment_name === 'available_balance');
+    }
+    const availableBalance = availableBalanceSegment ? availableBalanceSegment.amount : 'N/A';
 
     return (
         <>
@@ -48,23 +33,26 @@ export default function TransactionDetails() {
                 <Card sx={{ maxWidth: 500 }} style={{ backgroundColor: '#E7B10A' }}>
                     <CardContent>
                         <Typography gutterBottom variant="h5" component="div">
-                            TxID: {transaction.id}
+                            Account Number: {account.account_no}
                         </Typography>
                         <Typography sx={{ fontSize: 14 }} color="text.secondary">
-                            Date: {new Date(transaction.date).toLocaleDateString('en-UK')}
+                            Creation Date: {new Date(account.date).toLocaleDateString('en-UK')}
                         </Typography>
                         <Typography variant="body2">
-                            Payee: {transaction.payee}
+                            Account Name: {account.account_name}
                         </Typography>
                         <Typography variant="body2">
-                            Description: {transaction.description || 'N/A'}
+                            Balance: {account.balance}
+                        </Typography>
+                        <Typography variant="body2">
+                            Available Balance: {availableBalance}
                         </Typography>
                     </CardContent>
                 </Card>
             </div>
 
-            <h1 style={{ textAlign: 'center', margin: '10px' }}>{title}</h1>
-            <Grid container spacing={2}>
+            <h1 style={{ textAlign: 'center', margin: '10px' }}> Deposites </h1>
+            {/* <Grid container spacing={2}>
                 {list.map((item) => {
                     return (
                         <Grid item xs={3}>
@@ -82,7 +70,7 @@ export default function TransactionDetails() {
                         </Grid>
                     )
                 })}
-            </Grid>
+            </Grid> */}
         </>
 
     );
