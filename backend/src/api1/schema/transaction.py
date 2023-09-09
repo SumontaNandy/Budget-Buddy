@@ -8,6 +8,7 @@ class SpTransactionSchema(Schema):
     amount = fields.Float()
     spending_plan_id = fields.String()
     transaction_id = fields.String(dump_only=True)
+    type = fields.String(dump_only=True)
 
 class GoalTransactionSchema(Schema):
     id = fields.String(dump_only=True)

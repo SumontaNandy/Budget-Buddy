@@ -63,6 +63,15 @@ class TransactionUtil:
         if len(tp) > 0:
             transaction['tp'] = tp
 
+            from ..model.onetime_expense import OneTimeExpense
+
+            for i in range(len(tp)):
+                x = OneTimeExpense.query.filter_by(id=tp[i]['id']).first()
+                if x is not None:
+                    tp[i]['type'] = 'onetime'
+                else:
+                    tp[i]['type'] = 'recurring'
+
         gp = GoalTransactionUtil().get_goal_transaction(self.id)
         if len(gp) > 0:
             transaction['gp'] = gp
