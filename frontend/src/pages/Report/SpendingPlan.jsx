@@ -16,12 +16,12 @@ export default function SpendingPlan() {
         <>
             {
                 spendingPlans.map(plan => plan.amount_used > 0 && (
-                    <div className="progress" style={{ marginBottom:'20px' }}>
+                    <div className="progress" style={{ marginBottom:'20px', height:'50px' }}>
                         <div className="progress-bar bg-success" role="progressbar" 
                         style={{ width: `${(plan.amount_used / plan.amount) * 100}%` }} 
                         aria-valuenow={plan.amount_used} aria-valuemin="0" aria-valuemax="100">{plan.amount_used}</div>
 
-                        <div className="progress-bar bg-danger" role="progressbar" 
+                        <div className="progress-bar bg-warning" role="progressbar" 
                         style={{ width: `${((plan.amount - plan.amount_used) / plan.amount) * 100}%` }} 
                         aria-valuenow={plan.amount - plan.amount_used} aria-valuemin="0" aria-valuemax="100">{plan.name}</div>
                     </div>

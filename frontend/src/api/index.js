@@ -1,5 +1,5 @@
 import axios from 'axios';
-const BASE_URL = "https://budget-buddy-dx0b.onrender.com/api/1/user";
+const BASE_URL = "http://localhost:5000/api/1/user";
 
 export const api_url = (path) => (`${BASE_URL}/${path}`)
 export const params = {
