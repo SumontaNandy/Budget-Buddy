@@ -16,7 +16,7 @@ export default function AccountDeposite(props) {
         <>
             {
                 accounts.map(account => account.total_deposite > 0 && (
-                    <div className="progress" style={{ marginBottom:'20px', height:'50px'  }}>
+                    <div className="progress" style={{ marginBottom:'20px', height:'50px' }}>
                         <div className="progress-bar bg-warning" role="progressbar" 
                         style={{ width: `${(account.total_deposite / 2500) * 100}%` }} 
                         aria-valuenow={account.total_deposite} aria-valuemin="0" aria-valuemax="100">{account.account_name} - {account.total_deposite}</div>
