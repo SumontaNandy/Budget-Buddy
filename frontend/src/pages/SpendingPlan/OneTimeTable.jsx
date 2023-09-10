@@ -14,7 +14,7 @@ import Collapse from "@mui/material/Collapse";
 import IconButton from "@mui/material/IconButton";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-import { getAllOneTimeExpenses } from '../../api/Account';
+import { getAllOneTimeExpenses } from '../../api/SpendingPlan';
 import AddOnetime from './AddOnetime';
 
 const ExpandMore = styled((props) => {

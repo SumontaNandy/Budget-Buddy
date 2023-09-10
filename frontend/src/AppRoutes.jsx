@@ -16,7 +16,7 @@ import SpendingPlan from './pages/SpendingPlan/SpendingPlan';
 import TransactionDetails from "./pages/Transaction/TransactionDetails";
 import Transaction from './pages/Transaction/Transaction';
 
-import Recurring from './pages/Recurring/Recurring';
+import Report from './pages/Report/Report';
 import SavingGoals from './pages/SavingGoals/SavingGoals';
 import SpecialExpenses from './pages/SpecialExpenses/SpecialExpenses';
 import Tax from './pages/Tax/Tax';
@@ -38,7 +38,7 @@ export default function AppRoutes()
 
                 <Route path="/transactions/:transaction_id/details" component={TransactionDetails} />
                 <Route path="/transactions" component={Transaction} />
-                <Route path="/recurring" component={Recurring} />
+                <Route path="/report" component={Report} />
          
                 <Route path="/saving-goals" component={SavingGoals} />
                 <Route path="/special-expenses" component={SpecialExpenses} />

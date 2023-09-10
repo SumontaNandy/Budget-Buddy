@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 
-import { getAllRecurringExpenses } from '../../api/Account';
+import { getAllRecurringExpenses } from '../../api/SpendingPlan';
 import UpcomingCard from './UpcomingCard';
 
 export default function Upcoming() {

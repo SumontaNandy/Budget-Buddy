@@ -10,6 +10,16 @@ export const getOnetime = (id) =>
 export const getRecurring = (id) =>
   axios.get(api_url(`spending-plan/recur/${id}`), params).then((res) => res.data);
 
+export const getAllRecurringExpenses = (params) =>
+  axios.get(api_url(`spending-plan/recur/`), {
+    params: params
+  }).then((res) => res.data);
+
+export const getAllOneTimeExpenses = (params) =>
+  axios.get(api_url(`spending-plan/one/`), {
+    params: params
+  }).then((res) => res.data);
+
 export const addOnetime = (expense) =>
   axios.post(api_url(`spending-plan/one/`), expense, params).then((res) => res.data);
 

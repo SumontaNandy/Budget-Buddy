@@ -29,16 +29,6 @@ export const addDeposite = (account_id, deposite) =>
 export const getUpcomingTransactions = () =>
   axios.get(api_url(`spending-plan/recur/?upcoming=1`)).then((res) => res.data);
 
-export const getAllRecurringExpenses = (params) =>
-  axios.get(api_url(`spending-plan/recur/`), {
-    params: params
-  }).then((res) => res.data);
-
-export const getAllOneTimeExpenses = (params) =>
-  axios.get(api_url(`spending-plan/one/`), {
-    params: params
-  }).then((res) => res.data);
-
 // export const getAllBills = (start, end) =>
 //   axios.get(api_url(`spending-plan/recur/`), {
 //     params: { type: "BILL" }

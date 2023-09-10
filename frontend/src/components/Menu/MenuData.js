@@ -16,8 +16,8 @@ const MenuData = [
     link: "/transactions"
   },
   {
-    name: "Recurring",
-    link: "/recurring"
+    name: "Report",
+    link: "/report"
   },
   {
     name: "Saving Goals",

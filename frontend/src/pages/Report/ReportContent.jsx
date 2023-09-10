@@ -7,7 +7,7 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 
-import RecurringTable from "./RecurringTable";
+import SpendingPlanChart from "./SpendingPlanChart";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -42,7 +42,7 @@ function a11yProps(index) {
   };
 }
 
-export default function RecurringContent() {
+export default function ReportContent() {
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
 
@@ -69,13 +69,11 @@ export default function RecurringContent() {
         </AppBar>
 
         <TabPanel value={value} index={0} dir={theme.direction}>
-          <RecurringTable />
+          <SpendingPlanChart />
         </TabPanel>
         <TabPanel value={value} index={1} dir={theme.direction}>
-          <RecurringTable />
         </TabPanel>
         <TabPanel value={value} index={2} dir={theme.direction}>
-          <RecurringTable />
         </TabPanel>
       </Box>
     </>
