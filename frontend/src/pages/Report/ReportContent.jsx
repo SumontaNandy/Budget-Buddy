@@ -10,6 +10,7 @@ import Box from "@mui/material/Box";
 import SpendingPlanChart from "./SpendingPlan";
 import AccountDeposite from "./AccountDeposite";
 import DateRangePicker from "./DateRangePicker";
+import AccountSummary from "./AccountSummary";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -89,6 +90,7 @@ export default function ReportContent() {
           <AccountDeposite startDate={startDate} endDate={endDate} />
         </TabPanel>
         <TabPanel value={value} index={2} dir={theme.direction}>
+          <AccountSummary />
         </TabPanel>
       </Box>
     </>

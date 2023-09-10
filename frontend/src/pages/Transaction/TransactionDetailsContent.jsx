@@ -21,23 +21,23 @@ export default function TransactionDetails() {
         (async () => {
             const transactionData = await getTransaction(transaction_id);
             setTransaction(transactionData);
-    
+
             if (transactionData.gp) {
                 setTitle('Contributions to Savings Goals');
-                const goalPromises = transactionData.gp.map((goal) =>  getGoal(goal.goal));
+                const goalPromises = transactionData.gp.map((goal) => getGoal(goal.goal));
                 const goals = (await Promise.all(goalPromises));
-                setList(goals.map((goal, index) => ({...goal, amount: transactionData.gp[index].amount})));
+                setList(goals.map((goal, index) => ({ ...goal, amount: transactionData.gp[index].amount })));
             }
             else if (transactionData.tp) {
                 setTitle('Contributions to Spending Plans');
                 const planPromises = transactionData.tp.map((plan) => {
-                    if(plan.type === "onetime")
+                    if (plan.type === "onetime")
                         return getOnetime(plan.spending_plan);
-                    else if(plan.type === "recurring")
+                    else if (plan.type === "recurring")
                         return getRecurring(plan.spending_plan);
                 });
                 const plans = (await Promise.all(planPromises));
-                setList(plans.map((plan, index) => ({...plan, amount: transactionData.tp[index].amount})));
+                setList(plans.map((plan, index) => ({ ...plan, amount: transactionData.tp[index].amount })));
             }
         })();
     }, []);
