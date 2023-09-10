@@ -104,8 +104,8 @@ export default function SpecialExpensesCard(props) {
 
 
     return (
-        <div>
-            <Box sx={{ minWidth: 575 }} m={2}>
+        <div className="shadow bg-white rounded text-center">
+            <Box sx={{ minWidth: 275, minHeight: 250 }} >
                 <Card variant="outlined">
                     <CardContent>
                         <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
@@ -149,10 +149,9 @@ export default function SpecialExpensesCard(props) {
                         onChange={(e) => setType(e.target.value)}
                         label="Select A Type"
                     >
-                        <MenuItem value="Extra">Extra</MenuItem>
-                        <MenuItem value="Eating">Eating</MenuItem>
-                        <MenuItem value="Recreation">Recreation</MenuItem>
-                        <MenuItem value="Tour">Tour</MenuItem>
+                        <MenuItem value="TAG">Tag</MenuItem>
+                        <MenuItem value="PAYEE">Payee</MenuItem>
+                        <MenuItem value="CATEGORY">Category</MenuItem>
                     </Select>
                 </DialogContent>
                 <DialogActions>
