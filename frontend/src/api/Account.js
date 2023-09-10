@@ -35,3 +35,56 @@ export const getReport = (params) =>
   axios.get(api_url(`report/`), {
     params: params
   }).then((res) => res.data);
+export const getAllRecurringExpenses = (page, per_page) =>
+  axios.get(api_url(`spending-plan/recur/`), null, {
+    params: { page, per_page }
+  }).then((res) => res.data);
+
+export const getAllOneTimeExpenses = (page, per_page) =>
+  axios.get(api_url(`spending-plan/one/`), null, {
+    params: { page, per_page }
+  }).then((res) => res.data);
+
+export const getAllBills = () =>
+  axios.get(api_url(`spending-plan/recur/`), {
+    params: { type: "BILL" }
+  }).then((res) => res.data);
+
+
+export const getSavingGoals = (page=1, per_page=12) =>
+  axios.get(api_url(`goal/`), { params: { page, per_page} }).then((res) => res.data);
+
+export const createGoal = (goal) =>
+  axios.post(api_url(`goal/`), goal, params).then((res) => res.data);
+
+export const editGoal = (goal, id) =>
+  axios.put(api_url(`goal/${id}`), goal, params).then((res) => res.data);
+
+export const deleteGoal = (goalName) =>
+  axios.delete(api_url(`goal/delete/${goalName}`), params).then((res) => res.data);
+
+
+export const getSpecialExpenses = () =>
+  axios.get(api_url(`watchlist/`)).then((res) => res.data);
+
+export const createSpecialExpense = (expense) =>
+  axios.post(api_url(`watchlist/`), expense, params).then((res) => res.data);
+
+export const editSpecialExpense = (expense, id) =>
+  axios.put(api_url(`watchlist/${id}`), expense, params).then((res) => res.data);
+
+export const deleteSpecialExpense = (id) =>
+  axios.delete(api_url(`watchlist/${id}`), params).then((res) => res.data);
+
+
+export const getTaxInfo = () =>
+  axios.get(api_url(`info/`)).then((res) => res.data);
+
+export const editTaxInfo = (info) =>
+  axios.put(api_url(`info/`), info, params).then((res) => res.data);
+
+
+
+
+
+

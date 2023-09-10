@@ -20,42 +20,47 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import SpecialExpensesCard from "./SpecialExpensesCard";
+import axios from 'axios';
 //import SavingGoalsData from "../../data/SavingGoalsData";
+import { getSpecialExpenses } from '../../api/Account';
+import { createSpecialExpense } from '../../api/Account';
 
 
 export default function SpecialExpensesContent() {
 
-    let result = [
-        {
-            "type": "by category",
-            "name": "Dinning Out",
-            "categories": "resturant",
-            "setTarget": "true",
-            "amount": 100
-        },
-        {
-            "type": "by category",
-            "name": "Dinning Out",
-            "categories": "resturant",
-            "setTarget": "true",
-            "amount": 100
-        },
-        {
-            "type": "by category",
-            "name": "Dinning Out",
-            "categories": "resturant",
-            "setTarget": "true",
-            "amount": 100
-        }
-    ]
+    // let result = [
+    //     {
+    //         "type": "by category",
+    //         "name": "Dinning Out",
+    //         "categories": "resturant",
+    //         "setTarget": "true",
+    //         "amount": 100
+    //     },
+    //     {
+    //         "type": "by category",
+    //         "name": "Dinning Out",
+    //         "categories": "resturant",
+    //         "setTarget": "true",
+    //         "amount": 100
+    //     },
+    //     {
+    //         "type": "by category",
+    //         "name": "Dinning Out",
+    //         "categories": "resturant",
+    //         "setTarget": "true",
+    //         "amount": 100
+    //     }
+    // ]
 
     const [expenses, setExpenses] = useState([])
 
     const [name, setName] = useState('');
     const [type, setType] = useState('');
-    const [category, setCategory] = useState('');
+    const [amount, setAmount] = useState(''); //target
     const [setTarget, setSetTarget] = useState(true);
-    const [amount, setAmount] = useState('');
+    const [tags, setTags] = useState([]);
+
+    const [newTag, setNewTag] = useState('');
     const history = useHistory();
 
     const [openCreateFirst, setOpenCreateFirst] = useState(false);
@@ -63,16 +68,12 @@ export default function SpecialExpensesContent() {
     const [openCreateThird, setOpenCreateThird] = useState(false);
 
     useEffect(() => {
-        const cookies = document.cookie;
-        const headers = new Headers({
-            'Content-Type': 'application/json',
-            'Cookie': cookies
-        });
-        // Fetch saving goals data from the Flask backend API
-        fetch('http://127.0.0.1:5000/api/user/special-expenses', { headers })
-            .then(response => response.json())
-            .then(data => setExpenses(data))
-            .catch(error => console.error('Error fetching data:', error));
+        (async () => {
+            let data = await getSpecialExpenses();
+            setExpenses(data);
+            //console.log("data dekhaitesi");
+            //console.log(data);
+        })();
     }, []);
 
 
@@ -102,40 +103,36 @@ export default function SpecialExpensesContent() {
         setOpenCreateThird(true);
     }
 
+    const handleAddTag = () => {
+        if (newTag.trim() !== '') {
+            setTags([...tags, newTag]);
+            setNewTag('');
+        }
+    };
+
 
     const handleCreateThird = async () => {
         handleCloseThird();
         try {
-            let link = "http://127.0.0.1:5000/api/user/watchlist/create"
-            const cookies = document.cookie;
-            const res = await fetch(link, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    'Cookie': cookies
-                },
-                body: JSON.stringify({
-                    type: type,
-                    name: name,
-                    categories: category,
-                    setTarget: setTarget,
-                    amount: amount
-                })
+            const expense = {
+                name: name,
+                type: type,
+                target: amount,
+                tags: tags
+            };
+            console.log(expense);
+            console.log("ekbar dekhaisi");
+
+            createSpecialExpense(JSON.stringify(expense)).then(res => {
+                setExpenses(prev => [...prev, expense]);
             });
 
-            if (res.ok) {
-                const data = await res.json();
-                const { status } = data;
+            console.log(expense);
 
-                if (status === "success") {
-                    history.push("/special-expenses");
-                }
-            }
-            else {
-                alert("Special Expense Creation Not Successful");
-            }
+            history.push("/special-expenses");
         } catch (error) {
-            console.log(error);
+            console.error('Error creating special expense:', error);
+            alert("Special Expense Creation Not Successful");
         }
     }
 
@@ -145,11 +142,16 @@ export default function SpecialExpensesContent() {
                 <h1> Special Expenses </h1>
 
                 <Grid container spacing={2}>
-                    {result.map(expense => {
+                    {expenses.map((expense, index) => {
                         return (
                             <Grid item xs={3}>
                                 <SpecialExpensesCard
-                                    expense={expense}
+                                    id={expense.id}
+                                    name={expense.name}
+                                    type={expense.type}
+                                    target={expense.target}
+                                    tags={expense.tags}
+                                    key={index}
                                 />
                             </Grid>
                         )
@@ -179,10 +181,9 @@ export default function SpecialExpensesContent() {
                         onChange={(e) => setType(e.target.value)}
                         label="Select A Type"
                     >
-                        <MenuItem value={type}>{type}</MenuItem>
-                        <MenuItem value="Extra">Extra</MenuItem>
-                        <MenuItem value="Eating">Eating</MenuItem>
-                        <MenuItem value="Recreation">Recreation</MenuItem>
+                        <MenuItem value="TAG">Tag</MenuItem>
+                        <MenuItem value="PAYEE">Payee</MenuItem>
+                        <MenuItem value="CATEGORY">Category</MenuItem>
                     </Select>
                 </DialogContent>
                 <DialogActions>
@@ -193,17 +194,25 @@ export default function SpecialExpensesContent() {
             <Dialog open={openCreateSecond} onClose={handleCloseSecond}>
                 <DialogTitle>Add Special Expense</DialogTitle>
                 <DialogContent>
-                    <InputLabel>Select A Category</InputLabel>
-                    <Select
-                        value={category}
-                        onChange={(e) => setCategory(e.target.value)}
-                        label="Select A Category"
-                    >
-                        <MenuItem value={category}>{category}</MenuItem>
-                        <MenuItem value="Restaurant">Restaurant</MenuItem>
-                        <MenuItem value="MI-28-Attack-Helicopter">MI-28-Attack-Helicopter</MenuItem>
-                        <MenuItem value="Otomat-MKII-Missile">Otomat-MKII-Missile</MenuItem>
-                    </Select>
+                    <InputLabel>Tags</InputLabel>
+                    {tags.map((tag, index) => (
+                        <TextField
+                            key={index}
+                            value={tag}
+                            onChange={(e) => {
+                                const newTags = [...tags];
+                                newTags[index] = e.target.value;
+                                setTags(newTags);
+                            }}
+                            label={`Tag ${index + 1}`}
+                        />
+                    ))}
+                    <TextField
+                        value={newTag}
+                        onChange={(e) => setNewTag(e.target.value)}
+                        label="New Tag"
+                    />
+                    <Button onClick={handleAddTag}>Add Tag</Button>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleCreateSecond}>Next</Button>

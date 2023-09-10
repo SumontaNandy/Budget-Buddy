@@ -30,6 +30,10 @@ const MenuData = [
   {
     name: "Tax",
     link: "/tax"
+  },
+  {
+    name: "Logout",
+    link: "/logout"
   }
 ]
 
