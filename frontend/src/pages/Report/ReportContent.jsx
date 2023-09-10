@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { useTheme } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
@@ -7,7 +7,9 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 
-import SpendingPlanChart from "./SpendingPlanChart";
+import SpendingPlanChart from "./SpendingPlan";
+import AccountDeposite from "./AccountDeposite";
+import DateRangePicker from "./DateRangePicker";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -46,13 +48,17 @@ export default function ReportContent() {
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
 
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [selectedOption, setSelectedOption] = useState('none');
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
   return (
     <>
-      <Box sx={{ bgcolor: "background.paper", width: "60%" }}>
+      <Box sx={{ bgcolor: "background.paper", width: "100%" }}>
         <AppBar position="static">
           <Tabs
             value={value}
@@ -62,9 +68,9 @@ export default function ReportContent() {
             variant="fullWidth"
             aria-label="full width tabs example"
           >
-            <Tab label="All Active" {...a11yProps(0)} />
-            <Tab label="Income" {...a11yProps(1)} />
-            <Tab label="Transfer" {...a11yProps(2)} />
+            <Tab label="Spending Plan" {...a11yProps(0)} />
+            <Tab label="Account Deposite" {...a11yProps(1)} />
+            <Tab label="All In-Out" {...a11yProps(2)} />
           </Tabs>
         </AppBar>
 
@@ -72,6 +78,15 @@ export default function ReportContent() {
           <SpendingPlanChart />
         </TabPanel>
         <TabPanel value={value} index={1} dir={theme.direction}>
+          <DateRangePicker
+            startDate={startDate}
+            endDate={endDate}
+            selectedOption={selectedOption}
+            setStartDate={setStartDate}
+            setEndDate={setEndDate}
+            setSelectedOption={setSelectedOption}
+          />
+          <AccountDeposite startDate={startDate} endDate={endDate} />
         </TabPanel>
         <TabPanel value={value} index={2} dir={theme.direction}>
         </TabPanel>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getAllOneTimeExpenses, getAllRecurringExpenses } from '../../api/SpendingPlan'; 
 
-function SpendingPlanChart() {
+export default function SpendingPlan() {
     const [spendingPlans, setSpendingPlans] = useState([]);
     useEffect(() => {
         (async () => {
@@ -15,7 +15,7 @@ function SpendingPlanChart() {
     return (
         <>
             {
-                spendingPlans.map(plan => (
+                spendingPlans.map(plan => plan.amount_used > 0 && (
                     <div className="progress" style={{ marginBottom:'20px' }}>
                         <div className="progress-bar bg-success" role="progressbar" 
                         style={{ width: `${(plan.amount_used / plan.amount) * 100}%` }} 
@@ -30,9 +30,3 @@ function SpendingPlanChart() {
         </>
     );
 }
-
-export default SpendingPlanChart;
-
-// @progress/kendo-drawing @progress/kendo-licensing
-// @progress/kendo-react-animation @progress/kendo-react-buttons @progress/kendo-react-intl
-// @progress/kendo-react-layout @progress/kendo-react-progressbars @progress/kendo-svg-icons

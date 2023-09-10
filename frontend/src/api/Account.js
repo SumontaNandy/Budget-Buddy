@@ -8,8 +8,10 @@ export const getAllAccountTypes = () =>
 export const getAccountsForAccountType = (type_id) =>
   axios.get(api_url(`account-types/${type_id}`)).then((res) => res.data);
 
-export const getAllAccounts = () =>
-  axios.get(api_url(`account/`)).then((res) => res.data);
+export const getAllAccounts = (params) =>
+  axios.get(api_url(`account/`), {
+    params: params
+  }).then((res) => res.data);
 
 export const addAccount = (account) =>
   axios.post(api_url(`account/`), account, params).then((res) => res.data);
