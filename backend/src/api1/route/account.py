@@ -82,7 +82,7 @@ class Deposite(Resource):
         filters = request.args
         data, http_response = AccountUtil(account_id).get_deposite_history(filters)
 
-        print(data)
+        # print(data)
 
         return deposite_list_serializer.dump(data), http_response
 

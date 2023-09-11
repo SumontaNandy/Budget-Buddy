@@ -37,6 +37,8 @@ class TransactionCR(Resource):
         user_id = get_jwt_identity()
         data = api.payload
 
+        print(data)
+
         http_response = TransactionUtil().create_transaction(user_id, data);
 
         return http_response
