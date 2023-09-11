@@ -10,6 +10,8 @@ RUN pip3 --no-cache-dir install -r requirements.txt
 
 EXPOSE 5000
 
-ENTRYPOINT [ "./entrypoint.sh" ]
+# ENTRYPOINT [ "./entrypoint.sh" ]
 
-# CMD [ "python3", "src/manage.py", "runserver", "--host=0.0.0.0", "--port=5000"]
+ENTRYPOINT [ "python3" ]
+
+CMD [ "src/manage.py", "runserver", "--host=0.0.0.0", "--port=5000"]
